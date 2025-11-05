@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import OpenAI from "openai";
-import { TelegramRPC } from "vovk-client";
+import { TelegramAPI } from "vovk-client";
 import { createClient } from "redis";
 import { openai as vercelOpenAI } from "@ai-sdk/openai";
 import {
@@ -135,7 +135,7 @@ export default class TelegramService {
 
   // Send typing indicator
   private static async sendTypingIndicator(chatId: number): Promise<void> {
-    await TelegramRPC.sendChatAction({
+    await TelegramAPI.sendChatAction({
       body: {
         chat_id: chatId,
         action: "typing",
@@ -182,7 +182,7 @@ export default class TelegramService {
     chatId: number,
     text: string,
   ): Promise<void> {
-    await TelegramRPC.sendMessage({
+    await TelegramAPI.sendMessage({
       body: {
         chat_id: chatId,
         text: text,
@@ -196,7 +196,7 @@ export default class TelegramService {
     chatId: number,
     photoUrl: string,
   ): Promise<void> {
-    await TelegramRPC.sendPhoto({
+    await TelegramAPI.sendPhoto({
       body: {
         chat_id: chatId,
         photo: photoUrl,
@@ -230,7 +230,7 @@ export default class TelegramService {
       );
 
       // Send the voice message
-      await TelegramRPC.sendVoice({
+      await TelegramAPI.sendVoice({
         body: formData,
         apiRoot: this.apiRoot,
       });
@@ -257,7 +257,7 @@ export default class TelegramService {
       modules: {
         UserController,
         TaskController,
-        // GithubIssuesRPC: [GithubIssuesRPC, githubOptions],
+        // GithubIssuesAPI: [GithubIssuesAPI, githubOptions],
       },
       onExecute: (data, { moduleName, handlerName }) =>
         console.log(`${moduleName}.${handlerName} executed`, data),
@@ -355,7 +355,7 @@ export default class TelegramService {
       await this.sendTypingIndicator(chatId);
 
       // Get file info from Telegram
-      const { result: fileInfo } = await TelegramRPC.getFile({
+      const { result: fileInfo } = await TelegramAPI.getFile({
         body: { file_id: fileId },
         apiRoot: this.apiRoot,
       });

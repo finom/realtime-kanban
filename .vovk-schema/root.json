@@ -517,8 +517,8 @@
         }
       }
     },
-    "_TelegramRPC_": {
-      "rpcModuleName": "_TelegramRPC_",
+    "_TelegramAPI_": {
+      "rpcModuleName": "_TelegramAPI_",
       "originalControllerName": "TelegramController",
       "prefix": "telegram",
       "handlers": {

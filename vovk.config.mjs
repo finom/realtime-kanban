@@ -38,7 +38,7 @@ const config = {
             url: "https://raw.githubusercontent.com/sys-001/telegram-bot-api-versions/refs/heads/main/files/openapi/yaml/v183.yaml",
             fallback: ".openapi-cache/telegram.yaml",
           },
-          getModuleName: "TelegramRPC",
+          getModuleName: "TelegramAPI",
           getMethodName: ({ path }) => path.replace(/^\//, ""),
           errorMessageKey: "description",
         },

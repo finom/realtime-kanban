@@ -17,7 +17,7 @@ import {
   type UIMessage,
 } from "ai";
 import { openai } from "@ai-sdk/openai";
-// import { GithubIssuesRPC } from "vovk-client";
+// import { GithubIssuesAPI } from "vovk-client";
 import UserController from "../user/UserController";
 import TaskController from "../task/TaskController";
 import { sessionGuard } from "@/decorators/sessionGuard";
@@ -46,7 +46,7 @@ export default class AiSdkController {
       modules: {
         UserController,
         TaskController,
-        // GithubIssuesRPC: [GithubIssuesRPC, githubOptions],
+        // GithubIssuesAPI: [GithubIssuesAPI, githubOptions],
       },
       onExecute: (_d, { moduleName, handlerName }) =>
         console.log(`${moduleName}.${handlerName} executed`),

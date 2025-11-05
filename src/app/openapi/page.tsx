@@ -16,7 +16,7 @@ async function App() {
             description: "Localhost",
           },
           {
-            url: "https://vovk-hello-world.vercel.app",
+            url: "https://hello-world.vovk.dev",
             description: "Production",
           },
         ],

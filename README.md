@@ -7,12 +7,12 @@
     </picture>
   </a>
   <br>
-  <strong>Back-end for <a href="https://nextjs.org/">Next.js</a></strong>
+  <strong>Back-end for Next.js</strong>
 </p>
 
 ---
 
-## vovk-ai-demo
+## vovk-kanban-demo
 
 A proof of concept app, demonstrating utilization of [controllers](https://vovk.dev/controller) and RPC modules as AI tools, that work on server-side (with [AI SDK](https://npmjs.com/package/@ai-sdk/react)), client-side (with [OpenAI Realtime API](https://platform.openai.com/docs/guides/realtime)) and as MCP server (using [MCP Handler](https://npmjs.com/package/mcp-handler)).
 
@@ -29,8 +29,8 @@ The project and its idea explained in the series of articles at [Vovk.ts documen
 Clone the repository:
 
 ```bash
-git clone https://github.com/finom/vovk-ai-demo.git
-cd vovk-ai-demo
+git clone https://github.com/finom/vovk-kanban-demo.git
+cd vovk-kanban-demo
 ```
 
 Install the dependencies:
@@ -43,8 +43,8 @@ Create a `.env` file in the root directory and add your OpenAI API key and datab
 
 ```env filename=".env"
 OPENAI_API_KEY=change_me
-DATABASE_URL="postgresql://postgres:password@localhost:5432/vovk-ai-demo-db?schema=public"
-DATABASE_URL_UNPOOLED="postgresql://postgres:password@localhost:5432/vovk-ai-demo-db?schema=public"
+DATABASE_URL="postgresql://postgres:password@localhost:5432/vovk-kanban-demo-db?schema=public"
+DATABASE_URL_UNPOOLED="postgresql://postgres:password@localhost:5432/vovk-kanban-demo-db?schema=public"
 REDIS_URL=redis://localhost:6379
 PASSWORD=
 ```

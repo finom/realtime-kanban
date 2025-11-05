@@ -1,15 +1,8 @@
 import { PrismaClient } from "../../../prisma/generated/client";
 import { PrismaNeon } from "@prisma/adapter-neon";
-import { neonConfig } from "@neondatabase/serverless";
 import DatabaseEventsService, { type DBChange } from "./DatabaseEventsService";
 import type { BaseEntity } from "@/types";
-
-if (!process.env.VERCEL_ENV) {
-  neonConfig.wsProxy = (host) => `${host}:5433/v1`;
-  neonConfig.useSecureWebSocket = false;
-  neonConfig.pipelineTLS = false;
-  neonConfig.pipelineConnect = false;
-}
+import './neon-local'; // Setup Neon for local development
 
 export default class DatabaseService {
   static get prisma() {

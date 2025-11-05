@@ -7,6 +7,7 @@ import TaskController from "@/modules/task/TaskController";
 import { UserType } from "../../prisma/generated/schemas/models/User.schema";
 import { TaskType } from "../../prisma/generated/schemas/models/Task.schema";
 import { verifySession } from "@/lib/dal";
+import AppHeader from "@/components/AppHeader";
 
 export const runtime = "nodejs";
 
@@ -21,6 +22,7 @@ export default async function Home() {
 
   return (
     <>
+      <AppHeader />
       <UserList initialData={usersInitialData} />
       <UserKanban initialData={tasksInitialData} />
       <ExpandableChatDemo />

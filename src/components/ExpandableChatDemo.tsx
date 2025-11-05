@@ -5,14 +5,10 @@ import {
   Mic,
   CornerDownLeft,
   MoveDownRight,
+  MessageSquare,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useChat } from "@ai-sdk/react";
-import {
-  ChatBubble,
-  ChatBubbleAvatar,
-  ChatBubbleMessage,
-} from "@/components/ui/chat-bubble";
 import { ChatInput } from "@/components/ui/chat-input";
 import {
   ExpandableChat,
@@ -20,19 +16,30 @@ import {
   ExpandableChatBody,
   ExpandableChatFooter,
 } from "@/components/ui/expandable-chat";
-import { ChatMessageList } from "@/components/ui/chat-message-list";
 import { useEffect, useState } from "react";
 import { useRegistry } from "@/registry";
-import { DefaultChatTransport, ReasoningUIPart, ToolUIPart } from "ai";
-import { Streamdown } from "streamdown";
+import { DefaultChatTransport, ToolUIPart } from "ai";
+import {
+  Reasoning,
+  ReasoningContent,
+  ReasoningTrigger,
+} from "@/components/ai-elements/reasoning";
 import {
   Tool,
   ToolContent,
   ToolHeader,
   ToolOutput,
   ToolInput,
-} from '@/components/ai-elements/tool';
-import { Response } from '@/components/ai-elements/response';
+} from "@/components/ai-elements/tool";
+import { Message, MessageContent } from "@/components/ai-elements/message";
+import {
+  Conversation,
+  ConversationContent,
+  ConversationEmptyState,
+  ConversationScrollButton,
+} from "@/components/ai-elements/conversation";
+
+import { Response } from "@/components/ai-elements/response";
 
 export function ExpandableChatDemo() {
   const [input, setInput] = useState("");
@@ -82,71 +89,85 @@ export function ExpandableChatDemo() {
         }
       >
         <ExpandableChatHeader className="flex-col text-center justify-center">
-          <h1 className="text-xl font-semibold">Real-time UI ✨</h1>
+          <h1 className="text-xl font-semibold">Realtime UI ✨</h1>
           <p className="text-sm text-muted-foreground">
             Tell it what you want to do: create user, assign tasks etc
           </p>
         </ExpandableChatHeader>
         <ExpandableChatBody>
-          <ChatMessageList>
-            {messages.map((message) => (
-              <ChatBubble
-                key={message.id}
-                variant={message.role === "user" ? "sent" : "received"}
-              >
-                <ChatBubbleAvatar
-                  className="h-8 w-8 shrink-0"
-                  src={
-                    message.role === "user"
-                      ? "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=64&h=64&q=80&crop=faces&fit=crop"
-                      : "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=64&h=64&q=80&crop=faces&fit=crop"
-                  }
-                  fallback={message.role === "user" ? "US" : "AI"}
+          <Conversation className="relative w-full" style={{ height: "500px" }}>
+            <ConversationContent>
+              {messages.length === 0 ? (
+                <ConversationEmptyState
+                  icon={<MessageSquare className="size-12" />}
+                  title="No messages yet"
+                  description="Start a conversation to see messages here"
                 />
-                <ChatBubbleMessage
-                  variant={message.role === "user" ? "sent" : "received"}
-                >
-                  {message.parts
-                    .filter((part) => part.type.startsWith("tool-"))
-                    .map((p, index) => {
-                      const part = p as ToolUIPart;
-                      return (
-                      <Tool defaultOpen={false} key={index}>
-                        <ToolHeader type={part.type} state={part.state} />
-                        <ToolContent>
-                          <ToolInput input={part.input} />
-                          <ToolOutput
-                            output={
-                              <Response>
-                                {JSON.stringify(part.output, null, 2)}
+              ) : (
+                messages.map((message) => (
+                  <Message from={message.role} key={message.id}>
+                    <MessageContent>
+                      {message.parts.map((part, i) => {
+                        switch (part.type) {
+                          case "text":
+                            return (
+                              <Response key={`${message.id}-${i}`}>
+                                {part.text}
                               </Response>
+                            );
+                          case "reasoning":
+                            return (
+                              <Reasoning
+                                key={`${message.id}-${i}`}
+                                className="w-full"
+                                isStreaming={
+                                  status === "streaming" &&
+                                  i === message.parts.length - 1 &&
+                                  message.id === messages.at(-1)?.id
+                                }
+                              >
+                                <ReasoningTrigger />
+                                <ReasoningContent>{part.text}</ReasoningContent>
+                              </Reasoning>
+                            );
+                          default:
+                            if (part.type.startsWith("tool-")) {
+                              const toolPart = part as ToolUIPart;
+                              return (
+                                <Tool
+                                  defaultOpen={false}
+                                  key={`${message.id}-${i}`}
+                                >
+                                  <ToolHeader
+                                    type={toolPart.type}
+                                    state={toolPart.state}
+                                  />
+                                  <ToolContent>
+                                    <ToolInput input={toolPart.input} />
+                                    <ToolOutput
+                                      output={
+                                        <Response>
+                                          {JSON.stringify(
+                                            toolPart.output,
+                                            null,
+                                            2,
+                                          )}
+                                        </Response>
+                                      }
+                                      errorText={toolPart.errorText}
+                                    />
+                                  </ToolContent>
+                                </Tool>
+                              );
                             }
-                            errorText={part.errorText}
-                          />
-                        </ToolContent>
-                      </Tool>
-                    )})}
-                  {message.parts
-                    .filter((part) => part.type === "text")
-                    .map((part, index) => (
-                      <Streamdown key={index}>{part.text}</Streamdown>
-                    ))}
-                
-                </ChatBubbleMessage>
-              </ChatBubble>
-            ))}
-
-            {status === "submitted" && (
-              <ChatBubble variant="received">
-                <ChatBubbleAvatar
-                  className="h-8 w-8 shrink-0"
-                  src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=64&h=64&q=80&crop=faces&fit=crop"
-                  fallback="AI"
-                />
-                <ChatBubbleMessage isLoading />
-              </ChatBubble>
-            )}
-          </ChatMessageList>
+                        }
+                      })}
+                    </MessageContent>
+                  </Message>
+                ))
+              )}
+            </ConversationContent>
+          </Conversation>
         </ExpandableChatBody>
         {error && <div>❌ {error.message}</div>}
         <ExpandableChatFooter>

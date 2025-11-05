@@ -27,16 +27,11 @@
               "properties": {
                 "search": {
                   "description": "Search term for users",
-                  "examples": [
-                    "john.doe",
-                    "Jane"
-                  ],
+                  "examples": ["john.doe", "Jane"],
                   "type": "string"
                 }
               },
-              "required": [
-                "search"
-              ],
+              "required": ["search"],
               "additionalProperties": false
             }
           },
@@ -71,10 +66,7 @@
                   ]
                 }
               },
-              "required": [
-                "fullName",
-                "email"
-              ],
+              "required": ["fullName", "email"],
               "additionalProperties": false
             }
           },
@@ -119,9 +111,7 @@
                   "type": "string"
                 }
               },
-              "required": [
-                "id"
-              ],
+              "required": ["id"],
               "additionalProperties": false
             }
           },
@@ -143,9 +133,7 @@
                   "type": "string"
                 }
               },
-              "required": [
-                "id"
-              ],
+              "required": ["id"],
               "additionalProperties": false
             }
           },
@@ -182,16 +170,11 @@
               "properties": {
                 "search": {
                   "description": "Search term for tasks",
-                  "examples": [
-                    "bug",
-                    "feature"
-                  ],
+                  "examples": ["bug", "feature"],
                   "type": "string"
                 }
               },
-              "required": [
-                "search"
-              ],
+              "required": ["search"],
               "additionalProperties": false
             }
           },
@@ -213,9 +196,7 @@
                   "type": "string"
                 }
               },
-              "required": [
-                "userId"
-              ],
+              "required": ["userId"],
               "additionalProperties": false
             }
           },
@@ -242,23 +223,13 @@
                 "status": {
                   "default": "TODO",
                   "type": "string",
-                  "enum": [
-                    "TODO",
-                    "IN_PROGRESS",
-                    "IN_REVIEW",
-                    "DONE"
-                  ]
+                  "enum": ["TODO", "IN_PROGRESS", "IN_REVIEW", "DONE"]
                 },
                 "userId": {
                   "type": "string"
                 }
               },
-              "required": [
-                "title",
-                "description",
-                "status",
-                "userId"
-              ],
+              "required": ["title", "description", "status", "userId"],
               "additionalProperties": false
             }
           },
@@ -285,12 +256,7 @@
                 "status": {
                   "default": "TODO",
                   "type": "string",
-                  "enum": [
-                    "TODO",
-                    "IN_PROGRESS",
-                    "IN_REVIEW",
-                    "DONE"
-                  ]
+                  "enum": ["TODO", "IN_PROGRESS", "IN_REVIEW", "DONE"]
                 },
                 "userId": {
                   "type": "string"
@@ -306,9 +272,7 @@
                   "type": "string"
                 }
               },
-              "required": [
-                "id"
-              ],
+              "required": ["id"],
               "additionalProperties": false
             }
           },
@@ -330,9 +294,7 @@
                   "type": "string"
                 }
               },
-              "required": [
-                "id"
-              ],
+              "required": ["id"],
               "additionalProperties": false
             }
           },
@@ -359,18 +321,10 @@
               "properties": {
                 "voice": {
                   "type": "string",
-                  "enum": [
-                    "ash",
-                    "ballad",
-                    "coral",
-                    "sage",
-                    "verse"
-                  ]
+                  "enum": ["ash", "ballad", "coral", "sage", "verse"]
                 }
               },
-              "required": [
-                "voice"
-              ],
+              "required": ["voice"],
               "additionalProperties": false
             }
           },
@@ -399,19 +353,13 @@
                     },
                     "entityType": {
                       "type": "string",
-                      "enum": [
-                        "user",
-                        "task"
-                      ]
+                      "enum": ["user", "task"]
                     },
                     "__isDeleted": {
                       "type": "boolean"
                     }
                   },
-                  "required": [
-                    "id",
-                    "entityType"
-                  ],
+                  "required": ["id", "entityType"],
                   "additionalProperties": false
                 },
                 {
@@ -486,12 +434,7 @@
                     "status": {
                       "default": "TODO",
                       "type": "string",
-                      "enum": [
-                        "TODO",
-                        "IN_PROGRESS",
-                        "IN_REVIEW",
-                        "DONE"
-                      ]
+                      "enum": ["TODO", "IN_PROGRESS", "IN_REVIEW", "DONE"]
                     },
                     "userId": {
                       "type": "string"

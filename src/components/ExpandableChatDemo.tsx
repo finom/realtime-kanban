@@ -23,8 +23,16 @@ import {
 import { ChatMessageList } from "@/components/ui/chat-message-list";
 import { useEffect, useState } from "react";
 import { useRegistry } from "@/registry";
-import { DefaultChatTransport } from "ai";
+import { DefaultChatTransport, ReasoningUIPart, ToolUIPart } from "ai";
 import { Streamdown } from "streamdown";
+import {
+  Tool,
+  ToolContent,
+  ToolHeader,
+  ToolOutput,
+  ToolInput,
+} from '@/components/ai-elements/tool';
+import { Response } from '@/components/ai-elements/response';
 
 export function ExpandableChatDemo() {
   const [input, setInput] = useState("");
@@ -99,16 +107,31 @@ export function ExpandableChatDemo() {
                   variant={message.role === "user" ? "sent" : "received"}
                 >
                   {message.parts
+                    .filter((part) => part.type.startsWith("tool-"))
+                    .map((p, index) => {
+                      const part = p as ToolUIPart;
+                      return (
+                      <Tool defaultOpen={false} key={index}>
+                        <ToolHeader type={part.type} state={part.state} />
+                        <ToolContent>
+                          <ToolInput input={part.input} />
+                          <ToolOutput
+                            output={
+                              <Response>
+                                {JSON.stringify(part.output, null, 2)}
+                              </Response>
+                            }
+                            errorText={part.errorText}
+                          />
+                        </ToolContent>
+                      </Tool>
+                    )})}
+                  {message.parts
                     .filter((part) => part.type === "text")
                     .map((part, index) => (
                       <Streamdown key={index}>{part.text}</Streamdown>
                     ))}
-                  {status === "ready" &&
-                    message.parts?.some(
-                      (part) => part.type === "tool-invocation",
-                    ) && (
-                      <em className="block">Function executed successfully</em>
-                    )}
+                
                 </ChatBubbleMessage>
               </ChatBubble>
             ))}

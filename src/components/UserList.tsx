@@ -76,8 +76,8 @@ const UserList = ({ initialData }: Props) => {
   return (
     <div className="space-y-4 p-6 max-w-7xl mx-auto">
       <div className="flex items-center gap-12">
-        <h2 className="text-lg font-semibold text-foreground flex gap-4 items-center">
-          Team Members
+        <h2 className="text-2xl font-semibold text-foreground flex gap-4 items-center">
+          Realtime Kanban
           <UserDialog userId={null}>
             <Button variant="outline">
               <Plus className="h-4 w-4" />

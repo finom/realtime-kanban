@@ -2,7 +2,6 @@ import {
   createLLMTools,
   HttpException,
   HttpStatus,
-  KnownAny,
   post,
   prefix,
   operation,

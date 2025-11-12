@@ -12,9 +12,9 @@ import {
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
-import type { DragEndEvent } from "@dnd-kit/core";
+import type { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
 import type { ReactNode } from "react";
-import { useMemo, useId, useEffect } from "react";
+import { useMemo, useId, useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Pencil, Plus, Trash2 } from "lucide-react";
 import { TaskRPC } from "vovk-client";
@@ -78,7 +78,8 @@ export const KanbanCard = ({
   parent,
   task,
   className,
-}: KanbanCardProps) => {
+  disableAnimation, // added
+}: KanbanCardProps & { disableAnimation?: boolean }) => {
   const { attributes, listeners, setNodeRef, transform, isDragging } =
     useDraggable({
       id: task.id,
@@ -90,10 +91,20 @@ export const KanbanCard = ({
   return (
     <motion.div
       layout
-      initial={{ opacity: 0, y: 50, scale: 0.8 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      exit={{ opacity: 0, y: -50, scale: 0.8 }}
-      transition={{ duration: 0.3 }}
+      {...(!disableAnimation
+        ? {
+            initial: { opacity: 0, y: 50, scale: 0.8 },
+            animate: { opacity: 1, y: 0, scale: 1 },
+            exit: { opacity: 0, y: -50, scale: 0.8 },
+            transition: { duration: 0.3 },
+          }
+        : {
+            // disable enter/exit animation during drag move
+            initial: false,
+            animate: { opacity: 1, scale: 1, y: 0 },
+            exit: { opacity: 0 }, // minimal exit when really removed (e.g. delete)
+            transition: { duration: 0 },
+          })}
       className={cn(isDragging && "z-50")}
     >
       <Card
@@ -207,12 +218,14 @@ export const KanbanHeader = ({ status }: { status: TaskStatus }) => {
 export type KanbanProviderProps = {
   children: ReactNode;
   onDragEnd: (event: DragEndEvent) => void;
+  onDragStart?: (event: DragStartEvent) => void; // added
   className?: string;
 };
 
 export const KanbanProvider = ({
   children,
   onDragEnd,
+  onDragStart, // added
   className,
 }: KanbanProviderProps) => {
   const id = useId();
@@ -239,6 +252,7 @@ export const KanbanProvider = ({
     <DndContext
       sensors={sensors}
       collisionDetection={rectIntersection}
+      onDragStart={onDragStart} // added
       onDragEnd={onDragEnd}
       id={id}
     >
@@ -266,37 +280,97 @@ const UserKanban = ({ initialData }: Props) => {
 
   const statuses = useMemo(() => Object.values(TaskStatus), []);
 
+  const [draggingTaskId, setDraggingTaskId] = useState<string | null>(null); // added
+  const [optimisticStatus, setOptimisticStatus] = useState<
+    Record<string, TaskStatus>
+  >({}); // added
+
+  const handleDragStart = (event: DragStartEvent) => {
+    setDraggingTaskId(event.active.id as string);
+  };
+
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
-
     if (!over) {
+      setDraggingTaskId(null);
+      return;
+    }
+    const targetStatus = statuses.find((s) => s === over.id);
+    if (!targetStatus) {
+      setDraggingTaskId(null);
+      return;
+    }
+    const taskId = active.id as TaskType["id"];
+    const task = tasks.find((t) => t.id === taskId);
+    if (!task || task.status === targetStatus) {
+      // no status change
+      setDraggingTaskId(null);
       return;
     }
 
-    const status = statuses.find((status) => status === over.id);
-    if (!status) {
-      return;
-    }
+    const previousStatus = task.status;
+
+    // Optimistic move
+    setOptimisticStatus((prev) => ({ ...prev, [taskId]: targetStatus }));
 
     TaskRPC.updateTask({
-      body: {
-        status,
-      },
-      params: { id: active.id as TaskType["id"] },
-    }).catch((error) => {
-      console.error("Error updating task:", error);
-    });
+      body: { status: targetStatus },
+      params: { id: taskId },
+    })
+      .then(() => {
+        // remove override after success (registry will sync real status)
+        setOptimisticStatus((prev) => {
+          const copy = { ...prev };
+          delete copy[taskId];
+          return copy;
+        });
+      })
+      .catch((error) => {
+        console.error("Error updating task:", error);
+        // revert optimistic change
+        setOptimisticStatus((prev) => ({ ...prev, [taskId]: previousStatus }));
+        // cleanup revert after short delay to let registry resync
+        setTimeout(() => {
+          setOptimisticStatus((prev) => {
+            if (prev[taskId] === previousStatus) {
+              const copy = { ...prev };
+              delete copy[taskId];
+              return copy;
+            }
+            return prev;
+          });
+        }, 300);
+      })
+      .finally(() => {
+        setDraggingTaskId(null);
+      });
   };
 
   const tasksByStatus = useMemo(() => {
     return statuses.reduce(
       (acc, status) => {
-        acc[status] = tasks.filter((task) => task.status === status);
+        acc[status] = [];
         return acc;
       },
       {} as Record<string, TaskType[]>,
     );
-  }, [statuses, tasks]);
+  }, [statuses]);
+
+  // Re-distribute tasks considering optimistic status overrides
+  const distributed = useMemo(() => {
+    const bucket = statuses.reduce(
+      (acc, status) => {
+        acc[status] = [];
+        return acc;
+      },
+      {} as Record<string, TaskType[]>,
+    );
+    tasks.forEach((task) => {
+      const effectiveStatus = optimisticStatus[task.id] ?? task.status;
+      bucket[effectiveStatus]?.push(task);
+    });
+    return bucket;
+  }, [tasks, optimisticStatus, statuses]);
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
@@ -310,17 +384,23 @@ const UserKanban = ({ initialData }: Props) => {
               </Button>
             </TaskDialog>
           </div>
-          <KanbanProvider onDragEnd={handleDragEnd}>
+          <KanbanProvider
+            onDragStart={handleDragStart} // added
+            onDragEnd={handleDragEnd}
+          >
             {statuses.map((status) => (
               <KanbanBoard key={status} id={status}>
                 <KanbanHeader status={status} />
                 <KanbanCards>
-                  {tasksByStatus[status]?.map((task, index) => (
+                  {distributed[status]?.map((task, index) => (
                     <KanbanCard
                       key={task.id}
                       task={task}
                       parent={status}
                       index={index}
+                      disableAnimation={
+                        draggingTaskId === task.id
+                      } /* disable animations only for actively dragged task */
                     />
                   ))}
                 </KanbanCards>

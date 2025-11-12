@@ -52,12 +52,17 @@ export default class UserService {
       where: { userId: id },
       select: { id: true },
     });
-    for (const task of tasksToDelete) {
-      await TaskService.deleteTask(task.id as TaskType["id"]);
-    }
-    return DatabaseService.prisma.user.delete({
+
+    // 1. Delete tasks that belong to the user
+    // 2. Delete the user
+    // 3. Merge deleted tasks that have __isDeleted flags into the user deletion result that also has __isDeleted flag to update the UI properly
+    return Object.assign({
+      tasks: await Promise.all(
+        tasksToDelete.map((t) => TaskService.deleteTask(t.id as TaskType["id"])),
+      ),
+    }, await DatabaseService.prisma.user.delete({
       where: { id },
       select: { id: true, entityType: true },
-    });
+    }));
   };
 }

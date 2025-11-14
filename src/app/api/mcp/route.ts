@@ -1,8 +1,8 @@
 import { createMcpHandler } from "mcp-handler";
-import { createLLMTools, KnownAny } from "vovk";
+import { createLLMTools } from "vovk";
 import UserController from "@/modules/user/UserController";
 import TaskController from "@/modules/task/TaskController";
-import { convertJsonSchemaToZod } from "zod-from-json-schema";
+import { jsonSchemaObjectToZodRawShape } from "zod-from-json-schema";
 
 const { tools } = createLLMTools({
   modules: {
@@ -23,12 +23,17 @@ const { tools } = createLLMTools({
 const handler = createMcpHandler(
   (server) => {
     tools.forEach(({ name, execute, description, parameters }) => {
-      server.registerTool(
+      console.log(
+        JSON.stringify(
+          { name, description, parameters, properties: parameters?.properties },
+          null,
+          2,
+        ),
+      );
+      server.tool(
         name,
-        {
-          description,
-          inputSchema: convertJsonSchemaToZod(parameters) as KnownAny,
-        },
+        description,
+        jsonSchemaObjectToZodRawShape(parameters) as {},
         execute,
       );
     });

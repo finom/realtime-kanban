@@ -53,9 +53,10 @@ export default class UserService {
       select: { id: true },
     });
 
-    // 1. Delete tasks that belong to the user
-    // 2. Delete the user
-    // 3. Merge deleted tasks that have __isDeleted flags into the user deletion result that also has __isDeleted flag to update the UI properly
+    // 1) Explicitly delete the user's tasks (fires DB events)
+    // 2) Delete the user record
+    // 3) Return a single payload that merges task deletion results with the user deletion result,
+    //    preserving __isDeleted flags so the UI can reconcile in one update
     return Object.assign(
       {
         tasks: await Promise.all(

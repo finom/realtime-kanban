@@ -36,4 +36,13 @@ const handler = createMcpHandler(
   { basePath: "/api" },
 );
 
-export { handler as GET, handler as POST };
+const authorizedHandler = async (req: Request) => {
+  const { MCP_ACCESS_KEY } = process.env;
+  const accessKey = new URL(req.url).searchParams.get("mcp_access_key");
+  if (MCP_ACCESS_KEY && accessKey !== MCP_ACCESS_KEY) {
+    return new Response("Unauthorized", { status: 401 });
+  }
+  return handler(req);
+};
+
+export { authorizedHandler as GET, authorizedHandler as POST };

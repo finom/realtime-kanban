@@ -24,7 +24,7 @@ const { tools } = createLLMTools({
 const handler = createMcpHandler(
   (server) => {
     tools.forEach(({ name, execute, description, parameters }) => {
-      console.log({ name, description, parameters });
+      console.log({ name, description, parameters }, mapValues(parameters?.properties ?? {}, convertJsonSchemaToZod));
       server.tool(
         name,
         description,

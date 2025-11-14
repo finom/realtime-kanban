@@ -3,6 +3,7 @@ import { createLLMTools } from "vovk";
 import UserController from "@/modules/user/UserController";
 import TaskController from "@/modules/task/TaskController";
 import { jsonSchemaObjectToZodRawShape } from "zod-from-json-schema";
+import { pick } from "lodash";
 
 const { tools } = createLLMTools({
   modules: {
@@ -22,10 +23,10 @@ const { tools } = createLLMTools({
 
 const handler = createMcpHandler(
   (server) => {
-    tools.forEach(({ name, execute, description, parameters }) => {
+    tools.forEach(({ name, execute, description, models }) => {
       console.log(
         JSON.stringify(
-          { name, description, parameters, properties: parameters?.properties },
+          { name, description },
           null,
           2,
         ),
@@ -33,7 +34,7 @@ const handler = createMcpHandler(
       server.tool(
         name,
         description,
-        jsonSchemaObjectToZodRawShape(parameters) as {},
+        pick(models!, ['body', 'query', 'params']),
         execute,
       );
     });

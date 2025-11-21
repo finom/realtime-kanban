@@ -1,7 +1,5 @@
 import {
   createLLMTools,
-  HttpException,
-  HttpStatus,
   post,
   prefix,
   operation,
@@ -10,14 +8,13 @@ import {
 import {
   convertToModelMessages,
   jsonSchema,
-  type JSONSchema7,
   stepCountIs,
   streamText,
   tool,
+  type JSONSchema7,
   type UIMessage,
 } from "ai";
 import { openai } from "@ai-sdk/openai";
-// import { GithubIssuesAPI } from "vovk-client";
 import UserController from "../user/UserController";
 import TaskController from "../task/TaskController";
 import { sessionGuard } from "@/decorators/sessionGuard";
@@ -27,38 +24,18 @@ export default class AiSdkController {
   @operation({
     summary: "Function Calling",
     description:
-      "Uses [@ai-sdk/openai](https://www.npmjs.com/package/@ai-sdk/openai) and ai packages to call a function",
+      "Uses [@ai-sdk/openai](https://www.npmjs.com/package/@ai-sdk/openai) and ai packages to call UserController and TaskController functions based on the provided messages.",
   })
   @post("function-calling")
   @sessionGuard()
   static async functionCalling(req: VovkRequest<{ messages: UIMessage[] }>) {
     const { messages } = await req.json();
-    const LIMIT = 20;
-    /* const githubOptions = {
-      init: {
-        headers: {
-          Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
-          "X-GitHub-Api-Version": "2022-11-28",
-        },
-      },
-    }; */
     const { tools } = createLLMTools({
       modules: {
         UserController,
         TaskController,
-        // GithubIssuesAPI: [GithubIssuesAPI, githubOptions],
       },
-      onExecute: (_d, { moduleName, handlerName }) =>
-        console.log(`${moduleName}.${handlerName} executed`),
-      onError: (e) => console.error("Error", e),
     });
-
-    if (messages.filter(({ role }) => role === "user").length > LIMIT) {
-      throw new HttpException(
-        HttpStatus.BAD_REQUEST,
-        `You can only send ${LIMIT} messages at a time`,
-      );
-    }
 
     return streamText({
       model: openai("gpt-5"),

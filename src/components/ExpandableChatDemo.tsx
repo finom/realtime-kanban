@@ -14,7 +14,7 @@ import {
   ExpandableChatBody,
   ExpandableChatFooter,
 } from "@/components/ui/expandable-chat";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRegistry } from "@/registry";
 import { DefaultChatTransport, ToolUIPart } from "ai";
 import {
@@ -45,7 +45,7 @@ export function ExpandableChatDemo() {
 
   const { messages, sendMessage, status } = useChat({
     transport: new DefaultChatTransport({
-      api: AiSdkRPC.functionCalling.getURL(), // "/api/ai-sdk/function-calling",
+      api: AiSdkRPC.functionCalling.getURL(), // or "/api/ai-sdk/function-calling",
     }),
     onToolCall: (toolCall) => {
       console.log("Tool call initiated:", toolCall);
@@ -60,8 +60,26 @@ export function ExpandableChatDemo() {
     }
   };
 
+  const parsedToolCallIdsSetRef = useRef<Set<string>>(new Set());
+
   useEffect(() => {
-    useRegistry.getState().parse(messages);
+    // useRegistry.getState().parse(messages); - this would also work, but would be less efficient
+    const partsToParse = messages.flatMap((msg) =>
+      msg.parts.filter((part) => {
+        return (
+          msg.role === "assistant" &&
+          part.type.startsWith("tool-") &&
+          (part as ToolUIPart).state === "output-available" &&
+          "toolCallId" in part &&
+          !parsedToolCallIdsSetRef.current.has(part.toolCallId)
+        );
+      }),
+    ) as ToolUIPart[];
+
+    partsToParse.forEach((part) =>
+      parsedToolCallIdsSetRef.current.add(part.toolCallId),
+    );
+    useRegistry.getState().parse(partsToParse.map((part) => part.output));
   }, [messages]);
 
   return (
@@ -137,7 +155,14 @@ export function ExpandableChatDemo() {
                                     <ToolInput input={toolPart.input} />
                                     <ToolOutput
                                       output={
-                                        <CodeBlock code={JSON.stringify(toolPart.output, null, 2)} language="json" />
+                                        <CodeBlock
+                                          code={JSON.stringify(
+                                            toolPart.output,
+                                            null,
+                                            2,
+                                          )}
+                                          language="json"
+                                        />
                                       }
                                       errorText={toolPart.errorText}
                                     />

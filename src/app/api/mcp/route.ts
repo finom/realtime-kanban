@@ -26,7 +26,7 @@ const handler = createMcpHandler(
       server.tool(
         name,
         description,
-        jsonSchemaObjectToZodRawShape(parameters) as KnownAny,
+        jsonSchemaObjectToZodRawShape(parameters as KnownAny),
         execute,
       );
     });

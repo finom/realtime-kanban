@@ -125,18 +125,22 @@ export default function useWebRTCAudioSession(
   }, []);
 
   const stopSession = useCallback(() => {
+    // Close data channel and peer connection
     dcRef.current?.close();
     dcRef.current = null;
+    // Stop microphone tracks
     mcRef.current?.getTracks().forEach((track) => track.stop());
     mcRef.current = null;
+    // Close remote audio context
     remoteAudioContextRef.current?.close();
     remoteAudioContextRef.current = null;
     remoteAnalyserRef.current = null;
+    // Stop the audio immediately
     if (audioElement.current) {
       audioElement.current.volume = 0;
       audioElement.current = null;
     }
-
+    // Clear monitoring interval
     if (remoteMonitorIntervalRef.current) {
       clearInterval(remoteMonitorIntervalRef.current);
       remoteMonitorIntervalRef.current = null;
@@ -145,7 +149,7 @@ export default function useWebRTCAudioSession(
     setIsActive(false);
   }, []);
 
-  const handleStartStopClick = useCallback(() => {
+  const toggleSession = useCallback(() => {
     if (isActive) {
       stopSession();
     } else {
@@ -156,7 +160,7 @@ export default function useWebRTCAudioSession(
   return {
     startSession,
     stopSession,
-    handleStartStopClick,
+    toggleSession,
     isActive,
     isTalking,
   };

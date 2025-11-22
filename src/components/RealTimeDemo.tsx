@@ -7,14 +7,14 @@ const RealTimeDemo = () => {
   const {
     isActive,
     isTalking,
-    handleStartStopClick,
+    toggleSession,
   } = useWebRTCAudioSession("ash", tools);
 
   return (
     <Floaty
       isActive={isActive}
       isTalking={isTalking}
-      handleClick={handleStartStopClick}
+      handleClick={toggleSession}
     />
   );
 };

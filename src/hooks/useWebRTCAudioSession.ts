@@ -138,6 +138,7 @@ export default function useWebRTCAudioSession(
     // Stop the audio immediately
     if (audioElement.current) {
       audioElement.current.volume = 0;
+      audioElement.current.srcObject = null;
       audioElement.current = null;
     }
     // Clear monitoring interval

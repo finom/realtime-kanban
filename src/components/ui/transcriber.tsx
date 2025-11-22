@@ -5,7 +5,7 @@ import * as AvatarPrimitive from "@radix-ui/react-avatar";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import ThreeDotsWave from "@/components/ui/three-dots-wave";
-import type { Conversation } from "@/hooks/use-webrtc";
+import type { Conversation } from "@/hooks/useWebRTCAudioSession";
 
 /**
  * Avatar building blocks with Radix

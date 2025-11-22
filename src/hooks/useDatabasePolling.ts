@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { DatabasePollRPC } from "vovk-client";
 /**
- * @example const [isPollingEnabled, setIsPollingEnabled] = usePolling(false);
+ * Hook to manage database polling state.
+ * @example const [isPollingEnabled, setIsPollingEnabled] = useDatabasePolling(false);
  */
-export const usePolling = (initialValue = false) => {
+export default function useDatabasePolling(initialValue = false) {
   const [isPollingEnabled, setIsPollingEnabled] = useState(initialValue);
   const pollingAbortControllerRef = useRef<AbortController | null>(null);
 

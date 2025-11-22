@@ -1,20 +1,19 @@
 import { PhoneCallIcon, MicIcon, AudioLines, MoveUpRight } from "lucide-react";
-import React from "react";
 import { motion } from "framer-motion";
 
 const Floaty = ({
   isActive,
-  volumeLevel,
+  isTalking,
   handleClick,
 }: {
   isActive: boolean;
-  volumeLevel: number;
+  isTalking: boolean;
   handleClick: () => void;
 }) => {
   const getIcon = () => {
     if (!isActive) {
       return <PhoneCallIcon className="text-secondary" />;
-    } else if (isActive && volumeLevel > 0) {
+    } else if (isActive && isTalking) {
       return <AudioLines className="text-secondary" />;
     } else {
       return <MicIcon className="text-secondary" />;
@@ -30,7 +29,7 @@ const Floaty = ({
         </div>
       </div>
       <div className="relative flex items-center justify-center w-16 h-16">
-        {isActive && volumeLevel > 0 && (
+        {isActive && isTalking && (
           <>
             <motion.div
               className="absolute w-16 h-16 rounded-full bg-foreground z-0"

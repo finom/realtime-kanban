@@ -353,6 +353,19 @@
       "handlers": {
         "session": {
           "validation": {
+            "body": {
+              "$schema": "http://json-schema.org/draft-07/schema#",
+              "type": "object",
+              "properties": {
+                "sdp": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "sdp"
+              ],
+              "additionalProperties": false
+            },
             "query": {
               "$schema": "http://json-schema.org/draft-07/schema#",
               "type": "object",
@@ -375,7 +388,7 @@
             }
           },
           "path": "session",
-          "httpMethod": "GET"
+          "httpMethod": "POST"
         }
       }
     },

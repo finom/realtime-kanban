@@ -35,7 +35,6 @@ const RealTimeDemo = () => {
       const functionNames: Record<string, string> = {
         timeFunction: "getCurrentTime",
         partyFunction: "partyMode",
-        scrapeWebsite: "scrapeWebsite",
       };
 
       registerFunction(functionNames[name], func);

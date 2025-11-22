@@ -2,7 +2,6 @@
 // Creds: https://github.com/cameronking4/openai-realtime-api-nextjs
 import confetti from "canvas-confetti";
 import { animate as framerAnimate } from "framer-motion";
-import FirecrawlApp, { ScrapeResponse } from "@mendable/firecrawl-js";
 
 export const useToolsFunctions = () => {
   const timeFunction = () => {
@@ -12,7 +11,7 @@ export const useToolsFunctions = () => {
       time: now.toLocaleTimeString(),
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       message:
-        "Announce to user: The current time is  " +
+        "Announce to user: The current time is " +
         now.toLocaleTimeString() +
         " in " +
         Intl.DateTimeFormat().resolvedOptions().timeZone +
@@ -134,42 +133,8 @@ export const useToolsFunctions = () => {
     }
   };
 
-  const scrapeWebsite = async ({ url }: { url: string }) => {
-    const apiKey = process.env.NEXT_PUBLIC_FIRECRAWL_API_KEY;
-    try {
-      const app = new FirecrawlApp({ apiKey: apiKey });
-      const scrapeResult = (await app.scrapeUrl(url, {
-        formats: ["markdown", "html"],
-      })) as ScrapeResponse;
-
-      if (!scrapeResult.success) {
-        console.log(scrapeResult.error);
-        return {
-          success: false,
-          message: `Failed to scrape: ${scrapeResult.error}`,
-        };
-      }
-
-      console.log("scrapeResult", scrapeResult);
-
-      return {
-        success: true,
-        message:
-          "Here is the scraped website content: " +
-          JSON.stringify(scrapeResult.markdown) +
-          "Summarize and explain it to the user now in a response.",
-      };
-    } catch (error) {
-      return {
-        success: false,
-        message: `Error scraping website: ${error}`,
-      };
-    }
-  };
-
   return {
     timeFunction,
     partyFunction,
-    scrapeWebsite,
   };
 };

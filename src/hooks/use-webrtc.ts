@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-function-type */
 "use client";
 // Creds: https://github.com/cameronking4/openai-realtime-api-nextjs
@@ -7,8 +6,8 @@ import { v4 as uuidv4 } from "uuid";
 import { RealtimeRPC } from "vovk-client";
 
 export interface Conversation {
-  id: string; // Unique ID for react rendering and loggin purposes
-  role: string; // "user" or "assistant"
+  id: string; // Unique ID for react rendering and logging purposes
+  role: 'user' | 'assistant';
   text: string; // User or assistant message
   timestamp: string; // ISO string for message time
   isFinal: boolean; // Whether the transcription is final
@@ -18,7 +17,7 @@ export interface Conversation {
 export interface Tool {
   name: string;
   description: string;
-  parameters?: Record<string, any>;
+  parameters?: Record<string, unknown>;
 }
 
 /**
@@ -33,7 +32,7 @@ interface UseWebRTCAudioSessionReturn {
   stopSession: () => void;
   handleStartStopClick: () => void;
   registerFunction: (name: string, fn: Function) => void;
-  msgs: any[];
+  msgs: unknown[];
   currentVolume: number;
   conversation: Conversation[];
   sendTextMessage: (text: string) => void;
@@ -61,7 +60,7 @@ export default function useWebRTCAudioSession(
   const dataChannelRef = useRef<RTCDataChannel | null>(null);
 
   // Keep track of all raw events/messages
-  const [msgs, setMsgs] = useState<any[]>([]);
+  const [msgs, setMsgs] = useState<unknown[]>([]);
 
   // Main conversation state
   const [conversation, setConversation] = useState<Conversation[]>([]);
@@ -316,7 +315,6 @@ export default function useWebRTCAudioSession(
         query: {
           voice,
         },
-        disableClientValidation: true,
       });
       return data.client_secret.value;
     } catch (err) {

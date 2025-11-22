@@ -527,7 +527,7 @@
           "httpMethod": "POST",
           "operationObject": {
             "summary": "Function Calling",
-            "description": "Uses [@ai-sdk/openai](https://www.npmjs.com/package/@ai-sdk/openai) and ai packages to call a function"
+            "description": "Uses [@ai-sdk/openai](https://www.npmjs.com/package/@ai-sdk/openai) and ai packages to call UserController and TaskController functions based on the provided messages."
           }
         }
       }

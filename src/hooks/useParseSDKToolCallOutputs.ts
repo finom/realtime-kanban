@@ -6,7 +6,6 @@ export default function useParseSDKToolCallOutputs(messages: UIMessage[]) {
   const parsedToolCallIdsSetRef = useRef<Set<string>>(new Set());
 
   useEffect(() => {
-    // useRegistry.getState().parse(messages); - this would also work, but would be less efficient
     const partsToParse = messages.flatMap((msg) =>
       msg.parts.filter((part) => {
         return (

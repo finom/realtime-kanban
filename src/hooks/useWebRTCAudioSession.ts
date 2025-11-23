@@ -84,7 +84,6 @@ export default function useWebRTCAudioSession(
       sdp,
     });
     dc.onopen = () => {
-      console.log("tools:", tools);
       const sessionUpdate = {
         type: "session.update",
         session: {

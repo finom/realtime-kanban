@@ -2,11 +2,8 @@ import { useRegistry } from "@/registry";
 import { ToolUIPart, UIMessage } from "ai";
 import { useEffect, useRef } from "react";
 
- 
- export default function useParseSDKToolCallOutputs(
-  messages: UIMessage[],
-) {
- const parsedToolCallIdsSetRef = useRef<Set<string>>(new Set());
+export default function useParseSDKToolCallOutputs(messages: UIMessage[]) {
+  const parsedToolCallIdsSetRef = useRef<Set<string>>(new Set());
 
   useEffect(() => {
     // useRegistry.getState().parse(messages); - this would also work, but would be less efficient
@@ -26,7 +23,7 @@ import { useEffect, useRef } from "react";
       parsedToolCallIdsSetRef.current.add(part.toolCallId),
     );
 
-    if(partsToParse.length) {
+    if (partsToParse.length) {
       useRegistry.getState().parse(partsToParse.map((part) => part.output));
     }
   }, [messages]);

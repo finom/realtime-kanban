@@ -4,11 +4,10 @@ import tools from "@/lib/tools";
 import Floaty from "./Floaty";
 
 const RealTimeDemo = () => {
-  const {
-    isActive,
-    isTalking,
-    toggleSession,
-  } = useWebRTCAudioSession("ash", tools);
+  const { isActive, isTalking, toggleSession } = useWebRTCAudioSession(
+    "ash",
+    tools,
+  );
 
   return (
     <Floaty

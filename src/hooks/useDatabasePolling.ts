@@ -50,4 +50,4 @@ export default function useDatabasePolling(initialValue = false) {
   }, [isPollingEnabled]);
 
   return [isPollingEnabled, setIsPollingEnabled] as const;
-};
+}

@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { DatabasePollRPC } from "vovk-client";
+
 /**
  * Hook to manage database polling state.
  * @example const [isPollingEnabled, setIsPollingEnabled] = useDatabasePolling(false);
  */
 export default function useDatabasePolling(initialValue = false) {
+  const MAX_RETRIES = 5;
   const [isPollingEnabled, setIsPollingEnabled] = useState(initialValue);
   const pollingAbortControllerRef = useRef<AbortController | null>(null);
 
@@ -32,7 +34,7 @@ export default function useDatabasePolling(initialValue = false) {
         }
       } catch (error) {
         if (
-          retries < 5 &&
+          retries < MAX_RETRIES &&
           (error as Error & { cause?: Error }).cause?.name !== "AbortError"
         ) {
           console.error("Polling failed, retrying...", error);

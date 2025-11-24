@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { VovkLLMTool } from "vovk";
 import { RealtimeRPC } from "vovk-client";
 
@@ -155,6 +155,11 @@ export default function useWebRTCAudioSession(
       startSession();
     }
   }, [isActive, startSession, stopSession]);
+  
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => stopSession();
+  }, []);
 
   return {
     startSession,

@@ -42,15 +42,41 @@ const authorizedHandler = async (req: Request) => {
   const { MCP_ACCESS_KEY } = process.env;
   const accessKey = new URL(req.url).searchParams.get("mcp_access_key");
   if (MCP_ACCESS_KEY && accessKey !== MCP_ACCESS_KEY) {
-    console.log('BODY', await req.json());
+    const body = await req.json();
+    const id = body?.id ?? 0;
+    /*
+    {
+  method: 'initialize',
+  params: {
+    protocolVersion: '2025-06-18',
+    capabilities: {},
+    clientInfo: { name: 'Anthropic/ClaudeAI', version: '1.0.0' }
+  },
+  jsonrpc: '2.0',
+  id: 0
+}
+  
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "error": {
+    "code": -32602,
+    "message": "Unsupported protocol version",
+    "data": {
+      "supported": ["2024-11-05"],
+      "requested": "1.0.0"
+    }
+  }
+}*/
     return NextResponse.json(
       {
-        content: [
-          {
-            type: "text",
-            text: "Unable to authorize the MCP request: mcp_access_key is invalid",
-          },
-        ],
+        jsonrpc: "2.0",
+        id,
+        error: {
+          code: 401,
+          message:
+            "Unable to authorize the MCP request: mcp_access_key is invalid",
+        },
       },
       { status: 401 },
     );

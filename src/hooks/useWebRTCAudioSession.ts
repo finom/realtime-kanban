@@ -155,7 +155,7 @@ export default function useWebRTCAudioSession(
       startSession();
     }
   }, [isActive, startSession, stopSession]);
-  
+
   // Cleanup on unmount
   useEffect(() => {
     return () => stopSession();

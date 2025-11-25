@@ -2,7 +2,7 @@ import { createMcpHandler } from "mcp-handler";
 import { createLLMTools, KnownAny } from "vovk";
 import UserController from "@/modules/user/UserController";
 import TaskController from "@/modules/task/TaskController";
-import { jsonSchemaObjectToZodRawShape } from "zod-from-json-schema";
+import { jsonSchemaObjectToZodRawShape } from "zod-v3-via-v4-from-json-schema"; // TODO: Temporary fix
 
 const { tools } = createLLMTools({
   modules: {
@@ -23,10 +23,12 @@ const { tools } = createLLMTools({
 const handler = createMcpHandler(
   (server) => {
     tools.forEach(({ name, execute, description, parameters }) => {
-      server.tool(
+      server.registerTool(
         name,
-        description,
-        jsonSchemaObjectToZodRawShape(parameters as KnownAny),
+        {
+          description,
+          inputSchema: jsonSchemaObjectToZodRawShape(parameters) as KnownAny, // TODO: Temporary fix
+        },
         execute,
       );
     });

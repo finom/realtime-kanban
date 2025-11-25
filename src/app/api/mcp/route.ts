@@ -74,8 +74,7 @@ const authorizedHandler = async (req: Request) => {
         id,
         error: {
           code: 401,
-          message:
-            "Unable to authorize the MCP request: mcp_access_key is invalid",
+          message: "Unable to authorize the MCP request: mcp_access_key query parameter is invalid",
         },
       },
       { status: 401 },

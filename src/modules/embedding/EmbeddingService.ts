@@ -1,17 +1,17 @@
 import { embed } from "ai";
 import { openai } from "@ai-sdk/openai";
-import { UserType } from "../../../prisma/generated/schemas/models/User.schema";
+import { UserType } from "@schemas/models/User.schema";
 import DatabaseService from "../database/DatabaseService";
-import { EntityType } from "../../../prisma/generated/schemas";
-import { TaskType } from "../../../prisma/generated/schemas/models/Task.schema";
+import { EntityType } from "@schemas/index";
+import { TaskType } from "@schemas/models/Task.schema";
 import { capitalize, omit } from "lodash";
 import { BASE_KEYS } from "@/constants";
-import { Prisma } from "../../../prisma/generated/client";
+import { Prisma } from "@prisma/client";
 
 export default class EmbeddingService {
   static async generateEmbedding(value: string): Promise<number[]> {
     const { embedding } = await embed({
-      model: openai.textEmbeddingModel("text-embedding-3-small"),
+      model: openai.embeddingModel("text-embedding-3-small"),
       value,
     });
 

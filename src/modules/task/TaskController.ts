@@ -2,7 +2,7 @@ import { prefix, get, put, post, del, operation } from "vovk";
 import TaskService from "./TaskService";
 import { z } from "zod";
 import { BASE_FIELDS } from "@/constants";
-import { TaskSchema, UserSchema } from "../../../prisma/generated/schemas";
+import { TaskSchema, UserSchema } from "@schemas/index";
 import { withZod } from "@/lib/withZod";
 import { sessionGuard } from "@/decorators/sessionGuard";
 

@@ -19,7 +19,9 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@schemas/*": ["./prisma/generated/schemas/*"],
+      "@prisma/*": ["./prisma/generated/client/*"]
     },
     "experimentalDecorators": true
   },

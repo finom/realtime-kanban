@@ -1,8 +1,8 @@
-import { EntityType } from "../../../prisma/generated/client";
+import { EntityType } from "@prisma/client";
 import { get, JSONLinesResponse, prefix, type VovkIteration } from "vovk";
 import { z } from "zod";
 import DatabasePollService from "./DatabasePollService";
-import { TaskSchema, UserSchema } from "../../../prisma/generated/schemas";
+import { TaskSchema, UserSchema } from "@schemas/index";
 import { withZod } from "@/lib/withZod";
 import { sessionGuard } from "@/decorators/sessionGuard";
 

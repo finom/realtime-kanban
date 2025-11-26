@@ -21,7 +21,7 @@ import { Loader2, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useShallow } from "zustand/shallow";
 import { BASE_KEYS } from "@/constants";
-import { UserType } from "../../prisma/generated/schemas/models/User.schema";
+import { UserType } from "@schemas/models/User.schema";
 
 interface Props {
   userId: UserType["id"] | null;

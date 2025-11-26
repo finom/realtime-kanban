@@ -20,11 +20,11 @@ import { Pencil, Plus, Trash2 } from "lucide-react";
 import { TaskRPC } from "vovk-client";
 import { useRegistry } from "@/registry";
 import { useShallow } from "zustand/shallow";
-import { TaskStatus } from "../../prisma/generated/client";
+import { TaskStatus } from "@prisma/client";
 import TaskDialog from "./TaskDialog";
 import { useQuery } from "@tanstack/react-query";
-import { TaskType } from "../../prisma/generated/schemas/models/Task.schema";
-import { UserType } from "../../prisma/generated/schemas/models/User.schema";
+import { TaskType } from "@schemas/models/Task.schema";
+import { UserType } from "@schemas/models/User.schema";
 
 // Utils function
 function cn(...classes: (string | undefined | null | boolean)[]): string {

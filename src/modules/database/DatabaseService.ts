@@ -1,4 +1,4 @@
-import { PrismaClient } from "../../../prisma/generated/client";
+import { PrismaClient } from "@prisma/client";
 import { PrismaNeon } from "@prisma/adapter-neon";
 import DatabaseEventsService, { type DBChange } from "./DatabaseEventsService";
 import type { BaseEntity } from "@/types";

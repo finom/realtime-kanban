@@ -4,8 +4,8 @@ import UserController from "@/modules/user/UserController";
 import UserKanban from "@/components/UserKanban";
 import RealTimeDemo from "@/components/RealTimeDemo";
 import TaskController from "@/modules/task/TaskController";
-import { UserType } from "../../prisma/generated/schemas/models/User.schema";
-import { TaskType } from "../../prisma/generated/schemas/models/Task.schema";
+import { UserType } from "@schemas/models/User.schema";
+import { TaskType } from "@schemas/models/Task.schema";
 import { verifySession } from "@/lib/dal";
 import AppHeader from "@/components/AppHeader";
 

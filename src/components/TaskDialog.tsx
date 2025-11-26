@@ -29,10 +29,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
-import { TaskStatus } from "../../prisma/generated/client";
+import { TaskStatus } from "@prisma/client";
 import { Textarea } from "./ui/textarea";
 import { BASE_KEYS } from "@/constants";
-import { TaskType } from "../../prisma/generated/schemas/models/Task.schema";
+import { TaskType } from "@schemas/models/Task.schema";
 
 interface Props {
   taskId: TaskType["id"] | null;

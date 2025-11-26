@@ -544,17 +544,6 @@
           }
         }
       }
-    },
-    "_TelegramAPI_": {
-      "rpcModuleName": "_TelegramAPI_",
-      "originalControllerName": "TelegramController",
-      "prefix": "telegram",
-      "handlers": {
-        "handle": {
-          "path": "bot",
-          "httpMethod": "POST"
-        }
-      }
     }
   }
 }

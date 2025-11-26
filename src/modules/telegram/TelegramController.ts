@@ -1,6 +1,6 @@
 import { post, prefix } from "vovk";
-import TelegramService from "./TelegramService";
 import { NextRequest } from "next/server";
+import TelegramService from "./TelegramService";
 
 @prefix("telegram")
 export default class TelegramController {

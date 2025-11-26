@@ -1,11 +1,11 @@
 import type { VovkBody, VovkParams } from "vovk";
+import type { UserType } from "@schemas/models/User.schema";
+import type { TaskType } from "@schemas/models/Task.schema";
 import type UserController from "./UserController";
+import { EntityType } from "@prisma/client";
 import DatabaseService from "../database/DatabaseService";
 import EmbeddingService from "../embedding/EmbeddingService";
-import { UserType } from "@schemas/models/User.schema";
-import { EntityType } from "@prisma/client";
 import TaskService from "../task/TaskService";
-import { TaskType } from "@schemas/models/Task.schema";
 
 export default class UserService {
   static getUsers = () => DatabaseService.prisma.user.findMany();

@@ -1,10 +1,10 @@
 import { prefix, get, put, post, del, operation } from "vovk";
-import TaskService from "./TaskService";
 import { z } from "zod";
 import { BASE_FIELDS } from "@/constants";
 import { TaskSchema, UserSchema } from "@schemas/index";
-import { withZod } from "@/lib/withZod";
 import { sessionGuard } from "@/decorators/sessionGuard";
+import { withZod } from "@/lib/withZod";
+import TaskService from "./TaskService";
 
 @prefix("tasks")
 export default class TaskController {

@@ -1,7 +1,7 @@
+import type { BaseEntity } from "@/types";
 import { PrismaClient } from "@prisma/client";
 import { PrismaNeon } from "@prisma/adapter-neon";
 import DatabaseEventsService, { type DBChange } from "./DatabaseEventsService";
-import type { BaseEntity } from "@/types";
 import "./neon-local"; // Setup Neon for local development
 
 export default class DatabaseService {

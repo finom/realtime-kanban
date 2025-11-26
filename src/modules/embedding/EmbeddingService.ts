@@ -1,12 +1,13 @@
 import { embed } from "ai";
 import { openai } from "@ai-sdk/openai";
-import { UserType } from "@schemas/models/User.schema";
-import DatabaseService from "../database/DatabaseService";
-import { EntityType } from "@schemas/index";
-import { TaskType } from "@schemas/models/Task.schema";
 import { capitalize, omit } from "lodash";
-import { BASE_KEYS } from "@/constants";
 import { Prisma } from "@prisma/client";
+import { EntityType } from "@schemas/index";
+import { UserType } from "@schemas/models/User.schema";
+import { TaskType } from "@schemas/models/Task.schema";
+import { BASE_KEYS } from "@/constants";
+import DatabaseService from "../database/DatabaseService";
+
 
 export default class EmbeddingService {
   static async generateEmbedding(value: string): Promise<number[]> {

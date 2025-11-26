@@ -13,9 +13,9 @@ import {
   type JSONSchema7,
 } from "ai";
 import { createLLMTools, KnownAny } from "vovk";
+import { z } from "zod";
 import UserController from "../user/UserController";
 import TaskController from "../task/TaskController";
-import { z } from "zod";
 
 const redis = createClient({
   url: process.env.REDIS_URL,

@@ -1,10 +1,10 @@
 import { prefix, get, put, post, del, operation } from "vovk";
-import UserService from "./UserService";
 import { z } from "zod";
-import { BASE_FIELDS } from "@/constants";
 import { UserSchema } from "@schemas/index";
-import { withZod } from "@/lib/withZod";
 import { sessionGuard } from "@/decorators/sessionGuard";
+import { withZod } from "@/lib/withZod";
+import { BASE_FIELDS } from "@/constants";
+import UserService from "./UserService";
 
 @prefix("users")
 export default class UserController {

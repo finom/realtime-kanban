@@ -38,6 +38,17 @@ interface ChatMessage {
   timestamp: number;
 }
 
+// Minimal Telegram update type covering the fields we use
+interface TelegramUpdate {
+  update_id: number;
+  message?: {
+    chat: { id: number };
+    text?: string;
+    voice?: { file_id: string };
+    // ...other Telegram message fields not used here...
+  };
+}
+
 export default class TelegramService {
   static get apiRoot() {
     const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
@@ -388,7 +399,8 @@ export default class TelegramService {
       await this.processUserMessage(
         chatId,
         transcription.text,
-        "You are a helpful assistant in a Telegram chat. The user just sent a voice message. You have access to the conversation history to maintain context. By default, you respond with voice, but if the user requests a text response, you can generate a text message.",
+        // Updated system prompt to normalize spoken artifacts (emails, punctuation, split tokens)
+        "You are a helpful assistant in a Telegram chat. The user just sent a voice message. You have access to the conversation history to maintain context. By default, you respond with voice, but if the user requests a text response, you can generate a text message. IMPORTANT: Normalize common spoken artifacts from transcription before acting: 1) Email normalization: interpret 'john at gmail dot com', 'john gmail dot com', 'john at gmail com' as emails. Replace 'at'→'@', 'dot'/'period'→'.', 'dash'/'hyphen'→'-', 'underscore'→'_', remove spaces around '@' and '.', collapse multiple dots, and ensure user@domain.tld. 2) Handle split tokens: join identifiers split by spaces when clearly an email/username. 3) Convert number words inside identifiers (e.g., 'one'→'1') only when context indicates an identifier/email. 4) Prefer producing canonical actionable forms for tools (e.g., create user with email user@domain.com), while keeping polite text for the user. If ambiguity remains, ask a concise clarification.",
         `🎤 I heard the voice: "${transcription.text}"`,
       );
     } catch (voiceError) {
@@ -401,7 +413,7 @@ export default class TelegramService {
   }
 
   // Process the update asynchronously (fire and forget)
-  private static async processUpdate(update: KnownAny) {
+  private static async processUpdate(update: TelegramUpdate) {
     // TODO fix type
 
     console.log("processUpdate", update);
@@ -447,7 +459,7 @@ export default class TelegramService {
   }
 
   static async handle(request: NextRequest) {
-    const update = await request.json();
+    const update: TelegramUpdate = await request.json();
 
     // Check if we have an update_id
     const updateId = update.update_id;

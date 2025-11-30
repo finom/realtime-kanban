@@ -21,18 +21,15 @@ export default class DatabaseService {
 
     return prisma
       .$extends({
+        name: "timestamps",
         // Ensure createdAt and updatedAt are always ISO strings
         result: {
           $allModels: {
             createdAt: {
-              compute(data: { createdAt: Date }) {
-                return data.createdAt.toISOString();
-              },
+              compute: (data: { createdAt: Date }) => data.createdAt.toISOString()
             },
             updatedAt: {
-              compute(data: { updatedAt: Date }) {
-                return data.updatedAt.toISOString();
-              },
+              compute: (data: { updatedAt: Date }) => data.updatedAt.toISOString()
             },
           },
         },

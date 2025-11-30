@@ -1,8 +1,11 @@
 import { useRegistry } from "@/registry";
 import { createFetcher, HttpStatus } from "vovk";
 
-export const fetcher = createFetcher({
-  transformResponse: async (data) => {
+export const fetcher = createFetcher<{ bypassRegistry?: boolean }>({
+  transformResponse: async (data, { bypassRegistry}) => {
+    if(bypassRegistry) {
+      return data;
+    }
     const state = useRegistry.getState();
     if (
       data &&

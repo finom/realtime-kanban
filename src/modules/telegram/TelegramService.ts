@@ -319,7 +319,6 @@ export default class TelegramService {
     chatId: number,
     userMessage: string,
     systemPrompt: string,
-    responsePrefix?: string,
   ): Promise<void> {
     const { botResponse, messages } = await this.generateAIResponse(
       chatId,
@@ -327,11 +326,7 @@ export default class TelegramService {
       systemPrompt,
     );
 
-    const finalResponse = responsePrefix
-      ? `${responsePrefix}\n\n${botResponse}`
-      : botResponse;
-
-    await this.sendMessage(chatId, finalResponse, messages);
+    await this.sendMessage(chatId, botResponse, messages);
   }
 
   // Handle special commands
@@ -394,9 +389,9 @@ export default class TelegramService {
       // Process the transcribed message
       await this.processUserMessage(
         chatId,
-        transcription.text,
         `🎤 Voice message: "${transcription.text}"`,
-        "You are a helpful assistant in a Telegram chat. The user just sent a voice message. You have access to the conversation history to maintain context. By default, you respond with voice, but if the user requests a text response, you can generate a text message. IMPORTANT: Normalize common spoken artifacts from transcription before acting: 1) Email normalization: interpret 'john gmail com', 'john gmail dot com', 'john at gmail com' as emails. Replace 'at'→'@', 'dot'/'period'→'.', 'dash'/'hyphen'→'-', 'underscore'→'_', remove spaces around '@' and '.', collapse multiple dots, and ensure user@domain.tld. ALSO: If the pattern '<local> <provider> com' appears with NO 'at' or 'dot' tokens (e.g. 'bob gmail com'), treat it as '<local>@<provider>.com' (NOT '<local>.<provider>.com'). Common providers: gmail, yahoo, outlook, protonmail, icloud, yandex, mail, hotmail, live. 2) Handle split tokens: join identifiers split by spaces when clearly an email/username. 3) Convert number words inside identifiers (e.g., 'one'→'1') only when context indicates an identifier/email. 4) Prefer producing canonical actionable forms for tools (e.g., create user with email user@domain.com), while keeping polite text for the user. If ambiguity remains, ask a concise clarification.",
+        // Simplified system prompt with the same normalization intent
+        "You are a helpful assistant in a Telegram chat. The user sent a voice message. Use chat history for context. Prefer voice replies unless the user asks for text. Before acting, normalize spoken artifacts commonly found in transcripts: (1) Emails: interpret 'john gmail com', 'john gmail dot com', 'john at gmail com' as emails; map 'at'→'@', 'dot/period'→'.', 'dash/hyphen'→'-', 'underscore'→'_', remove spaces around '@' and '.', collapse multiple dots, ensure user@domain.tld. If the pattern '<local> <provider> com' occurs without 'at' or 'dot' (e.g., 'valera gmail com'), treat it as '<local>@<provider>.com' (NOT '<local>.<provider>.com'). Common providers: gmail, yahoo, outlook, protonmail, icloud, yandex, mail, hotmail, live. (2) Join split identifiers (emails/usernames) if obviously intended. (3) Only convert number words inside identifiers when clearly part of the identifier/email. Produce canonical, actionable forms for tools (e.g., create user with email user@domain.com). If uncertain, ask a brief clarification.",
       );
     } catch (voiceError) {
       console.error("Voice processing error:", voiceError);

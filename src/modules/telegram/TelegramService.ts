@@ -476,7 +476,7 @@ export default class TelegramService {
       return { success: true };
     }
 
-    console.log(`Processing update ${updateId}`);
+    console.log(`Processing update ${updateId}`, this, this.processUpdate);
     await this.processUpdate(update);
 
     await this.markUpdateProcessed(updateId);

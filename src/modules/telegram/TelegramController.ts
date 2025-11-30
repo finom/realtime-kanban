@@ -4,5 +4,5 @@ import TelegramService from "./TelegramService";
 @prefix("telegram")
 export default class TelegramController {
   @post("bot")
-  handle = TelegramService.handle;
+  static handle = TelegramService.handle;
 }

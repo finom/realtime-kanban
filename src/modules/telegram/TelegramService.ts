@@ -414,9 +414,6 @@ export default class TelegramService {
 
   // Process the update asynchronously (fire and forget)
   private static async processUpdate(update: TelegramUpdate) {
-    // TODO fix type
-
-    console.log("processUpdate", update);
     try {
       const chatId = update.message?.chat.id;
 
@@ -460,16 +457,12 @@ export default class TelegramService {
 
   static async handle(request: NextRequest) {
     const update: TelegramUpdate = await request.json();
-
-    console.log("Received Telegram update:", update);
-
     // Check if we have an update_id
     const updateId = update.update_id;
     if (!updateId) {
       return { success: true };
     }
 
-    console.log('isUpdateProcessed', this, this.isUpdateProcessed);
     // Check if this update was already processed
     const alreadyProcessed = await this.isUpdateProcessed(updateId);
     if (alreadyProcessed) {
@@ -477,7 +470,6 @@ export default class TelegramService {
       return { success: true };
     }
 
-    console.log(`Processing update ${updateId}`, this, this.processUpdate);
     await this.processUpdate(update);
 
     await this.markUpdateProcessed(updateId);

@@ -469,6 +469,7 @@ export default class TelegramService {
       return { success: true };
     }
 
+    console.log('isUpdateProcessed', this, this.isUpdateProcessed);
     // Check if this update was already processed
     const alreadyProcessed = await this.isUpdateProcessed(updateId);
     if (alreadyProcessed) {

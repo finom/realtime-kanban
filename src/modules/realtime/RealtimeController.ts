@@ -13,15 +13,17 @@ export default class RealtimeController {
     }),
     body: z.object({ sdp: z.string() }),
     output: z.object({ sdp: z.string() }),
-    async handle(req) {
+    async handle({ vovk }) {
+      const voice = vovk.query().voice;
+      const { sdp: sdpOffer } = (await vovk.body());
       const sessionConfig = JSON.stringify({
         type: "realtime",
         model: "gpt-realtime",
-        audio: { output: { voice: req.vovk.query().voice } },
+        audio: { output: { voice } },
       });
 
       const fd = new FormData();
-      fd.set("sdp", (await req.vovk.body()).sdp);
+      fd.set("sdp", sdpOffer);
       fd.set("session", sessionConfig);
 
       try {

@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import OpenAI from "openai";
-import { TelegramAPI } from "vovk-client";
+import { TelegramAPI as TelegramRawAPI } from "vovk-client";
 import { createClient } from "redis";
 import { openai as vercelOpenAI } from "@ai-sdk/openai";
 import {
@@ -12,10 +12,22 @@ import {
   tool,
   type JSONSchema7,
 } from "ai";
-import { createLLMTools, KnownAny } from "vovk";
+import { createLLMTools } from "vovk";
 import { z } from "zod";
 import UserController from "../user/UserController";
 import TaskController from "../task/TaskController";
+
+const getAPIRoot = () => {
+  const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
+  if (!TELEGRAM_BOT_TOKEN) {
+    throw new Error("Missing TELEGRAM_BOT_TOKEN environment variable");
+  }
+  return `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}`;
+};
+
+const TelegramAPI = TelegramRawAPI.withDefaults({
+  apiRoot: getAPIRoot(),
+});
 
 const redis = createClient({
   url: process.env.REDIS_URL,
@@ -51,14 +63,6 @@ interface TelegramUpdate {
 
 export default class TelegramService {
   private static indicatorInterval: ReturnType<typeof setInterval> | undefined;
-
-  static get apiRoot() {
-    const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
-    if (!TELEGRAM_BOT_TOKEN) {
-      throw new Error("Missing TELEGRAM_BOT_TOKEN environment variable");
-    }
-    return `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}`;
-  }
 
   // Helper function to check if update was already processed
   private static async isUpdateProcessed(updateId: number): Promise<boolean> {
@@ -191,7 +195,6 @@ export default class TelegramService {
         text: text,
         parse_mode: "html",
       },
-      apiRoot: this.apiRoot,
     });
   }
 
@@ -204,7 +207,6 @@ export default class TelegramService {
         chat_id: chatId,
         photo: photoUrl,
       },
-      apiRoot: this.apiRoot,
     });
   }
 
@@ -235,7 +237,6 @@ export default class TelegramService {
       // Send the voice message
       await TelegramAPI.sendVoice({
         body: formData,
-        apiRoot: this.apiRoot,
       });
     } catch (error) {
       console.error("Error generating voice message:", error);
@@ -345,7 +346,6 @@ export default class TelegramService {
           chat_id: chatId,
           action,
         },
-        apiRoot: this.apiRoot,
       });
 
       // Force stop after 10 indicators (50 seconds)
@@ -367,7 +367,6 @@ export default class TelegramService {
       // Get file info from Telegram
       const { result: fileInfo } = await TelegramAPI.getFile({
         body: { file_id: fileId },
-        apiRoot: this.apiRoot,
       });
 
       // Download the voice file

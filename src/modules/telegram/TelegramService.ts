@@ -338,6 +338,7 @@ export default class TelegramService {
   }
 
   static startChatActionIndicator(chatId: number, action: "typing" | "record_voice"): void {
+    let i = 0;
     this.indicatorInterval = setInterval(() => {
       void TelegramAPI.sendChatAction({
         body: {
@@ -346,6 +347,12 @@ export default class TelegramService {
         },
         apiRoot: this.apiRoot,
       });
+
+      // Force stop after 10 indicators (50 seconds)
+      if (++i >= 10 && this.indicatorInterval) {
+        clearInterval(this.indicatorInterval);
+        this.indicatorInterval = undefined;
+      }
     }, 5000);
   }
 
@@ -427,16 +434,11 @@ export default class TelegramService {
         return;
       }
 
-      // Handle text messages
       if (update.message?.text) {
         await this.processTextMessage(chatId, update.message.text);
-      }
-      // Handle voice messages
-      else if (update.message?.voice) {
+      } else if (update.message?.voice) {
         await this.processVoiceMessage(chatId, update.message.voice.file_id);
-      }
-      // Handle unsupported message types
-      else {
+      }  else {
         console.error("Received unsupported message type");
         await this.sendTextMessage(
           chatId,
@@ -465,13 +467,15 @@ export default class TelegramService {
 
     await this.processUpdate(update);
 
-    await this.markUpdateProcessed(updateId);
-
     if(this.indicatorInterval){
       clearInterval(this.indicatorInterval);
       this.indicatorInterval = undefined;
     }
 
+
+    await this.markUpdateProcessed(updateId);
+
+  
     return { success: true };
   }
 }

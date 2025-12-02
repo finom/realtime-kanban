@@ -16,12 +16,15 @@ export function getEntitiesFromData(
   entities: Partial<{
     [key in EntityType]: Record<BaseEntity["id"], BaseEntity>;
   }> = {},
+  depth = 0,
 ) {
+  if (depth > 10) return entities as Partial<Omit<Registry, "parse">>;
+
   if (Array.isArray(data)) {
-    data.forEach((item) => getEntitiesFromData(item, entities));
+    data.forEach((item) => getEntitiesFromData(item, entities, depth + 1));
   } else if (typeof data === "object" && data !== null) {
     Object.values(data).forEach((value) =>
-      getEntitiesFromData(value, entities),
+      getEntitiesFromData(value, entities, depth + 1),
     );
     if ("entityType" in data && "id" in data) {
       const entityType = data.entityType as EntityType;

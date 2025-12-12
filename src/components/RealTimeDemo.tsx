@@ -140,6 +140,8 @@ const RealTimeDemo = () => {
           },
         },
       },
+
+      // @ts-ignore
       execute: async ({ body }: { body: { url: string } }) => {
         router.push(body.url);
         return `Navigating to ${body.url}`;
@@ -172,6 +174,7 @@ const RealTimeDemo = () => {
         },
         required: ["body"],
       },
+      // @ts-ignore
       execute: async ({
         body: { direction, px },
       }: {

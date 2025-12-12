@@ -102,6 +102,7 @@ export default class UserController {
 const RealTimeDemo = () => {
   const router = useRouter();
   const { isActive, isTalking, toggleSession } = useWebRTCAudioSession("ash", [
+    // @ts-ignore
     ...createLLMTools({
       modules: { TaskRPC, UserRPC },
     }).tools,

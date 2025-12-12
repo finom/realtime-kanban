@@ -111,6 +111,7 @@ const RealTimeDemo = () => {
       name: "getCurrentTime",
       description: "Gets the current time in the user's timezone",
       parameters: {},
+      // @ts-ignore
       execute: getCurrentTime,
     },
     {
@@ -118,6 +119,7 @@ const RealTimeDemo = () => {
       name: "partyMode",
       description: "Triggers a confetti animation on the page",
       parameters: {},
+      // @ts-ignore
       execute: partyMode,
     },
     {
@@ -201,6 +203,7 @@ const RealTimeDemo = () => {
       name: "getVisiblePageSection",
       description: "Gets the currently visible section of the page",
       parameters: {},
+      // @ts-ignore
       execute: async () => {
         function getVisibleText() {
           const viewportHeight = window.innerHeight;

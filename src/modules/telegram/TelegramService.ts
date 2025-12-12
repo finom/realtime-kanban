@@ -12,7 +12,7 @@ import {
   tool,
   type JSONSchema7,
 } from "ai";
-import { deriveLLMTools } from "vovk";
+import { createLLMTools } from "vovk";
 import { z } from "zod";
 import UserController from "../user/UserController";
 import TaskController from "../task/TaskController";
@@ -257,7 +257,7 @@ export default class TelegramService {
       ...this.formatHistoryForVercelAI(history),
       { role: "user", content: userMessage } as const,
     ];
-    const { tools } = deriveLLMTools({
+    const { tools } = createLLMTools({
       modules: {
         UserController,
         TaskController,

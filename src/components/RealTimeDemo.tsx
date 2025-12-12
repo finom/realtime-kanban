@@ -8,14 +8,14 @@ import getCurrentTime from "@/lib/tools/getCurrentTime";
 import partyMode from "@/lib/tools/partyMode";
 
 /*
-1. Rename deriveLLMTools DONE
+1. Rename createLLMTools DONE
 2. Use 'x-tool' DONE
 3. Add operation.tool decorator DONE
 4. Add withZod.createLLMTool
 5. Rempove caller from docs
 6. What to do with models vs inputSchema??? rename models to inputSchemas???
 
-// rename to deriveLLMTools || deriveLLMTools??? modulesToLLMTools??? buildToolsFromModules??? extractLLMTools??? 
+// rename to createLLMTools || createLLMTools??? modulesToLLMTools??? buildToolsFromModules??? extractLLMTools??? 
 withZod.createLLMTool({
   onExecute: async ({ vovk }) => {},
   onError: async ({ vovk }) => {},

@@ -8,6 +8,13 @@ class OpenApiController {
   })
   @get("openapi.json")
   static getSpec = () => openapi;
+
+  @operation({
+    summary: "Hello World",
+    description: "Get a hello world message",
+  })
+  @get("hello.json")
+  static helloWorld = () => ({ message: "Hello, World!" });
 }
 
 const controllers = {

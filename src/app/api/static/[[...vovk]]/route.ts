@@ -15,6 +15,7 @@ const controllers = {
 };
 
 export type Controllers = typeof controllers;
+console.log('generateStaticAPI(controllers)', generateStaticAPI(controllers));
 export function generateStaticParams() {
   return generateStaticAPI(controllers);
 }

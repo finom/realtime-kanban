@@ -16,6 +16,14 @@
             "summary": "OpenAPI spec",
             "description": "Get the OpenAPI spec for the app API"
           }
+        },
+        "helloWorld": {
+          "path": "hello.json",
+          "httpMethod": "GET",
+          "operationObject": {
+            "summary": "Hello World",
+            "description": "Get a hello world message"
+          }
         }
       }
     }

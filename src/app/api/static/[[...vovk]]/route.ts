@@ -20,7 +20,7 @@ class OpenApiController {
 const controllers = {
   OpenApiRPC: OpenApiController,
 };
-
+export const dynamicParams = false;
 export type Controllers = typeof controllers;
 console.log('generateStaticAPI(controllers)', generateStaticAPI(controllers));
 export function generateStaticParams() {

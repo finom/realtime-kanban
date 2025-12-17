@@ -1,8 +1,7 @@
-import { prefix, get, put, post, del, operation } from "vovk";
+import { endpoint, prefix, get, put, post, del, operation } from "vovk";
 import { z } from "zod";
 import { TaskSchema, UserSchema } from "@schemas/index";
 import { sessionGuard } from "@/decorators/sessionGuard";
-import { withZod } from "@/lib/withZod";
 import { BASE_FIELDS } from "@/constants";
 import UserService from "./UserService";
 
@@ -15,7 +14,7 @@ export default class UserController {
   })
   @get()
   @sessionGuard()
-  static getUsers = withZod({
+  static getUsers = endpoint({
     output: UserSchema.array(),
     handle: UserService.getUsers,
   });
@@ -28,7 +27,7 @@ export default class UserController {
   })
   @get("search")
   @sessionGuard()
-  static findUsers = withZod({
+  static findUsers = endpoint({
     query: z.object({
       search: z.string().meta({
         description: "Search term for users",
@@ -46,7 +45,7 @@ export default class UserController {
   })
   @post()
   @sessionGuard()
-  static createUser = withZod({
+  static createUser = endpoint({
     body: UserSchema.omit(BASE_FIELDS),
     output: UserSchema,
     handle: async ({ vovk }) => UserService.createUser(await vovk.body()),
@@ -60,7 +59,7 @@ export default class UserController {
   })
   @put("{id}")
   @sessionGuard()
-  static updateUser = withZod({
+  static updateUser = endpoint({
     body: UserSchema.omit(BASE_FIELDS).partial(),
     params: UserSchema.pick({ id: true }),
     output: UserSchema,
@@ -75,7 +74,7 @@ export default class UserController {
   })
   @del("{id}")
   @sessionGuard()
-  static deleteUser = withZod({
+  static deleteUser = endpoint({
     params: UserSchema.pick({ id: true }),
     output: UserSchema.partial().extend({
       __isDeleted: z.literal(true),

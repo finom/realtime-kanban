@@ -12,7 +12,7 @@
         "getUsers": {
           "validation": {
             "output": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
+              "$schema": "https://json-schema.org/draft/2020-12/schema",
               "type": "array",
               "items": {
                 "type": "object",
@@ -56,8 +56,7 @@
                   "updatedAt",
                   "fullName",
                   "email"
-                ],
-                "additionalProperties": false
+                ]
               }
             }
           },
@@ -72,7 +71,7 @@
         "findUsers": {
           "validation": {
             "query": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
+              "$schema": "https://json-schema.org/draft/2020-12/schema",
               "type": "object",
               "properties": {
                 "search": {
@@ -86,11 +85,10 @@
               },
               "required": [
                 "search"
-              ],
-              "additionalProperties": false
+              ]
             },
             "output": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
+              "$schema": "https://json-schema.org/draft/2020-12/schema",
               "type": "array",
               "items": {
                 "type": "object",
@@ -134,8 +132,7 @@
                   "updatedAt",
                   "fullName",
                   "email"
-                ],
-                "additionalProperties": false
+                ]
               }
             }
           },
@@ -150,7 +147,7 @@
         "createUser": {
           "validation": {
             "body": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
+              "$schema": "https://json-schema.org/draft/2020-12/schema",
               "type": "object",
               "properties": {
                 "fullName": {
@@ -173,11 +170,10 @@
               "required": [
                 "fullName",
                 "email"
-              ],
-              "additionalProperties": false
+              ]
             },
             "output": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
+              "$schema": "https://json-schema.org/draft/2020-12/schema",
               "type": "object",
               "properties": {
                 "id": {
@@ -219,8 +215,7 @@
                 "updatedAt",
                 "fullName",
                 "email"
-              ],
-              "additionalProperties": false
+              ]
             }
           },
           "operationObject": {
@@ -234,7 +229,7 @@
         "updateUser": {
           "validation": {
             "body": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
+              "$schema": "https://json-schema.org/draft/2020-12/schema",
               "type": "object",
               "properties": {
                 "fullName": {
@@ -253,11 +248,10 @@
                     }
                   ]
                 }
-              },
-              "additionalProperties": false
+              }
             },
             "params": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
+              "$schema": "https://json-schema.org/draft/2020-12/schema",
               "type": "object",
               "properties": {
                 "id": {
@@ -266,11 +260,10 @@
               },
               "required": [
                 "id"
-              ],
-              "additionalProperties": false
+              ]
             },
             "output": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
+              "$schema": "https://json-schema.org/draft/2020-12/schema",
               "type": "object",
               "properties": {
                 "id": {
@@ -312,8 +305,7 @@
                 "updatedAt",
                 "fullName",
                 "email"
-              ],
-              "additionalProperties": false
+              ]
             }
           },
           "operationObject": {
@@ -327,7 +319,7 @@
         "deleteUser": {
           "validation": {
             "params": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
+              "$schema": "https://json-schema.org/draft/2020-12/schema",
               "type": "object",
               "properties": {
                 "id": {
@@ -336,11 +328,10 @@
               },
               "required": [
                 "id"
-              ],
-              "additionalProperties": false
+              ]
             },
             "output": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
+              "$schema": "https://json-schema.org/draft/2020-12/schema",
               "type": "object",
               "properties": {
                 "id": {
@@ -424,16 +415,14 @@
                     },
                     "required": [
                       "__isDeleted"
-                    ],
-                    "additionalProperties": false
+                    ]
                   }
                 }
               },
               "required": [
                 "__isDeleted",
                 "tasks"
-              ],
-              "additionalProperties": false
+              ]
             }
           },
           "operationObject": {
@@ -454,7 +443,7 @@
         "getTasks": {
           "validation": {
             "output": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
+              "$schema": "https://json-schema.org/draft/2020-12/schema",
               "type": "array",
               "items": {
                 "type": "object",
@@ -501,10 +490,8 @@
                   "updatedAt",
                   "title",
                   "description",
-                  "status",
                   "userId"
-                ],
-                "additionalProperties": false
+                ]
               }
             }
           },
@@ -519,7 +506,7 @@
         "findTasks": {
           "validation": {
             "query": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
+              "$schema": "https://json-schema.org/draft/2020-12/schema",
               "type": "object",
               "properties": {
                 "search": {
@@ -533,11 +520,10 @@
               },
               "required": [
                 "search"
-              ],
-              "additionalProperties": false
+              ]
             },
             "output": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
+              "$schema": "https://json-schema.org/draft/2020-12/schema",
               "type": "array",
               "items": {
                 "type": "object",
@@ -584,10 +570,8 @@
                   "updatedAt",
                   "title",
                   "description",
-                  "status",
                   "userId"
-                ],
-                "additionalProperties": false
+                ]
               }
             }
           },
@@ -602,7 +586,7 @@
         "getTasksByUserId": {
           "validation": {
             "params": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
+              "$schema": "https://json-schema.org/draft/2020-12/schema",
               "type": "object",
               "properties": {
                 "userId": {
@@ -611,11 +595,10 @@
               },
               "required": [
                 "userId"
-              ],
-              "additionalProperties": false
+              ]
             },
             "output": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
+              "$schema": "https://json-schema.org/draft/2020-12/schema",
               "type": "array",
               "items": {
                 "type": "object",
@@ -662,10 +645,8 @@
                   "updatedAt",
                   "title",
                   "description",
-                  "status",
                   "userId"
-                ],
-                "additionalProperties": false
+                ]
               }
             }
           },
@@ -680,7 +661,7 @@
         "createTask": {
           "validation": {
             "body": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
+              "$schema": "https://json-schema.org/draft/2020-12/schema",
               "type": "object",
               "properties": {
                 "title": {
@@ -706,13 +687,11 @@
               "required": [
                 "title",
                 "description",
-                "status",
                 "userId"
-              ],
-              "additionalProperties": false
+              ]
             },
             "output": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
+              "$schema": "https://json-schema.org/draft/2020-12/schema",
               "type": "object",
               "properties": {
                 "id": {
@@ -757,10 +736,8 @@
                 "updatedAt",
                 "title",
                 "description",
-                "status",
                 "userId"
-              ],
-              "additionalProperties": false
+              ]
             }
           },
           "operationObject": {
@@ -774,7 +751,7 @@
         "updateTask": {
           "validation": {
             "body": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
+              "$schema": "https://json-schema.org/draft/2020-12/schema",
               "type": "object",
               "properties": {
                 "title": {
@@ -796,11 +773,10 @@
                 "userId": {
                   "type": "string"
                 }
-              },
-              "additionalProperties": false
+              }
             },
             "params": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
+              "$schema": "https://json-schema.org/draft/2020-12/schema",
               "type": "object",
               "properties": {
                 "id": {
@@ -809,11 +785,10 @@
               },
               "required": [
                 "id"
-              ],
-              "additionalProperties": false
+              ]
             },
             "output": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
+              "$schema": "https://json-schema.org/draft/2020-12/schema",
               "type": "object",
               "properties": {
                 "id": {
@@ -858,10 +833,8 @@
                 "updatedAt",
                 "title",
                 "description",
-                "status",
                 "userId"
-              ],
-              "additionalProperties": false
+              ]
             }
           },
           "operationObject": {
@@ -875,7 +848,7 @@
         "deleteTask": {
           "validation": {
             "params": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
+              "$schema": "https://json-schema.org/draft/2020-12/schema",
               "type": "object",
               "properties": {
                 "id": {
@@ -884,11 +857,10 @@
               },
               "required": [
                 "id"
-              ],
-              "additionalProperties": false
+              ]
             },
             "output": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
+              "$schema": "https://json-schema.org/draft/2020-12/schema",
               "type": "object",
               "properties": {
                 "id": {
@@ -932,8 +904,7 @@
               },
               "required": [
                 "__isDeleted"
-              ],
-              "additionalProperties": false
+              ]
             }
           },
           "operationObject": {
@@ -954,7 +925,7 @@
         "session": {
           "validation": {
             "body": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
+              "$schema": "https://json-schema.org/draft/2020-12/schema",
               "type": "object",
               "properties": {
                 "sdp": {
@@ -963,11 +934,10 @@
               },
               "required": [
                 "sdp"
-              ],
-              "additionalProperties": false
+              ]
             },
             "query": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
+              "$schema": "https://json-schema.org/draft/2020-12/schema",
               "type": "object",
               "properties": {
                 "voice": {
@@ -983,11 +953,10 @@
               },
               "required": [
                 "voice"
-              ],
-              "additionalProperties": false
+              ]
             },
             "output": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
+              "$schema": "https://json-schema.org/draft/2020-12/schema",
               "type": "object",
               "properties": {
                 "sdp": {
@@ -996,8 +965,7 @@
               },
               "required": [
                 "sdp"
-              ],
-              "additionalProperties": false
+              ]
             }
           },
           "path": "session",
@@ -1013,7 +981,7 @@
         "poll": {
           "validation": {
             "iteration": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
+              "$schema": "https://json-schema.org/draft/2020-12/schema",
               "anyOf": [
                 {
                   "type": "object",
@@ -1037,8 +1005,7 @@
                   "required": [
                     "id",
                     "entityType"
-                  ],
-                  "additionalProperties": false
+                  ]
                 },
                 {
                   "type": "object",
@@ -1082,8 +1049,7 @@
                     "updatedAt",
                     "fullName",
                     "email"
-                  ],
-                  "additionalProperties": false
+                  ]
                 },
                 {
                   "type": "object",
@@ -1130,10 +1096,8 @@
                     "updatedAt",
                     "title",
                     "description",
-                    "status",
                     "userId"
-                  ],
-                  "additionalProperties": false
+                  ]
                 }
               ]
             }

@@ -2,7 +2,7 @@
 import useWebRTCAudioSession from "@/hooks/useWebRTCAudioSession";
 import Floaty from "./Floaty";
 import { useRouter } from "next/navigation";
-import { createLLMTools } from "vovk";
+import { deriveTools } from "vovk";
 import { TaskRPC, UserRPC } from "vovk-client";
 import getCurrentTime from "@/lib/tools/getCurrentTime";
 import partyMode from "@/lib/tools/partyMode";
@@ -11,12 +11,12 @@ import partyMode from "@/lib/tools/partyMode";
 1. Rename createLLMTools DONE
 2. Use 'x-tool' DONE
 3. Add operation.tool decorator DONE
-4. Add withZod.createLLMTool
+4. Add withZod.createTool
 5. Rempove caller from docs
 6. What to do with models vs inputSchema??? rename models to inputSchemas???
 
-// rename to createLLMTools || createLLMTools??? modulesToLLMTools??? buildToolsFromModules??? extractLLMTools??? 
-withZod.createLLMTool({
+// rename to createLLMTools || createLLMTools??? modulesToTools??? buildToolsFromModules??? extractTools??? 
+withZod.createTool({
   onExecute: async ({ vovk }) => {},
   onError: async ({ vovk }) => {},
   caller: ???,
@@ -103,7 +103,7 @@ const RealTimeDemo = () => {
   const router = useRouter();
   const { isActive, isTalking, toggleSession } = useWebRTCAudioSession("ash", [
     // @ts-ignore
-    ...createLLMTools({
+    ...deriveTools({
       modules: { TaskRPC, UserRPC },
     }).tools,
     {

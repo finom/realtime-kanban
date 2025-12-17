@@ -1,6 +1,6 @@
 "use client";
 import { useState, useRef, useCallback, useEffect } from "react";
-import { VovkLLMTool } from "vovk";
+import { VovkTool } from "vovk";
 import { RealtimeRPC } from "vovk-client";
 
 /**
@@ -9,7 +9,7 @@ import { RealtimeRPC } from "vovk-client";
  */
 export default function useWebRTCAudioSession(
   voice: "ash" | "ballad" | "coral" | "sage" | "verse",
-  tools: VovkLLMTool[],
+  tools: VovkTool[],
 ) {
   const audioElement = useRef<HTMLAudioElement | null>(null);
   const [isActive, setIsActive] = useState(false);
@@ -88,7 +88,7 @@ export default function useWebRTCAudioSession(
         type: "session.update",
         session: {
           type: "realtime",
-          tools: tools.map(({ execute: _execute, ...toolRest }) => toolRest),
+          tools: tools.map(({ name, description, parameters, type }) => ({ name, description, parameters, type })),
         },
       };
       dc.send(JSON.stringify(sessionUpdate));
@@ -100,7 +100,7 @@ export default function useWebRTCAudioSession(
         const execute = tools.find((tool) => tool.name === msg.name)?.execute;
         if (execute) {
           const args = JSON.parse(msg.arguments);
-          const result = await execute(args);
+          const result = await execute(args) as { __preventResponseCreate?: boolean };
 
           // Respond with function output
           const response = {

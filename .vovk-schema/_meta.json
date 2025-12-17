@@ -1,11 +1,7 @@
 {
   "$schema": "https://vovk.dev/api/schema/v3/meta.json",
   "config": {
-    "libs": {
-      "ajv": {
-        "target": "draft-07"
-      }
-    },
+    "libs": {},
     "rootEntry": "api",
     "$schema": "https://vovk.dev/api/schema/v3/config.json"
   }

@@ -1,7 +1,6 @@
 const getCurrentTime = () => {
   const now = new Date();
   return {
-    success: true,
     time: now.toLocaleTimeString(),
     timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     message:

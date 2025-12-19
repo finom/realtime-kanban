@@ -1,5 +1,5 @@
 import {
-  createLLMTools,
+  deriveTools,
   post,
   prefix,
   operation,
@@ -30,7 +30,7 @@ export default class AiSdkController {
   @sessionGuard()
   static async functionCalling(req: VovkRequest<{ messages: UIMessage[] }>) {
     const { messages } = await req.json();
-    const { tools } = createLLMTools({
+    const { tools } = deriveTools({
       modules: {
         UserController,
         TaskController,

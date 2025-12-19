@@ -1,4 +1,4 @@
-import { endpoint, prefix, post, HttpException, HttpStatus } from "vovk";
+import { procedure, prefix, post, HttpException, HttpStatus } from "vovk";
 import { z } from "zod";
 import { sessionGuard } from "@/decorators/sessionGuard";
 
@@ -6,7 +6,7 @@ import { sessionGuard } from "@/decorators/sessionGuard";
 export default class RealtimeController {
   @post("session")
   @sessionGuard()
-  static session = endpoint({
+  static session = procedure({
     query: z.object({
       voice: z.enum(["ash", "ballad", "coral", "sage", "verse"]),
     }),

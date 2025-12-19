@@ -1,4 +1,4 @@
-import { endpoint, prefix, get, put, post, del, operation } from "vovk";
+import { procedure, prefix, get, put, post, del, operation } from "vovk";
 import { z } from "zod";
 import { TaskSchema, UserSchema } from "@schemas/index";
 import { sessionGuard } from "@/decorators/sessionGuard";
@@ -10,11 +10,11 @@ export default class UserController {
   @operation({
     summary: "Get all users",
     description: "Retrieves a list of all users.",
-    "x-tool-disable": true, // Make it to be used as an endpoint only, excluding from the list of available tools
+    "x-tool-disable": true, // Make it to be used as an procedure only, excluding from the list of available tools
   })
   @get()
   @sessionGuard()
-  static getUsers = endpoint({
+  static getUsers = procedure({
     output: UserSchema.array(),
     handle: UserService.getUsers,
   });
@@ -27,7 +27,7 @@ export default class UserController {
   })
   @get("search")
   @sessionGuard()
-  static findUsers = endpoint({
+  static findUsers = procedure({
     query: z.object({
       search: z.string().meta({
         description: "Search term for users",
@@ -45,7 +45,7 @@ export default class UserController {
   })
   @post()
   @sessionGuard()
-  static createUser = endpoint({
+  static createUser = procedure({
     body: UserSchema.omit(BASE_FIELDS),
     output: UserSchema,
     handle: async ({ vovk }) => UserService.createUser(await vovk.body()),
@@ -59,7 +59,7 @@ export default class UserController {
   })
   @put("{id}")
   @sessionGuard()
-  static updateUser = endpoint({
+  static updateUser = procedure({
     body: UserSchema.omit(BASE_FIELDS).partial(),
     params: UserSchema.pick({ id: true }),
     output: UserSchema,
@@ -74,7 +74,7 @@ export default class UserController {
   })
   @del("{id}")
   @sessionGuard()
-  static deleteUser = endpoint({
+  static deleteUser = procedure({
     params: UserSchema.pick({ id: true }),
     output: UserSchema.partial().extend({
       __isDeleted: z.literal(true),

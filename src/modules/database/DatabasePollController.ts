@@ -1,5 +1,5 @@
 import { EntityType } from "@prisma/client";
-import { endpoint, get, JSONLinesResponse, prefix, type VovkIteration } from "vovk";
+import { procedure, get, JSONLinesResponse, prefix, type VovkIteration } from "vovk";
 import { z } from "zod";
 import { TaskSchema, UserSchema } from "@schemas/index";
 import DatabasePollService from "./DatabasePollService";
@@ -9,7 +9,7 @@ import { sessionGuard } from "@/decorators/sessionGuard";
 export default class DatabasePollController {
   @get()
   @sessionGuard()
-  static poll = endpoint({
+  static poll = procedure({
     preferTransformed: false,
     iteration: z.union([
       z.object({

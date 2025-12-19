@@ -2,111 +2,198 @@
 import useWebRTCAudioSession from "@/hooks/useWebRTCAudioSession";
 import Floaty from "./Floaty";
 import { useRouter } from "next/navigation";
-import { deriveTools } from "vovk";
+import { createTool, deriveTools } from "vovk";
 import { TaskRPC, UserRPC } from "vovk-client";
 import getCurrentTime from "@/lib/tools/getCurrentTime";
 import partyMode from "@/lib/tools/partyMode";
-
-/*
-1. Rename createLLMTools DONE
-2. Use 'x-tool' DONE
-3. Add operation.tool decorator DONE
-4. Add withZod.createTool
-5. Rempove caller from docs
-6. What to do with models vs inputSchema??? rename models to inputSchemas???
-
-// rename to createLLMTools || createLLMTools??? modulesToTools??? buildToolsFromModules??? extractTools??? 
-withZod.createTool({
-  onExecute: async ({ vovk }) => {},
-  onError: async ({ vovk }) => {},
-  caller: ???,
-  resultFormatter: 'mcp',
-  name: "navigateTo",
-  description: "Navigates the user to a specified URL within the application.",
-  mcp: {
-    successMessage: "Navigation successful.",
-    errorMessage: "Navigation failed.",
-    includeResponse: false,
-  },
-  inputSchema: z.object({ ... }), // I CAN!
-  handle(input) {
-    
-  }
-});
-
-
-import { prefix, get, operation } from 'vovk';
- 
-@prefix('user')
-export default class UserController {
-  @operation.tool({
-    disable: false,
-    name: 'get_user_by_id',
-    description: 'Retrieves a user by their unique ID, including name and email. Also includes user roles and permissions that define what actions the user can perform within the system.',
-    mcp: {
-      successMessage: 'User retrieved successfully.',
-      errorMessage: 'Failed to retrieve user.',
-      includeResponse: true,
-    },
-  })
-  @operation({
-    summary: 'Get user by ID',
-    description: 'Retrieves a user by their unique ID.',
-    'x-tool': {
-      disable: false,
-      name: 'get_user_by_id',
-      description: 'Retrieves a user by their unique ID, including name and email. Also includes user roles and permissions that define what actions the user can perform within the system.',
-      mcp: {
-        successMessage: 'User retrieved successfully.',
-        errorMessage: 'Failed to retrieve user.',
-        includeResponse: true,
-      }
-    },
-    'x-tool-disable': false,
-    'x-tool-name': 'get_user_by_id',
-    'x-tool-description': 'Retrieves a user by their unique ID, including name and email. Also includes user roles and permissions that define what actions the user can perform within the system.',
-    'x-tool-successMessage': 'User retrieved successfully.',
-    'x-tool-errorMessage': 'Failed to retrieve user.',
-    'x-tool-includeResponse': true,
-  })
-  @get('{id}')
-  static getUser() {
-    // ...
-  }
-}
-
-
- ClientSideTools: {
-          // What if input is empty? Is it still "with Zod"?
-          // Body doesn't make sense for same context
-          // operationObject - quite odd name
-          navigateTo: withZod({
-            operationObject: {
-              description:
-                "Navigates the user to a specified URL within the application.",
-            },
-            body: z.object({
-              url: z
-                .enum(["/", "/openapi"])
-                .meta({ description: "The URL to navigate to." }),
-            }),
-            handle: async ({ vovk }) => {
-              const body = await vovk.body();
-              router.push(body.url);
-              return `Navigating to ${body.url}`;
-            },
-          }),
-        },
-        */
+import z from "zod";
 
 const RealTimeDemo = () => {
   const router = useRouter();
   const { isActive, isTalking, toggleSession } = useWebRTCAudioSession("ash", [
-    // @ts-ignore
     ...deriveTools({
       modules: { TaskRPC, UserRPC },
     }).tools,
-    {
+    createTool({
+      name: "getCurrentTime",
+      description: "Gets the current time in the user's timezone",
+      outputSchema: z.object({ time: z.string(), timezone: z.string(), message: z.string() }).meta({ description: "Current time info." }),
+      execute: getCurrentTime,
+    }),
+    createTool({
+      name: "partyMode",
+      description: "Triggers a confetti animation on the page",
+      execute: partyMode,
+    }),
+    createTool({
+      name: "navigateTo",
+      description: "Navigates the user to a specified URL within the application.",
+      inputSchema: z.object({
+        url: z.enum(["/", "/openapi"]).meta({ description: "The URL to navigate to." }),
+      }),
+      outputSchema: z.string().meta({ description: "Navigation confirmation message." }),
+      execute: async ({ url }: { url: string }) => {
+        router.push(url);
+        return `Navigating to ${url}`;
+      },
+    }),
+    createTool({
+      name: "scroll",
+      description:
+        "Scrolls the page up or down.",
+      inputSchema: z.object({
+        direction: z.enum(["up", "down"]).meta({ description: "The direction to scroll" }),
+        px: z.number().optional().meta({ description: "The number of pixels to scroll. If not provided, scrolls by one viewport height." }),
+      }),
+      outputSchema: z.object({
+        message: z.string().meta({ description: "Scroll action confirmation message." }),
+        __preventResponseCreate: z.boolean().meta({ description: "Flag to prevent response creation." }),
+      }),
+      execute: async ({ direction, px }: { direction: "up" | "down"; px?: number }) => {
+        console.log("Scrolling", direction);
+        const windowHeight =
+          window.innerHeight || document.documentElement.clientHeight;
+        const pxToScroll = px ?? windowHeight;
+
+        window.scrollBy({
+          top: direction === "up" ? -pxToScroll : pxToScroll,
+          behavior: "smooth",
+        });
+        return {
+          message: `Scrolling ${direction}`,
+          __preventResponseCreate: true,
+        };
+      },
+    }),
+    createTool({
+      name: "getVisiblePageSection",
+      description: "Gets the currently visible section of the page",
+      outputSchema: z.string().meta({ description: "Visible text content from the page." }),
+      execute: async () => {
+        function getVisibleText() {
+          const viewportHeight = window.innerHeight;
+          const viewportWidth = window.innerWidth;
+
+          // Check if an element or its ancestors are hidden from accessibility tree
+          function isAccessibilityHidden(element: Element | null): boolean {
+            while (element) {
+              if (element.getAttribute("aria-hidden") === "true") return true;
+              if (element.hasAttribute("hidden")) return true;
+              const role = element.getAttribute("role");
+              if (role === "presentation" || role === "none") return true;
+              const style = window.getComputedStyle(element);
+              if (style.display === "none" || style.visibility === "hidden") return true;
+              element = element.parentElement;
+            }
+            return false;
+          }
+
+          // Get accessible name from aria-label or aria-labelledby
+          function getAccessibleName(element: Element): string {
+            const ariaLabel = element.getAttribute("aria-label");
+            if (ariaLabel) return ariaLabel;
+
+            const labelledBy = element.getAttribute("aria-labelledby");
+            if (labelledBy) {   
+              return labelledBy
+                .split(/\s+/)
+                .map((id) => document.getElementById(id)?.textContent?.trim() || "")
+                .filter(Boolean)
+                .join(" ");
+            }
+            
+            // For images, use alt text
+            if (element.tagName === "IMG") {
+              const alt = element.getAttribute("alt");
+              if (alt) return alt;
+            }
+
+            return "";
+          }
+
+          // Get aria-describedby text
+          function getDescription(element: Element): string {
+            const describedBy = element.getAttribute("aria-describedby");
+            if (describedBy) {
+              return describedBy
+                .split(/\s+/)
+                .map((id) => document.getElementById(id)?.textContent?.trim() || "")
+                .filter(Boolean)
+                .join(" ");
+            }
+            return "";
+          }
+
+          const visibleTexts: string[] = [];
+          const processedElements = new Set<Element>();
+
+          // First, collect accessible names and descriptions from elements
+          const allElements = document.body.querySelectorAll("*");
+          for (const element of allElements) {
+            if (isAccessibilityHidden(element)) continue;
+
+            const rect = element.getBoundingClientRect();
+            const isInViewport =
+              rect.top < viewportHeight &&
+              rect.bottom > 0 &&
+              rect.left < viewportWidth &&
+              rect.right > 0;
+
+            if (!isInViewport) continue;
+
+            const accessibleName = getAccessibleName(element);
+            if (accessibleName && !processedElements.has(element)) {
+              visibleTexts.push(accessibleName);
+              processedElements.add(element);
+            }
+
+            const description = getDescription(element);
+            if (description) {
+              visibleTexts.push(description);
+            }
+          }
+
+          // Then collect visible text nodes
+          const walker = document.createTreeWalker(
+            document.body,
+            NodeFilter.SHOW_TEXT,
+            {
+              acceptNode(node) {
+                const parent = node.parentElement;
+                if (!parent) return NodeFilter.FILTER_REJECT;
+                if (isAccessibilityHidden(parent)) return NodeFilter.FILTER_REJECT;
+                return NodeFilter.FILTER_ACCEPT;
+              },
+            },
+          );
+
+          let node;
+          while ((node = walker.nextNode())) {
+            const range = document.createRange(); 
+            range.selectNode(node);
+            const rect = range.getBoundingClientRect();
+
+            if (
+              rect.top < viewportHeight &&
+              rect.bottom > 0 &&
+              rect.left < viewportWidth &&
+              rect.right > 0
+            ) {
+              const text = node.textContent?.trim();
+              if (text) {
+                visibleTexts.push(text);
+              }
+            }
+          }
+
+          return visibleTexts.join(" ").replace(/\s+/g, " ").trim();
+        }
+
+        return getVisibleText();
+      },
+    }),
+    /*createTool({
+    /*{
       type: "function",
       name: "getCurrentTime",
       description: "Gets the current time in the user's timezone",
@@ -326,7 +413,7 @@ const RealTimeDemo = () => {
 
         return getVisibleText();
       },
-    },
+    }, */
   ]);
 
   return (

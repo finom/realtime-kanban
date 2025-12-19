@@ -1,33 +1,29 @@
 import { createMcpHandler } from "mcp-handler";
-import { createLLMTools, KnownAny } from "vovk";
+import { deriveTools, ToModelOutput } from "vovk";
 import UserController from "@/modules/user/UserController";
 import TaskController from "@/modules/task/TaskController";
 import { jsonSchemaObjectToZodRawShape } from "zod-v3-via-v4-from-json-schema"; // TODO: Temporary fix
+import z from "zod";
 
-const { tools } = createLLMTools({
+const { tools } = deriveTools({
   modules: {
     UserController,
     TaskController,
   },
-  resultFormatter: "mcp",
-  onExecute: (result, { moduleName, handlerName, body, query, params }) =>
-    console.log(`${moduleName}.${handlerName} executed`, {
-      body,
-      query,
-      params,
-      result,
-    }),
-  onError: (e) => console.error("Error", e),
+  toModelOutput: ToModelOutput.MCP,
+  onExecute: (result, { name }) => console.log(`${name} executed`, result),
+  onError: (e, { name }) => console.error(`Error in ${name}`, e),
 });
 
 const handler = createMcpHandler(
   (server) => {
-    tools.forEach(({ name, execute, description, parameters }) => {
+    tools.forEach(({ title, name, execute, description, inputSchemas }) => {
       server.registerTool(
         name,
         {
+          title,
           description,
-          inputSchema: jsonSchemaObjectToZodRawShape(parameters) as KnownAny, // TODO: Temporary fix
+          inputSchema: inputSchemas as Partial<Record<'body' | 'query' | 'params', z.ZodTypeAny>>,
         },
         execute,
       );

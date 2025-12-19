@@ -1,4 +1,4 @@
-import { endpoint, prefix, get, put, post, del, operation } from "vovk";
+import { procedure, prefix, get, put, post, del, operation } from "vovk";
 import { z } from "zod";
 import { BASE_FIELDS } from "@/constants";
 import { TaskSchema, UserSchema } from "@schemas/index";
@@ -10,11 +10,11 @@ export default class TaskController {
   @operation({
     summary: "Get all tasks",
     description: "Retrieves a list of all tasks.",
-    "x-tool-disable": true, // Make it to be used as an endpoint only, excluding from the list of available tools
+    "x-tool-disable": true, // Make it to be used as an procedure only, excluding from the list of available tools
   })
   @get()
   @sessionGuard()
-  static getTasks = endpoint({
+  static getTasks = procedure({
     output: TaskSchema.array(),
     handle: TaskService.getTasks,
   });
@@ -27,7 +27,7 @@ export default class TaskController {
   })
   @get("search")
   @sessionGuard()
-  static findTasks = endpoint({
+  static findTasks = procedure({
     query: z.object({
       search: z.string().meta({
         description: "Search term for tasks",
@@ -45,7 +45,7 @@ export default class TaskController {
   })
   @get("by-user/{userId}")
   @sessionGuard()
-  static getTasksByUserId = endpoint({
+  static getTasksByUserId = procedure({
     params: z.object({ userId: UserSchema.shape.id }),
     output: TaskSchema.array(),
     handle: async ({ vovk }) =>
@@ -60,7 +60,7 @@ export default class TaskController {
   })
   @post()
   @sessionGuard()
-  static createTask = endpoint({
+  static createTask = procedure({
     body: TaskSchema.omit(BASE_FIELDS),
     output: TaskSchema,
     handle: async ({ vovk }) => TaskService.createTask(await vovk.body()),
@@ -74,7 +74,7 @@ export default class TaskController {
   })
   @put("{id}")
   @sessionGuard()
-  static updateTask = endpoint({
+  static updateTask = procedure({
     body: TaskSchema.omit(BASE_FIELDS).partial(),
     params: TaskSchema.pick({ id: true }),
     output: TaskSchema,
@@ -89,7 +89,7 @@ export default class TaskController {
   })
   @del("{id}")
   @sessionGuard()
-  static deleteTask = endpoint({
+  static deleteTask = procedure({
     params: TaskSchema.pick({ id: true }),
     output: TaskSchema.partial().extend({
       __isDeleted: z.literal(true),

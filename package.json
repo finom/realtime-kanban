@@ -81,7 +81,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "16.1.0",
+    "eslint-config-next": "16.1.1",
     "prisma": "7.2.0",
     "prisma-zod-generator": "^2.1.2",
     "shadcn": "^3.6.2",

@@ -7,10 +7,12 @@ import UserService from "./UserService";
 
 @prefix("users")
 export default class UserController {
+  @operation.tool({
+    hidden: true,
+  })
   @operation({
     summary: "Get all users",
     description: "Retrieves a list of all users.",
-    "x-tool-disable": true, // Make it to be used as an procedure only, excluding from the list of available tools
   })
   @get()
   @sessionGuard()
@@ -23,7 +25,6 @@ export default class UserController {
     summary: "Find users by ID, full name, or email",
     description:
       "Retrieves users that match the provided ID, full name, or email. Used to search the users when they need to be updated or deleted.",
-    "x-tool-successMessage": "Users found successfully",
   })
   @get("search")
   @sessionGuard()
@@ -41,7 +42,6 @@ export default class UserController {
   @operation({
     summary: "Create user",
     description: "Creates a new user with the provided details.",
-    "x-tool-successMessage": "User created successfully",
   })
   @post()
   @sessionGuard()
@@ -55,7 +55,6 @@ export default class UserController {
     summary: "Update user",
     description:
       "Updates an existing user with the provided details, such as their email or name.",
-    "x-tool-successMessage": "User updated successfully",
   })
   @put("{id}")
   @sessionGuard()
@@ -70,7 +69,6 @@ export default class UserController {
   @operation({
     summary: "Delete user",
     description: "Deletes a user by ID.",
-    "x-tool-successMessage": "User deleted successfully",
   })
   @del("{id}")
   @sessionGuard()

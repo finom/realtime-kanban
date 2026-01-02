@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, type ReactNode } from "react";
-import { useRegistry } from "@/registry";
+import useRegistry from "@/hooks/useRegistry";
 import type { UserType } from "@schemas/models/User.schema";
 import type { TaskType } from "@schemas/models/Task.schema";
 

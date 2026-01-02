@@ -1,4 +1,4 @@
-import { initSegment, generateStaticAPI, get, operation } from "vovk";
+import { initSegment, controllersToStaticParams, get, operation } from "vovk";
 import { openapi } from "vovk-client/openapi";
 
 class OpenApiController {
@@ -23,7 +23,7 @@ const controllers = {
 
 export type Controllers = typeof controllers;
 export function generateStaticParams() {
-  return generateStaticAPI(controllers);
+  return controllersToStaticParams(controllers);
 }
 export const { GET } = initSegment({
   segmentName: "static",

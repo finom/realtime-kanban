@@ -15,7 +15,7 @@ import {
   ExpandableChatFooter,
 } from "@/components/ui/expandable-chat";
 import { useEffect, useRef, useState } from "react";
-import { useRegistry } from "@/registry";
+import useRegistry from "@/hooks/useRegistry";
 import { DefaultChatTransport, ToolUIPart } from "ai";
 import {
   Reasoning,

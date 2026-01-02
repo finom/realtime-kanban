@@ -1,9 +1,9 @@
-import type { UserType } from "@schemas/models/User.schema";
-import type { TaskType } from "@schemas/models/Task.schema";
-import type { BaseEntity } from "./types";
 import { EntityType } from "@prisma/client";
 import { create } from "zustand";
 import fastDeepEqual from "fast-deep-equal";
+import type { UserType } from "@schemas/models/User.schema";
+import type { TaskType } from "@schemas/models/Task.schema";
+import type { BaseEntity } from "../types";
 
 interface Registry {
   [EntityType.user]: Record<UserType["id"], UserType>;
@@ -36,7 +36,7 @@ export function getEntitiesFromData(
   return entities as Partial<Omit<Registry, "parse">>;
 }
 
-export const useRegistry = create<Registry>((set, get) => ({
+const useRegistry = create<Registry>((set, get) => ({
   [EntityType.user]: {},
   [EntityType.task]: {},
   parse: (data) => {
@@ -71,3 +71,5 @@ export const useRegistry = create<Registry>((set, get) => ({
     });
   },
 }));
+
+export default useRegistry;

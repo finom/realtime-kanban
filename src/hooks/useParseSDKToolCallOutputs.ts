@@ -1,4 +1,4 @@
-import { useRegistry } from "@/registry";
+import useRegistry from "@/hooks/useRegistry";
 import { ToolUIPart, UIMessage } from "ai";
 import { useEffect, useRef } from "react";
 

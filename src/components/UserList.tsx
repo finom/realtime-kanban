@@ -2,10 +2,9 @@
 import { useShallow } from "zustand/shallow";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import UserDialog from "./UserDialog";
-import { getEntitiesFromData, useRegistry } from "@/registry";
+import useRegistry, { getEntitiesFromData } from "@/hooks/useRegistry";
 import { Button } from "./ui/button";
 import { Pencil, Plus } from "lucide-react";
-import { useEffect } from "react";
 import { UserRPC } from "vovk-client";
 import { useQuery } from "@tanstack/react-query";
 import { UserType } from "@schemas/models/User.schema";

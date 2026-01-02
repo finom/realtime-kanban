@@ -1,4 +1,4 @@
-import { useRegistry } from "@/registry";
+import useRegistry from "@/hooks/useRegistry";
 import { createFetcher, HttpStatus } from "vovk";
 
 export const fetcher = createFetcher<{ bypassRegistry?: boolean }>({

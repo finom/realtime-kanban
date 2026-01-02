@@ -11,21 +11,21 @@ import {
   TouchSensor,
   useSensor,
   useSensors,
+  type DragEndEvent,
+  type DragStartEvent
 } from "@dnd-kit/core";
-import type { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
 import type { ReactNode } from "react";
 import { useMemo, useId, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Pencil, Plus, Trash2 } from "lucide-react";
 import { TaskRPC } from "vovk-client";
-import { getEntitiesFromData, useRegistry } from "@/registry";
+import useRegistry, { getEntitiesFromData } from "@/hooks/useRegistry";
 import { useShallow } from "zustand/shallow";
 import { TaskStatus } from "@prisma/client";
-import TaskDialog from "./TaskDialog";
 import { useQuery } from "@tanstack/react-query";
 import { TaskType } from "@schemas/models/Task.schema";
-import { UserType } from "@schemas/models/User.schema";
 import { isEmpty, pick } from "lodash";
+import TaskDialog from "./TaskDialog";
 
 // Utils function
 function cn(...classes: (string | undefined | null | boolean)[]): string {

@@ -10,7 +10,7 @@
     "start": "next start",
     "lint": "next lint",
     "generate": "npx prisma generate && npx vovk generate",
-    "postinstall": "npm run generate"
+    "postinstall": "patch-package && npm run generate"
   },
   "dependencies": {
     "@ai-sdk/openai": "^3.0.1",
@@ -82,6 +82,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.1.1",
+    "patch-package": "^8.0.1",
     "prisma": "7.2.0",
     "prisma-zod-generator": "^2.1.2",
     "shadcn": "^3.6.2",

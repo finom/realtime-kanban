@@ -1,0 +1,12 @@
+diff --git a/node_modules/prisma-zod-generator/lib/parsers/zod-comments.js b/node_modules/prisma-zod-generator/lib/parsers/zod-comments.js
+index 1382d57..f3259f9 100644
+--- a/node_modules/prisma-zod-generator/lib/parsers/zod-comments.js
++++ b/node_modules/prisma-zod-generator/lib/parsers/zod-comments.js
+@@ -995,6 +995,7 @@ function validateZodMethod(annotation, context) {
+         // New methods that require parameters - Issue #233
+         'hash', // hash requires algorithm parameter like "sha256"
+         'custom', // custom requires object/array schema parameter
++        'meta', // meta requires object parameter
+     ];
+     // Methods that don't allow parameters
+     const noParams = [

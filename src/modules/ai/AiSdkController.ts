@@ -11,13 +11,12 @@ import {
   stepCountIs,
   streamText,
   tool,
-  type JSONSchema7,
   type UIMessage,
 } from "ai";
 import { openai } from "@ai-sdk/openai";
+import { sessionGuard } from "@/decorators/sessionGuard";
 import UserController from "../user/UserController";
 import TaskController from "../task/TaskController";
-import { sessionGuard } from "@/decorators/sessionGuard";
 
 @prefix("ai-sdk")
 export default class AiSdkController {

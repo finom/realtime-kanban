@@ -15,22 +15,22 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https:/kanban.vovk.dev'),
+  metadataBase: new URL("https:/kanban.vovk.dev"),
   title: {
-    default: 'Vovk.ts - Realtime Kanban',
-    template: '%s | Vovk.ts - Realtime Kanban',
+    default: "Vovk.ts - Realtime Kanban",
+    template: "%s | Vovk.ts - Realtime Kanban",
   },
   icons: {
     icon: [
       {
-        media: '(prefers-color-scheme: light)',
-        url: '/icon.svg',
-        href: '/icon.svg',
+        media: "(prefers-color-scheme: light)",
+        url: "/icon.svg",
+        href: "/icon.svg",
       },
       {
-        media: '(prefers-color-scheme: dark)',
-        url: '/icon-white.svg',
-        href: '/icon-white.svg',
+        media: "(prefers-color-scheme: dark)",
+        url: "/icon-white.svg",
+        href: "/icon-white.svg",
       },
     ],
   },

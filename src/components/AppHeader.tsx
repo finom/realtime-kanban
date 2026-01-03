@@ -14,12 +14,33 @@ const AppHeader = () => {
           <h1 className="text-xl font-bold text-foreground">
             🪣&nbsp;&nbsp;Realtime Kanban
           </h1>
-          <Link
-            href="https://vovk.dev"
-            className="opacity-60 hover:underline text-xs"
-          >
-            by Vovk.ts
-          </Link>
+          <div className="flex items-center justify-between">
+            <Link
+              href="https://vovk.dev"
+              className="opacity-60 hover:underline text-xs"
+            >
+              by Vovk.ts
+            </Link>
+            <Link
+              href="/openapi"
+              className="opacity-60 hover:underline text-xs"
+            >
+              OpenAPI Spec
+              <svg
+                fill="none"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="1.7"
+                viewBox="0 0 24 24"
+                height="1.1em"
+                className="inline"
+              >
+                <path d="M7 17L17 7"></path>
+                <path d="M7 7h10v10"></path>
+              </svg>
+            </Link>
+          </div>
         </div>
         <div className="flex items-center space-x-2">
           <Switch

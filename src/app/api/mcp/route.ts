@@ -23,7 +23,9 @@ const handler = createMcpHandler(
         {
           title,
           description,
-          inputSchema: inputSchemas as Partial<Record<'body' | 'query' | 'params', z.ZodTypeAny>>,
+          inputSchema: inputSchemas as Partial<
+            Record<"body" | "query" | "params", z.ZodTypeAny>
+          >,
         },
         execute,
       );

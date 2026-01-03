@@ -88,7 +88,12 @@ export default function useWebRTCAudioSession(
         type: "session.update",
         session: {
           type: "realtime",
-          tools: tools.map(({ name, description, parameters, type }) => ({ name, description, parameters, type })),
+          tools: tools.map(({ name, description, parameters, type }) => ({
+            name,
+            description,
+            parameters,
+            type,
+          })),
         },
       };
       dc.send(JSON.stringify(sessionUpdate));
@@ -100,7 +105,9 @@ export default function useWebRTCAudioSession(
         const execute = tools.find((tool) => tool.name === msg.name)?.execute;
         if (execute) {
           const args = JSON.parse(msg.arguments);
-          const result = await execute(args) as { __preventResponseCreate?: boolean };
+          const result = (await execute(args)) as {
+            __preventResponseCreate?: boolean;
+          };
 
           // Respond with function output
           const response = {

@@ -12,4 +12,4 @@ const getCurrentTime = () => {
   };
 };
 
-export default getCurrentTime;
+export { getCurrentTime };

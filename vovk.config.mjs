@@ -48,7 +48,7 @@ const config = {
   moduleTemplates: {
     service: "vovk-cli/module-templates/Service.ts.ejs",
     controller: "vovk-zod/module-templates/Controller.ts.ejs",
-  }
+  },
 };
 
 export default config;

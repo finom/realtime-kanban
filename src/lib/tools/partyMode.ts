@@ -110,4 +110,4 @@ const partyMode = () => {
   }
 };
 
-export default partyMode;
+export { partyMode };

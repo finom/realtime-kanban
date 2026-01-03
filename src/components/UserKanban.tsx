@@ -12,7 +12,7 @@ import {
   useSensor,
   useSensors,
   type DragEndEvent,
-  type DragStartEvent
+  type DragStartEvent,
 } from "@dnd-kit/core";
 import type { ReactNode } from "react";
 import { useMemo, useId, useState } from "react";

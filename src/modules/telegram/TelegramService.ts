@@ -4,10 +4,10 @@ import { TelegramAPI as TelegramRawAPI } from "vovk-client";
 import { createClient } from "redis";
 import { openai as vercelOpenAI } from "@ai-sdk/openai";
 import {
-  generateObject,
   generateText,
   jsonSchema,
   ModelMessage,
+  Output,
   stepCountIs,
   tool,
   type JSONSchema7,
@@ -17,16 +17,8 @@ import { z } from "zod";
 import UserController from "../user/UserController";
 import TaskController from "../task/TaskController";
 
-const getAPIRoot = () => {
-  const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
-  if (!TELEGRAM_BOT_TOKEN) {
-    // TODO: throw new Error("Missing TELEGRAM_BOT_TOKEN environment variable");
-  }
-  return `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}`;
-};
-
 const TelegramAPI = TelegramRawAPI.withDefaults({
-  apiRoot: getAPIRoot(),
+  apiRoot: `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}`,
 });
 
 const redis = createClient({
@@ -158,13 +150,15 @@ export default class TelegramService {
     messages: ModelMessage[],
   ): Promise<void> {
     const {
-      object: { type, processedText },
-    } = await generateObject({
-      model: vercelOpenAI("gpt-5"),
-      schema: z.object({
-        type: z.enum(["text", "voice"]),
-        processedText: z.string(),
+      output: { type, processedText },
+    } = await generateText({
+      output: Output.object({
+        schema: z.object({
+          type: z.enum(["text", "voice"]),
+          processedText: z.string(),
+        }),
       }),
+      model: vercelOpenAI("gpt-5"),
       messages: [
         ...messages,
         {
@@ -263,8 +257,7 @@ export default class TelegramService {
         TaskController,
         // GithubIssuesAPI: [GithubIssuesAPI, githubOptions],
       },
-      onExecute: (data, { name }) =>
-        console.log(`${name} executed`, data),
+      onExecute: (data, { name }) => console.log(`${name} executed`, data),
       onError: (e) => console.error("Error", e),
     });
 

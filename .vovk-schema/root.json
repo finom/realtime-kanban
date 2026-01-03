@@ -74,7 +74,9 @@
           "operationObject": {
             "summary": "Get all users",
             "description": "Retrieves a list of all users.",
-            "x-tool-disable": true
+            "x-tool": {
+              "hidden": true
+            }
           },
           "path": "",
           "httpMethod": "GET"
@@ -149,8 +151,7 @@
           },
           "operationObject": {
             "summary": "Find users by ID, full name, or email",
-            "description": "Retrieves users that match the provided ID, full name, or email. Used to search the users when they need to be updated or deleted.",
-            "x-tool-successMessage": "Users found successfully"
+            "description": "Retrieves users that match the provided ID, full name, or email. Used to search the users when they need to be updated or deleted."
           },
           "path": "search",
           "httpMethod": "GET"
@@ -231,8 +232,7 @@
           },
           "operationObject": {
             "summary": "Create user",
-            "description": "Creates a new user with the provided details.",
-            "x-tool-successMessage": "User created successfully"
+            "description": "Creates a new user with the provided details."
           },
           "path": "",
           "httpMethod": "POST"
@@ -321,8 +321,7 @@
           },
           "operationObject": {
             "summary": "Update user",
-            "description": "Updates an existing user with the provided details, such as their email or name.",
-            "x-tool-successMessage": "User updated successfully"
+            "description": "Updates an existing user with the provided details, such as their email or name."
           },
           "path": "{id}",
           "httpMethod": "PUT"
@@ -438,8 +437,7 @@
           },
           "operationObject": {
             "summary": "Delete user",
-            "description": "Deletes a user by ID.",
-            "x-tool-successMessage": "User deleted successfully"
+            "description": "Deletes a user by ID."
           },
           "path": "{id}",
           "httpMethod": "DELETE"
@@ -509,7 +507,9 @@
           "operationObject": {
             "summary": "Get all tasks",
             "description": "Retrieves a list of all tasks.",
-            "x-tool-disable": true
+            "x-tool": {
+              "hidden": true
+            }
           },
           "path": "",
           "httpMethod": "GET"
@@ -588,8 +588,7 @@
           },
           "operationObject": {
             "summary": "Find tasks by ID, title or description",
-            "description": "Retrieves tasks that match the provided ID, title, or description. Used to search the tasks when they need to be updated or deleted.",
-            "x-tool-successMessage": "Tasks found successfully"
+            "description": "Retrieves tasks that match the provided ID, title, or description. Used to search the tasks when they need to be updated or deleted."
           },
           "path": "search",
           "httpMethod": "GET"
@@ -663,8 +662,7 @@
           },
           "operationObject": {
             "summary": "Get tasks assigned to a specific user",
-            "description": "Retrieves all tasks associated with a specific user ID.",
-            "x-tool-successMessage": "Tasks retrieved successfully"
+            "description": "Retrieves all tasks associated with a specific user ID."
           },
           "path": "by-user/{userId}",
           "httpMethod": "GET"
@@ -753,8 +751,7 @@
           },
           "operationObject": {
             "summary": "Create a new task",
-            "description": "Creates a new task with the provided details, such as its title and description.",
-            "x-tool-successMessage": "Task created successfully"
+            "description": "Creates a new task with the provided details, such as its title and description."
           },
           "path": "",
           "httpMethod": "POST"
@@ -850,8 +847,7 @@
           },
           "operationObject": {
             "summary": "Update task",
-            "description": "Updates an existing task with the provided details, such as its title or description.",
-            "x-tool-successMessage": "Task updated successfully"
+            "description": "Updates an existing task with the provided details, such as its title or description."
           },
           "path": "{id}",
           "httpMethod": "PUT"
@@ -920,8 +916,7 @@
           },
           "operationObject": {
             "summary": "Delete task",
-            "description": "Deletes a task by ID.",
-            "x-tool-successMessage": "Task deleted successfully"
+            "description": "Deletes a task by ID."
           },
           "path": "{id}",
           "httpMethod": "DELETE"

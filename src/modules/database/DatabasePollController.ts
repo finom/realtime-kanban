@@ -33,7 +33,7 @@ export default class DatabasePollController {
 
       void DatabasePollService.poll(response);
 
-      console.log('Is response instanceof Response', response instanceof Response);
+      console.log('Is response instanceof Response', response, response instanceof Response);
 
       return response;
     },

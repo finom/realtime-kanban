@@ -3,7 +3,7 @@ import { DatabasePollRPC } from "vovk-client";
 
 /**
  * Hook to manage database polling state.
- * @example const [isPollingEnabled, setIsPollingEnabled] = useDatabasePolling(false);
+ * @example const [isPollingEnabled, setIsPollingEnabled, hasError] = useDatabasePolling(false);
  */
 export default function useDatabasePolling(initialValue = false) {
   const MAX_RETRIES = 5;
@@ -32,7 +32,6 @@ export default function useDatabasePolling(initialValue = false) {
 
           for await (const iteration of iterable) {
             console.log("New DB update:", iteration);
-           
           }
 
           if (iterable.abortController.signal.aborted) {

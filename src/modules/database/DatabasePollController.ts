@@ -8,8 +8,8 @@ import {
 } from "vovk";
 import { z } from "zod";
 import { TaskSchema, UserSchema } from "@schemas/index";
-import DatabasePollService from "./DatabasePollService";
 import { sessionGuard } from "@/decorators/sessionGuard";
+import DatabasePollService from "./DatabasePollService";
 
 @prefix("poll")
 export default class DatabasePollController {
@@ -32,6 +32,8 @@ export default class DatabasePollController {
       >(req);
 
       void DatabasePollService.poll(response);
+
+      console.log('Is response instanceof Response', response instanceof Response);
 
       return response;
     },

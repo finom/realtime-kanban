@@ -5,7 +5,7 @@ import Link from "next/link";
 import useDatabasePolling from "@/hooks/useDatabasePolling";
 
 const AppHeader = () => {
-  const [isPollingEnabled, setIsPollingEnabled] = useDatabasePolling(false);
+  const [isPollingEnabled, setIsPollingEnabled, pollingHasError] = useDatabasePolling(false);
 
   return (
     <header className="space-y-4 w-full bg-background/50 backdrop-blur-sm border-b border-border/50 sticky top-0 z-50">
@@ -48,7 +48,7 @@ const AppHeader = () => {
             checked={isPollingEnabled}
             onCheckedChange={setIsPollingEnabled}
           />
-          <Label htmlFor="poll-mode">Database Polling</Label>
+          <Label htmlFor="poll-mode" className={pollingHasError ? "text-red-500" : ""}>Database Polling</Label>
         </div>
       </div>
     </header>

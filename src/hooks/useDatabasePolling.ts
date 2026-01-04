@@ -8,6 +8,7 @@ import { DatabasePollRPC } from "vovk-client";
 export default function useDatabasePolling(initialValue = false) {
   const MAX_RETRIES = 5;
   const [isPollingEnabled, setIsPollingEnabled] = useState(initialValue);
+  const [hasError, setHasError] = useState(false);
   const abortRef = useRef<() => void | null>(null);
 
   useEffect(() => {
@@ -18,6 +19,7 @@ export default function useDatabasePolling(initialValue = false) {
   useEffect(() => {
     localStorage.setItem("isPollingEnabled", isPollingEnabled.toString());
     async function poll(retries = 0) {
+      setHasError(false);
       if (!isPollingEnabled) {
         abortRef.current?.();
         return;
@@ -30,6 +32,7 @@ export default function useDatabasePolling(initialValue = false) {
 
           for await (const iteration of iterable) {
             console.log("New DB update:", iteration);
+           
           }
 
           if (iterable.abortController.signal.aborted) {
@@ -47,6 +50,7 @@ export default function useDatabasePolling(initialValue = false) {
             "Max polling retries reached. Stopping polling.",
             error,
           );
+          setHasError(true);
         }
       }
     }
@@ -58,5 +62,5 @@ export default function useDatabasePolling(initialValue = false) {
     };
   }, [isPollingEnabled]);
 
-  return [isPollingEnabled, setIsPollingEnabled] as const;
+  return [isPollingEnabled, setIsPollingEnabled, hasError] as const;
 }

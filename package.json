@@ -17,6 +17,7 @@
     "@ai-sdk/react": "^3.0.3",
     "@dnd-kit/core": "^6.3.1",
     "@hookform/error-message": "^2.0.1",
+    "@modelcontextprotocol/sdk": "^1.25.1",
     "@neondatabase/serverless": "^1.0.2",
     "@openai/agents": "^0.3.7",
     "@prisma/adapter-neon": "^7.2.0",
@@ -46,7 +47,7 @@
     "jose": "^6.1.3",
     "lodash": "^4.17.21",
     "lucide-react": "^0.562.0",
-    "mcp-handler": "^1.0.4",
+    "mcp-handler": "^1.0.5",
     "mitt": "^3.0.1",
     "motion": "^12.23.26",
     "nanoid": "^5.1.6",
@@ -69,7 +70,6 @@
     "yaml": "^2.8.2",
     "zod": "^4.2.1",
     "zod-from-json-schema": "^0.5.2",
-    "zod-v3-via-v4-from-json-schema": "^0.0.0",
     "zustand": "^5.0.9"
   },
   "devDependencies": {

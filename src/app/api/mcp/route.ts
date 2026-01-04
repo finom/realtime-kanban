@@ -1,9 +1,8 @@
 import { createMcpHandler } from "mcp-handler";
 import { deriveTools, ToModelOutput } from "vovk";
+import z from "zod";
 import UserController from "@/modules/user/UserController";
 import TaskController from "@/modules/task/TaskController";
-import { jsonSchemaObjectToZodRawShape } from "zod-v3-via-v4-from-json-schema"; // TODO: Temporary fix
-import z from "zod";
 
 const { tools } = deriveTools({
   modules: {

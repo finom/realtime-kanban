@@ -4,17 +4,6 @@
   "segmentName": "",
   "segmentType": "segment",
   "controllers": {
-    "StaticLike": {
-      "rpcModuleName": "StaticLike",
-      "originalControllerName": "StaticLike",
-      "prefix": "",
-      "handlers": {
-        "handle": {
-          "path": "static/openapi.json",
-          "httpMethod": "GET"
-        }
-      }
-    },
     "UserRPC": {
       "rpcModuleName": "UserRPC",
       "originalControllerName": "UserController",

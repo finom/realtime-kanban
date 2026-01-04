@@ -46,10 +46,15 @@ export default class DatabaseService {
                 "create",
                 "update",
                 "delete",
+                "upsert",
                 "findMany",
                 "findUnique",
                 "findFirst",
+                "findUniqueOrThrow",
+                "findFirstOrThrow",
                 "count",
+                "aggregate",
+                "groupBy",
               ] as const;
               type AllowedOperation = (typeof allowedOperations)[number];
               if (!allowedOperations.includes(operation as AllowedOperation)) {
@@ -84,6 +89,7 @@ export default class DatabaseService {
                   break;
 
                 case "update":
+                case "upsert":
                   if ("entityType" in result)
                     change = makeChange(result, "update");
                   break;
@@ -99,7 +105,11 @@ export default class DatabaseService {
                 case "findMany":
                 case "findUnique":
                 case "findFirst":
+                case "findUniqueOrThrow":
+                case "findFirstOrThrow":
                 case "count":
+                case "aggregate":
+                case "groupBy":
                   // no events
                   break;
 

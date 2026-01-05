@@ -23,7 +23,7 @@ export default class PollService {
         );
 
         for (const deletedEntity of deleted) {
-          resp.send({
+          void resp.send({
             id: deletedEntity.id,
             entityType: deletedEntity.entityType,
             __isDeleted: true,
@@ -52,7 +52,7 @@ export default class PollService {
               })
               .then((entities) => {
                 for (const entity of entities) {
-                  resp.send(entity);
+                  void resp.send(entity);
                 }
               });
             asOldAs = new Date(maxDateItem.date);

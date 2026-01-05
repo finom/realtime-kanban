@@ -2,7 +2,7 @@ import { EntityType } from "@prisma/client";
 import {
   procedure,
   get,
-  JSONLinesResponse,
+  JSONLinesResponder,
   prefix,
   type VovkIteration,
 } from "vovk";
@@ -27,15 +27,15 @@ export default class DatabasePollController {
       TaskSchema,
     ]),
     async handle(req) {
-      const response = new JSONLinesResponse<
+      const responder = new JSONLinesResponder<
         VovkIteration<typeof DatabasePollController.poll>
-      >(req);
+      >(req, ({ readableStream, headers }) => {
+        return new Response(readableStream, { headers });
+      });
 
-      void DatabasePollService.poll(response);
+      void DatabasePollService.poll(responder);
 
-      console.log('Is response instanceof Response', response, response instanceof Response);
-
-      return response;
+      return responder;
     },
   });
 }

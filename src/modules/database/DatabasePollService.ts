@@ -1,12 +1,12 @@
 import type DatabasePollController from "./DatabasePollController";
-import { JSONLinesResponse, type VovkIteration } from "vovk";
+import { JSONLinesResponder, type VovkIteration } from "vovk";
 import { forEach, groupBy } from "lodash";
 import DatabaseEventsService, { type DBChange } from "./DatabaseEventsService";
 import DatabaseService from "./DatabaseService";
 
 export default class PollService {
   static poll(
-    resp: JSONLinesResponse<VovkIteration<typeof DatabasePollController.poll>>,
+    resp: JSONLinesResponder<VovkIteration<typeof DatabasePollController.poll>>,
   ) {
     setTimeout(resp.close, 30_000);
 

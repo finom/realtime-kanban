@@ -22,7 +22,7 @@ export default class DatabaseService {
     return prisma
       .$extends({
         name: "timestamps",
-        // Ensure createdAt and updatedAt are always ISO strings
+        // Ensure createdAt and updatedAt are always ISO strings to match the generated Zod schemas
         result: {
           $allModels: {
             createdAt: {

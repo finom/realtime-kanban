@@ -6,9 +6,9 @@ import DatabaseService from "./DatabaseService";
 
 export default class PollService {
   static poll(
-    resp: JSONLinesResponder<VovkIteration<typeof DatabasePollController.poll>>,
+    responder: JSONLinesResponder<VovkIteration<typeof DatabasePollController.poll>>,
   ) {
-    setTimeout(resp.close, 30_000);
+    setTimeout(() => responder.close(), 30_000);
 
     let asOldAs = new Date();
     // 10 minutes ago; TODO: use latest update date from registry
@@ -23,7 +23,7 @@ export default class PollService {
         );
 
         for (const deletedEntity of deleted) {
-          void resp.send({
+          void responder.send({
             id: deletedEntity.id,
             entityType: deletedEntity.entityType,
             __isDeleted: true,
@@ -52,7 +52,7 @@ export default class PollService {
               })
               .then((entities) => {
                 for (const entity of entities) {
-                  void resp.send(entity);
+                  void responder.send(entity);
                 }
               });
             asOldAs = new Date(maxDateItem.date);

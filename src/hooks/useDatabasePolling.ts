@@ -28,14 +28,14 @@ export default function useDatabasePolling(initialValue = false) {
         while (true) {
           console.log("Polling database for updates...");
           const iterable = await DatabasePollRPC.poll();
-          abortRef.current = iterable.abortWithoutError;
+          abortRef.current = iterable.abortSilently;
 
           for await (const iteration of iterable) {
             console.log("New DB update:", iteration);
           }
 
           if (iterable.abortController.signal.aborted) {
-            console.log("Polling aborted with abortWithoutError");
+            console.log("Polling aborted with abortSilently");
             break;
           }
         }

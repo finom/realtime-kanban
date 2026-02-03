@@ -1,5 +1,84 @@
 'use client'
 
+import { ChunkComponent, registry } from "./render"
+
+
+const countLines: ChunkComponent[] = [
+ {
+    "id": "card1",
+      "type": "element",
+      "component": "Card",
+      "props": "{ \"children\": scope.count }",
+      "deps": ["scope.count"],
+      "defaults": [
+        { "set": "scope.count", "literal": 0 }
+      ],
+      // "children": [],
+      "callbacks": {
+        "onClick": [
+          { "set": "scope.count", "expr": "scope.count + 1.0" },
+          // { "set": "scope.count", "expr": "scope.count + 2.0" }
+        ],
+      }
+    },
+] as const;
+
+const formLines: ChunkComponent[] = [
+ {
+    "id": "card2",
+      "type": "element",
+      "component": "Card",
+      "props": "{ \"children\": scope.count }",
+      "deps": ["scope.count"],
+      "defaults": [
+        { "set": "scope.count", "literal": 0 }
+      ],
+      "children": ['input1', 'list1'],
+      "callbacks": {
+        "onClick": [
+          { "set": "scope.count", "expr": "scope.count + 1.0" },
+          // { "set": "scope.count", "expr": "scope.count + 2.0" }
+        ],
+      }
+    },
+    {
+        "id": "input1",
+        "type": "element",
+        "component": "Input",
+        "props": "{ \"value\": dyn(scope.count), \"label\": dyn(\"Count\"), \"type\": dyn(\"number\") }",
+        "deps": ["scope.count"],
+        "callbacks": {
+          "onChange": [
+            { "set": "scope.count", "expr": "evt.valueAsNumber" }
+          ]
+        }
+      },
+      {
+        "id": "list1",
+        "type": "element",
+        "component": "Ul",
+      },
+      {
+        "id": "list1",
+        "type": "list",
+        "itemScope": "itemScope",
+        "component": "Li",
+        "itemsExpr": "scope.items",
+        "props": "{ \"children\": itemScope.item }",
+        "defaults": [
+          { "set": "scope.items", "literal": [ "Item 1", "Item 2", "Item 3" ] }
+        ]
+      }
+] as const;
+
+
+export default function Page() {
+  return <>
+    <registry.Renderer lines={countLines} />
+    <registry.Renderer lines={formLines} />
+  </>;
+}
+/* 
 import React, { useState, useEffect } from 'react'
 
 const Card = ({ title, padding = 'md', children }: any) => (
@@ -127,3 +206,4 @@ export default function ProgressiveDashboardPage() {
     </div>
   )
 }
+  */

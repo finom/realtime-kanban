@@ -1,209 +1,213 @@
-import React, { ReactNode, useEffect, useReducer } from "react";
-import { evaluate } from '@marcbachmann/cel-js'
-import z from "zod";
+import React, { ReactNode, useEffect, useMemo, useReducer } from "react";
+
 import { createReactiveProxy } from "./createReactiveProxy";
+import { ChunkComponent, ChunkComponentList } from "./types";
+import { registry } from "./registry";
+import { evaluate } from "./evaluate";
+import { parseScope } from "./utils";
 
-export type ChunkComponent = {
-    id: string;
-    component: string;
-    type: 'element' | 'list';
-    itemScope?: string;
-    itemsExpr?: string;
-    props?: string;
-    deps?: string[];
-    defaults?: SetExpr[];
-    callbacks?: Record<string, SetExpr[]>;
-    children?: string[];
-};
+// Create a custom CEL environment with scopes and evt variables
 
-type Chunk = ChunkComponent;
-
-type SetExpr = { set?: string; expr?: string; literal?: unknown };
-
-type CallbacksToFunctions<T extends Record<string, z.ZodTypeAny>> = {
-  [K in keyof T]: (args: z.infer<T[K]>) => void;
-};
-
-const createAIComponent = <
-  TProps extends z.ZodObject<any, any>,
-  TCallbacks extends Record<string, z.ZodTypeAny>
->(config: {
-  propDefs: TProps;
-  callbacks?: TCallbacks;
-  description?: string;
-  render: (
-    props: { children?: ReactNode } & z.infer<TProps> & CallbacksToFunctions<TCallbacks>
-  ) => React.ReactElement;
-  scopes?: object[];
-}) => {
-  return (myprops: { chunk: Chunk, children: ReactNode, scopes: Record<string, any> }) => {
-    const { chunk, children } = myprops;
-    const props: z.infer<TProps> = chunk.props ? evaluate(chunk.props, {
-      ...myprops.scopes
-    }) as z.infer<TProps> : {} as z.infer<TProps>;
-    const chunkCallbacks = chunk.callbacks ? chunk.callbacks : {};
-    const callbacks = Object.fromEntries(
-      Object.keys(chunkCallbacks).map((key) => [key, (evt: any) => {
-        let result: unknown;
-
-        for (const { expr, set } of chunkCallbacks[key]) {
-          result = expr ? evaluate(expr, { evt, ...myprops.scopes }) : evt.value;
-          if (set) {
-            const [targetScope, targetPath] = parseScope(set);
-            myprops.scopes[targetScope].$set(targetPath, result);
-          }
-        }
-
-        return result;
-      }])
-    ) as CallbacksToFunctions<TCallbacks>;
-
-    return config.render({ children, ...props, ...callbacks });
-  };
-};
-
-
-const parseScope = (key: string) => {
-  const dotIndex = key.indexOf('.');
-  if(dotIndex === -1) {
-    throw new Error('Invalid scope key: ' + key);
-  } else {
-    return [key.slice(0, dotIndex), key.slice(dotIndex + 1)] as [string, string];
-  }
-};
-
-
-const RecursiveRenderer = ({ elementKey, elements, scopes }: { elementKey: string; elements: Record<string, ChunkComponent>, scopes: Record<string, ReturnType<typeof createReactiveProxy>> }): React.ReactElement => {
+export const RecursiveRenderer = ({
+  elementKey,
+  elements,
+  scopes,
+}: {
+  elementKey: string;
+  elements: Record<string, ChunkComponent>;
+  scopes: Record<string, ReturnType<typeof createReactiveProxy>>;
+}): React.ReactElement => {
   const element = elements[elementKey];
   const [, forceRender] = useReducer((x: number): number => x + 1, 0);
   const hasBeenRenderedRef = React.useRef(false);
-  if (!element) return <div className="text-gray-400 italic">Loading component...</div>
+  if (!element)
+    return <div className="text-gray-400 italic">Loading component...</div>;
 
-  const Component = registry.components[element.component]
-  if (!Component) return <div className="text-red-500">Unknown component: {element.component}</div>
+  const Component = registry.components[element.component];
+  if (!Component)
+    return (
+      <div className="text-red-500">Unknown component: {element.component}</div>
+    );
 
   const children = element.children
-    ? element.children.map((childKey: string) => (
-        <RecursiveRenderer key={childKey} elementKey={childKey} elements={elements} scopes={scopes} />
-      ))
+    ? element.children.map((childKey: string) => {
+        const childElement = elements[childKey];
+        if (childElement?.type === "list") {
+          return (
+            <ListRenderer
+              key={childKey}
+              elementKey={childKey}
+              elements={elements}
+              scopes={scopes}
+              line={childElement}
+            />
+          );
+        }
+        return (
+          <RecursiveRenderer
+            key={childKey}
+            elementKey={childKey}
+            elements={elements}
+            scopes={scopes}
+          />
+        );
+      })
     : null;
 
-  if(element.defaults && !hasBeenRenderedRef.current) {
-    element.defaults.forEach(def => {
-      if(def.set) {
-        console.log('Applying default', def);
-        const value = def.expr ? evaluate(def.expr, scopes) : def.literal;
-        // scopes.scope[def.set] = value;
+  if (element.defaults && !hasBeenRenderedRef.current) {
+    element.defaults.forEach((def) => {
+      if (def.set) {
+        console.log("Applying default", def);
+        const value = def.expr ? evaluate(def.expr, { scopes }) : def.literal;
         const [targetScope, targetPath] = parseScope(def.set);
         scopes[targetScope].$setDefault(targetPath, value);
-        console.log(' scopes[targetScope]', scopes[targetScope]);
+        console.log(" scopes[targetScope]", scopes[targetScope]);
       }
     });
     hasBeenRenderedRef.current = true;
   }
 
   useEffect(() => {
-    if(element.deps) {
+    if (element.deps) {
       const unsubscribers: (() => void)[] = [];
-      for(const dep of element.deps) {
+      for (const dep of element.deps) {
         const [targetScope, targetPath] = parseScope(dep);
 
-        const unsubscribe = scopes[targetScope].$emitter.on(targetPath, (newValue: unknown) => {
-          console.log(`Dependency changed: ${dep} =`, newValue);
-          forceRender();
-        });
+        const unsubscribe = scopes[targetScope].$emitter.on(
+          targetPath,
+          (newValue: unknown) => {
+            console.log(`Dependency changed: ${dep} =`, newValue);
+            forceRender();
+          },
+        );
         unsubscribers.push(unsubscribe);
       }
       return () => {
-        unsubscribers.forEach(unsub => unsub());
-      }
+        unsubscribers.forEach((unsub) => unsub());
+      };
     }
 
     return () => {};
   }, [element, scopes]);
 
-  return <Component chunk={element} scopes={scopes}>{children}</Component>
-}
-
-
-const createAIComponentRegistry = (components: Record<string, ReturnType<typeof createAIComponent>>) => {
-  const scope = createReactiveProxy();
-  return {
-    components,
-    Renderer: ({ lines }: { lines: Chunk[] }) => {
-      const componentsById = lines.reduce((acc, line) => {
-        acc[line.component] = line;
-        return acc;
-      }, {} as Record<string, any>);
-      return lines.map((line, index) => {
-          const Component = components[line.component];
-          if (!Component) {
-            return <div key={index}>Unknown component: {line.component} </div>;
-          }
-          if(line.type === 'element') return <RecursiveRenderer key={index} elementKey={line.component} elements={componentsById} scopes={{ scope }} />;
-          if(line.type === 'list') {
-            const scopeKey = line.itemScope;
-            return <RecursiveRenderer key={index} elementKey={line.component} elements={componentsById} scopes={{ scope }} />;
-          }
-          return <>Error</>
-      });
-    }
-  }
+  return (
+    <Component chunk={element} scopes={scopes}>
+      {children}
+    </Component>
+  );
 };
 
-export const registry = createAIComponentRegistry({
-  Card: createAIComponent({
-    propDefs: z.object({
-      title: z.string().optional(),
-      padding: z.enum(['md', 'sm']).default('md'),
-      children: z.any().optional(),
-    }),
-    callbacks: {
-      onClick: z.object({ x: z.any().optional() }),
-    },
-    render: ({ title, padding, children, onClick }) => {
-      return <div title={title} onClick={() => onClick({ x: 0 })} className={`rounded-xl shadow-lg border border-gray-200 ${padding === 'md' ? 'p-6' : 'p-4'}`}>{children}</div>;  
+const getItemId = (
+  idKey: string | undefined,
+  item: unknown,
+  index: number
+): string | number => {
+  const key = idKey ?? '_index';
+  if (key === '_index') return index;
+  if (key === '_item') return item as string | number;
+  return ((item as Record<string, unknown>)?.[key] ?? index) as string | number;
+};
+
+export const ListRenderer = ({
+  elementKey,
+  elements,
+  scopes,
+  line,
+}: {
+  elementKey: string;
+  elements: Record<string, ChunkComponent>;
+  scopes: Record<string, ReturnType<typeof createReactiveProxy>>;
+  line: ChunkComponentList;
+}): React.ReactElement => {
+  const element = elements[elementKey];
+  const [, forceRender] = useReducer((x) => x + 1, 0);
+  // Cache item proxies by unique ID to preserve state across re-renders
+  const itemProxiesRef = React.useRef<
+    Map<string | number, ReturnType<typeof createReactiveProxy>>
+  >(new Map());
+
+  if (!element)
+    return <div className="text-gray-400 italic">Loading list...</div>;
+
+  if (element.type !== "list")
+    return (
+      <div className="text-red-500">Element is not a list: {elementKey}</div>
+    );
+
+  // Subscribe to changes in the items expression
+  // items is a CEL expression like "scopes.root.rows", we need to extract "root.rows" for subscription
+  useEffect(() => {
+    if (line.items) {
+      // Parse "scopes.root.path" -> ["root", "path"]
+      const [targetScope, targetPath] = parseScope(line.items);
+      const unsubscribe = scopes[targetScope].$emitter.on(targetPath, () => {
+        console.log(`List items changed: ${line.items}`);
+        forceRender();
+      });
+      return unsubscribe;
     }
-  }),
-  Input: createAIComponent({
-    propDefs: z.object({
-      label: z.string().optional(),
-      value: z.any(),
-      type: z.enum(['text', 'number']).default('text'),
-    }),
-    callbacks: {
-      onChange: z.object({ 
-        value: z.string().meta({ description: "The current value of the input" }), 
-        valueAsNumber: z.number().meta({ description: "The current value of the input as a number, if NaN then 0" }) 
-      }),
-    },
-    render: ({ label, value, type = 'text', onChange }) => {
-      return <div className="flex flex-col gap-1">
-        {label && <label className="text-sm font-medium text-gray-700">{label}</label>}
-        <input
-          type={type}
-          value={value as string | number | readonly string[] | undefined}
-          onChange={(e) => {
-            onChange?.({ value: e.target.value, valueAsNumber: e.target.valueAsNumber || 0 });
-          }}
-          className="border border-gray-300 rounded px-3 py-2"
-        />
-      </div>;
+    return () => {};
+  }, [line.items, scopes]);
+
+  const items = evaluate(line.items || "[]", { scopes }) as unknown[];
+
+  // Clean up proxies for removed items (by ID)
+  const currentIds = new Set(items.map((item, index) => getItemId(line.idKey, item, index)));
+  itemProxiesRef.current.forEach((_, id) => {
+    if (!currentIds.has(id)) {
+      itemProxiesRef.current.delete(id);
     }
-  }),
-  Ul: createAIComponent({
-    propDefs: z.object({}),
-    render: ({ children }) => {
-      return <ul>{children}</ul>
-    }
-  }),
-  Li: createAIComponent({
-    propDefs: z.object({}),
-    render: ({ children }) => {
-      return <li>{children}</li>;
-    }
-  }),
-});
+  });
+
+  const lastScope = scopes[Object.keys(scopes)[Object.keys(scopes).length - 1]];
+
+  const childrenAndScopes = items.map((item, index) => {
+    // Use item's id if available, otherwise fall back to index
+    const itemId = getItemId(line.idKey, item, index);
+
+    // Reuse existing proxy or create a new one (keyed by ID)
+    const existingProxy = itemProxiesRef.current.get(itemId);
+
+    const itemProxy =
+      existingProxy ??
+      (() => {
+        // Create new proxy for new items
+        const itemData = { item, index, id: itemId };
+        const newProxy = createReactiveProxy(itemData);
+        itemProxiesRef.current.set(itemId, newProxy);
+        return newProxy;
+      })();
+
+    // Always update the index in case items shifted
+    (itemProxy as any).index = index;
+
+    const itemScopes = {
+      ...scopes,
+      [line.itemScope]: itemProxy,
+    };
+
+    console.log('itemId', itemId, 'itemProxy', itemProxy);
+
+    return [
+      <RecursiveRenderer
+        key={`${elementKey}-item-${itemId}`}
+        elementKey={elementKey}
+        elements={elements}
+        scopes={itemScopes}
+      />,
+      itemProxy,
+    ];
+  });
+
+  const children = childrenAndScopes.map(([child]) => child);
+  const itemScopesList = childrenAndScopes.map(([, scope]) => scope);
+
+  console.log('itemScopesList', itemScopesList);
+
+  lastScope.$set(`childScopes.${line.itemScope}`, itemScopesList);
+
+  return <>{children}</>;
+};
 
 /* 
 registry.build(lines);

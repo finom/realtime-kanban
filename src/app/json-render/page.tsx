@@ -1,82 +1,349 @@
-'use client'
+"use client";
 
-import { ChunkComponent, registry } from "./render"
-
+import { ChunkComponent } from "./types";
+import { registry } from "./registry";
 
 const countLines: ChunkComponent[] = [
- {
-    "id": "card1",
-      "type": "element",
-      "component": "Card",
-      "props": "{ \"children\": scope.count }",
-      "deps": ["scope.count"],
-      "defaults": [
-        { "set": "scope.count", "literal": 0 }
+  {
+    id: "card1",
+    op: "root",
+    type: "element",
+    component: "Card",
+    props: '{ "children": scopes.root.count }',
+    deps: ["scopes.root.count"],
+    defaults: [{ set: "scopes.root.count", literal: 0 }],
+    // "children": [],
+    callbacks: {
+      onClick: [
+        { set: "scopes.root.count", expr: "scopes.root.count + 1.0" },
+        // { "set": "scopes.root.count", "expr": "scopes.root.count + 2.0" }
       ],
-      // "children": [],
-      "callbacks": {
-        "onClick": [
-          { "set": "scope.count", "expr": "scope.count + 1.0" },
-          // { "set": "scope.count", "expr": "scope.count + 2.0" }
-        ],
-      }
     },
+  },
 ] as const;
 
 const formLines: ChunkComponent[] = [
- {
-    "id": "card2",
-      "type": "element",
-      "component": "Card",
-      "props": "{ \"children\": scope.count }",
-      "deps": ["scope.count"],
-      "defaults": [
-        { "set": "scope.count", "literal": 0 }
+  {
+    id: "card2",
+    op: "root",
+    type: "element",
+    component: "Card",
+    props: '{ "children": scopes.root.count }',
+    deps: ["scopes.root.count"],
+    defaults: [{ set: "scopes.root.count", literal: 0 }],
+    children: ["input1"],
+    callbacks: {
+      onClick: [
+        { set: "scopes.root.count", expr: "scopes.root.count + 1.0" },
+        // { "set": "scopes.root.count", "expr": "scopes.root.count + 2.0" }
       ],
-      "children": ['input1', 'list1'],
-      "callbacks": {
-        "onClick": [
-          { "set": "scope.count", "expr": "scope.count + 1.0" },
-          // { "set": "scope.count", "expr": "scope.count + 2.0" }
-        ],
-      }
     },
-    {
-        "id": "input1",
-        "type": "element",
-        "component": "Input",
-        "props": "{ \"value\": dyn(scope.count), \"label\": dyn(\"Count\"), \"type\": dyn(\"number\") }",
-        "deps": ["scope.count"],
-        "callbacks": {
-          "onChange": [
-            { "set": "scope.count", "expr": "evt.valueAsNumber" }
-          ]
-        }
-      },
-      {
-        "id": "list1",
-        "type": "element",
-        "component": "Ul",
-      },
-      {
-        "id": "list1",
-        "type": "list",
-        "itemScope": "itemScope",
-        "component": "Li",
-        "itemsExpr": "scope.items",
-        "props": "{ \"children\": itemScope.item }",
-        "defaults": [
-          { "set": "scope.items", "literal": [ "Item 1", "Item 2", "Item 3" ] }
-        ]
-      }
+  },
+  {
+    id: "input1",
+    op: "child",
+    type: "element",
+    component: "Input",
+    props:
+      '{ "value": dyn(scopes.root.count), "label": dyn("Count"), "type": dyn("number") }',
+    deps: ["scopes.root.count"],
+    callbacks: {
+      onChange: [{ set: "scopes.root.count", expr: "evt.valueAsNumber" }],
+    },
+  },
 ] as const;
 
+const listLines: ChunkComponent[] = [
+  {
+    id: "list1",
+    op: "root",
+    type: "element",
+    component: "Ul",
+    children: ["list1-item", "add-item-button"],
+    defaults: [
+      { set: "scopes.root.items", literal: ["Item 1", "Item 2", "Item 3"] },
+    ],
+  },
+  {
+    id: "list1-item",
+    op: "child",
+    type: "list",
+    itemScope: "itemScope",
+    component: "Li",
+    items: "scopes.root.items",
+    props: '{ "children": scopes.itemScope.item }',
+  },
+  {
+    id: "add-item-button",
+    op: "child",
+    type: "element",
+    component: "Button",
+    props: '{ "children": "Add Item" }',
+    callbacks: {
+      onClick: [
+        {
+          set: "scopes.root.items",
+          expr: 'scopes.root.items + ["Item " + string(size(scopes.root.items) + 1)]',
+        },
+      ],
+    },
+  },
+] as const;
+
+// Demo chunks for the table with A, B, Sum columns
+export const tableChunks: ChunkComponent[] = [
+  {
+    id: "table-card",
+    component: "Table",
+    op: "root",
+    type: "element",
+    defaults: [
+      { set: "scopes.root.rows", literal: [{ id: 1.0, a: 0.0, b: 0.0 }] },
+      { set: "scopes.root.nextId", literal: 2.0 },
+      { set: "scopes.root.totalSum", literal: 0.0 },
+    ],
+    children: ["thead", "tbody", "tfoot"],
+  },
+  {
+    id: "thead",
+    component: "Thead",
+    op: "child",
+    type: "element",
+    children: ["header-row"],
+  },
+  {
+    id: "header-row",
+    component: "Tr",
+    op: "child",
+    type: "element",
+    children: ["th-a", "th-b", "th-sum", "th-actions"],
+  },
+  {
+    id: "th-a",
+    component: "Th",
+    op: "child",
+    type: "element",
+    props: '{"text": "A"}',
+  },
+  {
+    id: "th-b",
+    component: "Th",
+    op: "child",
+    type: "element",
+    props: '{"text": "B"}',
+  },
+  {
+    id: "th-sum",
+    component: "Th",
+    op: "child",
+    type: "element",
+    props: '{"text": "Sum"}',
+  },
+  {
+    id: "th-actions",
+    component: "Th",
+    op: "child",
+    type: "element",
+    props: '{"text": "Actions"}',
+  },
+  {
+    id: "tbody",
+    component: "Tbody",
+    op: "child",
+    type: "element",
+    children: ["data-rows"],
+  },
+  {
+    id: "data-rows",
+    component: "Tr",
+    op: "child",
+    type: "list",
+    idKey: 'id',
+    items: "scopes.root.rows",
+    itemScope: "row",
+    children: ["td-input-a", "td-input-b", "td-sum", "td-delete"],
+  },
+  {
+    id: "td-input-a",
+    component: "Td",
+    op: "child",
+    type: "element",
+    children: ["input-a"],
+  },
+  {
+    id: "input-a",
+    component: "NumberInput",
+    op: "child",
+    type: "element",
+    props: '{"value": scopes.row.item.a}',
+    deps: ["scopes.row.item.a"],
+    callbacks: {
+      onChange: [
+        { set: "scopes.row.item.a", expr: "evt.value" },
+        {
+          set: "scopes.root.totalSum",
+          expr: "reduce(scopes.root.childScopes.row.map(r, double(r.item.a) + double(r.item.b)), 0.0)",
+        },
+      ],
+    },
+  },
+  {
+    id: "td-input-b",
+    component: "Td",
+    op: "child",
+    type: "element",
+    children: ["input-b"],
+  },
+  {
+    id: "input-b",
+    component: "NumberInput",
+    op: "child",
+    type: "element",
+    props: '{"value": scopes.row.item.b}',
+    deps: ["scopes.row.item.b"],
+    callbacks: {
+      onChange: [
+        { set: "scopes.row.item.b", expr: "evt.value" },
+        {
+          set: "scopes.root.totalSum",
+          expr: "reduce(scopes.root.childScopes.row.map(r, double(r.item.a) + double(r.item.b)), 0.0)",
+        },
+      ],
+    },
+  },
+  {
+    id: "td-sum",
+    component: "Td",
+    op: "child",
+    type: "element",
+    children: ["sum-text"],
+  },
+  {
+    id: "sum-text",
+    component: "Text",
+    op: "child",
+    type: "element",
+    props: '{"value": double(scopes.row.item.a) + double(scopes.row.item.b)}',
+    deps: ["scopes.row.item.a", "scopes.row.item.b"],
+  },
+  {
+    id: "td-empty",
+    component: "Td",
+    op: "child",
+    type: "element",
+  },
+  {
+    id: "td-delete",
+    component: "Td",
+    op: "child",
+    type: "element",
+    children: ["delete-btn"],
+  },
+  {
+    id: "delete-btn",
+    component: "Button",
+    op: "child",
+    type: "element",
+    props: '{"text": "Delete"}',
+    callbacks: {
+      onClick: [
+        {
+          set: "scopes.root.rows",
+          expr: "scopes.root.rows.filter(r, r.id != scopes.row.item.id)",
+        },
+        {
+          set: "scopes.root.totalSum",
+          expr: "reduce(scopes.root.childScopes.row.map(r, double(r.item.a) + double(r.item.b)), 0.0)",
+        },
+      ],
+    },
+  },
+  {
+    id: "tfoot",
+    component: "Tfoot",
+    op: "child",
+    type: "element",
+    children: ["footer-row"],
+  },
+  {
+    id: "footer-row",
+    component: "Tr",
+    op: "child",
+    type: "element",
+    children: ["td-total-label", "td-add-btn", "td-total-sum", "td-row-count"],
+  },
+  {
+    id: "td-total-label",
+    component: "Td",
+    op: "child",
+    type: "element",
+    props: '{"text": "Total"}',
+  },
+  {
+    id: "td-add-btn",
+    component: "Td",
+    op: "child",
+    type: "element",
+    children: ["add-btn"],
+  },
+  {
+    id: "add-btn",
+    component: "Button",
+    op: "child",
+    type: "element",
+    props: '{"text": "+ Add Row"}',
+    callbacks: {
+      onClick: [
+        {
+          set: "scopes.root.rows",
+          expr: "scopes.root.rows + [{'id': dyn(scopes.root.nextId), 'a': dyn(0.0), 'b': dyn(0.0)}]",
+        },
+        { set: "scopes.root.nextId", expr: "scopes.root.nextId + 1.0" },
+      ],
+    },
+  },
+  {
+    id: "td-total-sum",
+    component: "Td",
+    op: "child",
+    type: "element",
+    children: ["total-sum-text"],
+  },
+  {
+    id: "total-sum-text",
+    component: "Text",
+    op: "child",
+    type: "element",
+    props:
+      '{"value": scopes.root.totalSum}',
+    deps: ["scopes.root.totalSum"],
+  },
+  {
+    id: "td-row-count",
+    component: "Td",
+    op: "child",
+    type: "element",
+    children: ["row-count-text"],
+  },
+  {
+    id: "row-count-text",
+    component: "Text",
+    op: "child",
+    type: "element",
+    props: '{"value": string(size(scopes.root.rows)) + " rows"}',
+    deps: ["scopes.root.rows"],
+  },
+] as const;
 
 export default function Page() {
-  return <>
-    <registry.Renderer lines={countLines} />
-    <registry.Renderer lines={formLines} />
-  </>;
+  return (
+    <>
+      <registry.Renderer lines={countLines} />
+      <registry.Renderer lines={formLines} />
+      <registry.Renderer lines={listLines} />
+      <registry.Renderer lines={tableChunks} />
+    </>
+  );
 }
 /* 
 import React, { useState, useEffect } from 'react'

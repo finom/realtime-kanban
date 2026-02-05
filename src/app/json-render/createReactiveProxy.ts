@@ -28,8 +28,8 @@ function createEmitter(): Emitter {
     },
 
     emit(type, payload) {
-      events.get(type)?.forEach(fn => fn(payload));
-    }
+      events.get(type)?.forEach((fn) => fn(payload));
+    },
   };
 }
 
@@ -39,14 +39,16 @@ type ReactiveProxy<T extends object> = T & {
   $setDefault: (path: string, value: unknown) => void;
 };
 
-function createReactiveProxy<T extends object>(target: T = {} as T): ReactiveProxy<T> {
+function createReactiveProxy<T extends object>(
+  target: T = {} as T,
+): ReactiveProxy<T> {
   const emitter = createEmitter();
   const proxyCache = new WeakMap<object, object>();
 
   function set(path: string, value: unknown): void {
-    const keys = path.split('.');
+    const keys = path.split(".");
     let current: any = proxy;
-    
+
     for (let i = 0; i < keys.length - 1; i++) {
       const key = keys[i];
       if (current[key] === undefined || current[key] === null) {
@@ -54,14 +56,14 @@ function createReactiveProxy<T extends object>(target: T = {} as T): ReactivePro
       }
       current = current[key];
     }
-    
+
     current[keys[keys.length - 1]] = value;
   }
 
   function setDefault(path: string, value: unknown): void {
-    const keys = path.split('.');
+    const keys = path.split(".");
     let current: any = proxy;
-    
+
     for (let i = 0; i < keys.length - 1; i++) {
       const key = keys[i];
       if (current[key] === undefined || current[key] === null) {
@@ -69,7 +71,7 @@ function createReactiveProxy<T extends object>(target: T = {} as T): ReactivePro
       }
       current = current[key];
     }
-    
+
     const lastKey = keys[keys.length - 1];
     if (current[lastKey] === undefined) {
       current[lastKey] = value;
@@ -77,15 +79,16 @@ function createReactiveProxy<T extends object>(target: T = {} as T): ReactivePro
   }
 
   function wrap<U>(obj: U, path: PropertyKey[] = []): U {
-    if (obj === null || typeof obj !== 'object') return obj;
-    if (proxyCache.has(obj as object)) return proxyCache.get(obj as object) as U;
+    if (obj === null || typeof obj !== "object") return obj;
+    if (proxyCache.has(obj as object))
+      return proxyCache.get(obj as object) as U;
 
     const proxy = new Proxy(obj as object, {
       get(target, prop, receiver) {
         if (path.length === 0) {
-          if (prop === '$emitter') return emitter;
-          if (prop === '$set') return set;
-          if (prop === '$setDefault') return setDefault;
+          if (prop === "$emitter") return emitter;
+          if (prop === "$set") return set;
+          if (prop === "$setDefault") return setDefault;
         }
         const value = Reflect.get(target, prop, receiver);
         return wrap(value, path.concat(prop));
@@ -96,16 +99,16 @@ function createReactiveProxy<T extends object>(target: T = {} as T): ReactivePro
         const result = Reflect.set(target, prop, value, receiver);
 
         if (oldValue !== value) {
-          const fullPath = path.concat(prop).join('.');
+          const fullPath = path.concat(prop).join(".");
           emitter.emit<ChangePayload>(fullPath, {
             path: fullPath,
             value,
-            oldValue
+            oldValue,
           });
         }
 
         return result;
-      }
+      },
     }) as U;
 
     proxyCache.set(obj as object, proxy as object);
@@ -117,4 +120,11 @@ function createReactiveProxy<T extends object>(target: T = {} as T): ReactivePro
   return proxy;
 }
 
-export { createReactiveProxy, createEmitter, type Emitter, type ChangePayload, type EventHandler, type ReactiveProxy };
+export {
+  createReactiveProxy,
+  createEmitter,
+  type Emitter,
+  type ChangePayload,
+  type EventHandler,
+  type ReactiveProxy,
+};

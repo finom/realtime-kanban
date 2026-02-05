@@ -1,5 +1,5 @@
-import { createCatalog } from '@json-render/core';
-import { z } from 'zod';
+import { createCatalog } from "@json-render/core";
+import { z } from "zod";
 
 export const catalog = createCatalog({
   components: {
@@ -10,8 +10,8 @@ export const catalog = createCatalog({
     Metric: {
       props: z.object({
         label: z.string(),
-        valuePath: z.string(),      // Binds to your data
-        format: z.enum(['currency', 'percent', 'number']),
+        valuePath: z.string(), // Binds to your data
+        format: z.enum(["currency", "percent", "number"]),
       }),
     },
     Button: {
@@ -22,7 +22,7 @@ export const catalog = createCatalog({
     },
   },
   actions: {
-    export_report: { description: 'Export dashboard to PDF' },
-    refresh_data: { description: 'Refresh all metrics' },
+    export_report: { description: "Export dashboard to PDF" },
+    refresh_data: { description: "Refresh all metrics" },
   },
 });

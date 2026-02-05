@@ -6,7 +6,9 @@ import DatabaseService from "./DatabaseService";
 
 export default class PollService {
   static poll(
-    responder: JSONLinesResponder<VovkIteration<typeof DatabasePollController.poll>>,
+    responder: JSONLinesResponder<
+      VovkIteration<typeof DatabasePollController.poll>
+    >,
   ) {
     setTimeout(() => responder.close(), 30_000);
 

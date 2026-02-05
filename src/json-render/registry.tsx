@@ -1,8 +1,8 @@
 // components/registry.tsx
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { type CatalogProps } from './catalog';
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { type CatalogProps } from "./catalog";
 
 // Type for the registry components
 type RegistryComponent<K extends keyof CatalogProps> = React.FC<{
@@ -13,10 +13,13 @@ type RegistryComponent<K extends keyof CatalogProps> = React.FC<{
 }>;
 
 // Helper to get value from data using path like "/form/email"
-const getValueByPath = (data: Record<string, unknown>, path: string): unknown => {
-  const keys = path.replace(/^\//, '').split('/');
+const getValueByPath = (
+  data: Record<string, unknown>,
+  path: string,
+): unknown => {
+  const keys = path.replace(/^\//, "").split("/");
   return keys.reduce<unknown>((acc, key) => {
-    if (acc && typeof acc === 'object' && key in acc) {
+    if (acc && typeof acc === "object" && key in acc) {
       return (acc as Record<string, unknown>)[key];
     }
     return undefined;
@@ -39,21 +42,17 @@ export const registry: Registry = {
     </Button>
   ),
 
-  Card: ({ children }) => (
-    <Card>
-      {children}
-    </Card>
-  ),
+  Card: ({ children }) => <Card>{children}</Card>,
 
   Input: ({ element, data }) => {
-    const value = data ? getValueByPath(data, element.props.valuePath) : '';
+    const value = data ? getValueByPath(data, element.props.valuePath) : "";
 
     return (
       <Input
-        type={element.props.type ?? 'text'}
+        type={element.props.type ?? "text"}
         placeholder={element.props.placeholder}
         disabled={element.props.disabled}
-        value={typeof value === 'string' ? value : ''}
+        value={typeof value === "string" ? value : ""}
         onChange={() => {
           // Handle through DataProvider's update mechanism
         }}

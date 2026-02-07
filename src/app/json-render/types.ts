@@ -1,12 +1,18 @@
+import type {
+  StandardJSONSchemaV1,
+  StandardSchemaV1,
+} from "@standard-schema/spec";
+
 export type ChunkComponentElement = {
   id: string;
   component: string;
   op: "root" | "child";
-  type: "element"
-  props?: string;
+  type: "element";
+  props?: ValueExpr;
   deps?: string[];
-  defaults?: SetExpr[];
-  callbacks?: Record<string, SetExpr[]>;
+  defaults?: AssignableExpr[];
+  hidden?: ValueExpr;
+  callbacks?: Record<string, AssignableExpr[]>;
   children?: string[];
 };
 
@@ -15,16 +21,45 @@ export type ChunkComponentList = {
   component: string;
   op: "child";
   type: "list";
-  idKey?: string & {} | '_index' | '_item';
+  idKey?: (string & {}) | "_index" | "_item";
   itemScope: string;
-  items: string;
-  props?: string;
+  items: ValueExpr;
+  props?: ValueExpr;
   deps?: string[];
-  defaults?: SetExpr[];
-  callbacks?: Record<string, SetExpr[]>;
+  defaults?: AssignableExpr[];
+  hidden?: ValueExpr;
+  callbacks?: Record<string, AssignableExpr[]>;
   children?: string[];
 };
 
 export type ChunkComponent = ChunkComponentElement | ChunkComponentList;
 
-export type SetExpr = { set?: string; expr?: string; literal?: unknown };
+export type ValueExpr = { expr?: string; literal?: unknown };
+export type AssignableExpr = { set: string } & ValueExpr;
+
+export interface CombinedProps<Input = unknown, Output = Input>
+  extends
+    StandardSchemaV1.Props<Input, Output>,
+    StandardJSONSchemaV1.Props<Input, Output> {}
+
+/**
+ * An interface that combines StandardJSONSchema and StandardSchema.
+ * */
+export interface CombinedSpec<Input = unknown, Output = Input> {
+  "~standard": CombinedProps<Input, Output>;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace CombinedSpec {
+  export type Target = StandardJSONSchemaV1.Target;
+  export type InferInput<T extends StandardSchemaV1> =
+    StandardSchemaV1.InferInput<T>;
+  export type InferOutput<T extends StandardSchemaV1> =
+    StandardSchemaV1.InferOutput<T>;
+  export type SuccessResult<T> = StandardSchemaV1.SuccessResult<T>;
+}
+
+// props: expr, literal
+// items: expr, literal
+// callbacks: set, expr, literal, async
+// defaults: set, expr, literal, async

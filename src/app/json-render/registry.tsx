@@ -1,22 +1,54 @@
 import z from "zod";
 import { createAIComponent } from "./createAIComponent";
 import { createAIComponentRegistry } from "./createAIComponentRegistry";
+import { pick } from "lodash";
 
-export const registry = createAIComponentRegistry({
+const onClickSchema = z
+  .object({
+    pageX: z.number().meta({
+      description:
+        "The X coordinate of the click event relative to the element",
+    }),
+    pageY: z.number().meta({
+      description:
+        "The Y coordinate of the click event relative to the element",
+    }),
+    screenX: z.number().meta({
+      description: "The X coordinate of the click event relative to the screen",
+    }),
+    screenY: z.number().meta({
+      description: "The Y coordinate of the click event relative to the screen",
+    }),
+    clientX: z.number().meta({
+      description:
+        "The X coordinate of the click event relative to the viewport",
+    }),
+    clientY: z.number().meta({
+      description:
+        "The Y coordinate of the click event relative to the viewport",
+    }),
+  })
+  .meta({ description: "Callback for when the element is clicked" });
+
+function keys<T extends object>(obj: T): Array<keyof T> {
+  return Object.keys(obj) as Array<keyof T>;
+}
+
+export const componentsRegistry = createAIComponentRegistry({
   Card: createAIComponent({
-    propDefs: z.object({
+    description:
+      "A container component with rounded corners, shadow, and border for grouping related content",
+    propDefs: z.strictObject({
       title: z.string().optional(),
       padding: z.enum(["md", "sm"]).default("md"),
       children: z.any().optional(),
     }),
-    callbacks: {
-      onClick: z.object({ x: z.any().optional() }),
-    },
+    callbackDefs: { onClick: onClickSchema },
     render: ({ title, padding, children, onClick }) => {
       return (
         <div
           title={title}
-          onClick={() => onClick({ x: 0 })}
+          onClick={(e) => onClick(pick(e, keys(onClickSchema.shape)))}
           className={`rounded-xl shadow-lg border border-gray-200 ${padding === "md" ? "p-6" : "p-4"}`}
         >
           {children}
@@ -25,13 +57,14 @@ export const registry = createAIComponentRegistry({
     },
   }),
   Input: createAIComponent({
-    propDefs: z.object({
+    description: "A text or number input field with an optional label",
+    propDefs: z.strictObject({
       label: z.string().optional(),
       value: z.any(),
       type: z.enum(["text", "number"]).default("text"),
     }),
-    callbacks: {
-      onChange: z.object({
+    callbackDefs: {
+      onChange: z.strictObject({
         value: z
           .string()
           .meta({ description: "The current value of the input" }),
@@ -63,28 +96,29 @@ export const registry = createAIComponentRegistry({
     },
   }),
   Ul: createAIComponent({
-    propDefs: z.object({}),
+    description: "An unordered list container",
+    propDefs: z.strictObject({}),
     render: ({ children }) => {
       return <ul>{children}</ul>;
     },
   }),
   Li: createAIComponent({
-    propDefs: z.object({}),
+    description: "A list item for use inside Ul",
+    propDefs: z.strictObject({}),
     render: ({ children }) => {
       return <li>{children}</li>;
     },
   }),
   Button: createAIComponent({
-    propDefs: z.object({
+    description: "A clickable button with customizable text",
+    propDefs: z.strictObject({
       text: z.string().optional(),
     }),
-    callbacks: {
-      onClick: z.object({}),
-    },
+    callbackDefs: { onClick: onClickSchema },
     render: ({ text, children, onClick }) => {
       return (
         <button
-          onClick={() => onClick({})}
+          onClick={(e) => onClick(pick(e, keys(onClickSchema.shape)))}
           className="bg-blue-600 text-white px-4 py-2 rounded"
         >
           {text ?? children}
@@ -94,7 +128,8 @@ export const registry = createAIComponentRegistry({
   }),
   // Table components
   Table: createAIComponent({
-    propDefs: z.object({}),
+    description: "A table container for displaying tabular data",
+    propDefs: z.strictObject({}),
     render: ({ children }) => (
       <table className="w-full border-collapse border border-gray-300">
         {children}
@@ -102,27 +137,32 @@ export const registry = createAIComponentRegistry({
     ),
   }),
   Thead: createAIComponent({
-    propDefs: z.object({}),
+    description: "Table header section container",
+    propDefs: z.strictObject({}),
     render: ({ children }) => <thead className="">{children}</thead>,
   }),
   Tbody: createAIComponent({
-    propDefs: z.object({}),
+    description: "Table body section container",
+    propDefs: z.strictObject({}),
     render: ({ children }) => <tbody>{children}</tbody>,
   }),
   Tfoot: createAIComponent({
-    propDefs: z.object({}),
+    description: "Table footer section container",
+    propDefs: z.strictObject({}),
     render: ({ children }) => (
       <tfoot className=" font-semibold">{children}</tfoot>
     ),
   }),
   Tr: createAIComponent({
-    propDefs: z.object({}),
+    description: "A table row",
+    propDefs: z.strictObject({}),
     render: ({ children }) => (
       <tr className="border-b border-gray-200">{children}</tr>
     ),
   }),
   Th: createAIComponent({
-    propDefs: z.object({
+    description: "A table header cell",
+    propDefs: z.strictObject({
       text: z.string().optional(),
     }),
     render: ({ text, children }) => (
@@ -130,7 +170,8 @@ export const registry = createAIComponentRegistry({
     ),
   }),
   Td: createAIComponent({
-    propDefs: z.object({
+    description: "A table data cell",
+    propDefs: z.strictObject({
       text: z.string().optional(),
     }),
     render: ({ text, children }) => (
@@ -138,11 +179,12 @@ export const registry = createAIComponentRegistry({
     ),
   }),
   NumberInput: createAIComponent({
-    propDefs: z.object({
+    description: "A numeric input field for entering numbers",
+    propDefs: z.strictObject({
       value: z.number(),
     }),
-    callbacks: {
-      onChange: z.object({
+    callbackDefs: {
+      onChange: z.strictObject({
         value: z.number(),
       }),
     },
@@ -156,7 +198,9 @@ export const registry = createAIComponentRegistry({
     ),
   }),
   Text: createAIComponent({
-    propDefs: z.object({
+    description:
+      "A simple text display component that renders any value as a string",
+    propDefs: z.strictObject({
       value: z.any(),
     }),
     render: ({ value }) => <span>{String(value)}</span>,

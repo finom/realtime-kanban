@@ -7,6 +7,7 @@ import "dotenv/config";
 /** @type {import('vovk').VovkConfig} */
 const config = {
   outputConfig: {
+    origin: "http://localhost:" + (process.env.PORT ?? 3000),
     imports: {
       validateOnClient: "vovk-ajv",
       fetcher: "./src/lib/fetcher.ts",

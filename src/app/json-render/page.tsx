@@ -1,7 +1,12 @@
 "use client";
 
 import { ChunkComponent } from "./types";
-import { registry } from "./registry";
+import { componentsRegistry } from "./registry";
+import NoSSR from "react-no-ssr";
+import { use } from "react";
+import { getPartialFnPrompt } from "./evaluate";
+import INSTRUCTIONS from "./INSTRUCTIONS.json" assert { type: "json" };
+import { get } from "lodash";
 
 const countLines: ChunkComponent[] = [
   {
@@ -9,7 +14,7 @@ const countLines: ChunkComponent[] = [
     op: "root",
     type: "element",
     component: "Card",
-    props: '{ "children": scopes.root.count }',
+    props: { expr: '{ "children": scopes.root.count }' },
     deps: ["scopes.root.count"],
     defaults: [{ set: "scopes.root.count", literal: 0 }],
     // "children": [],
@@ -28,7 +33,7 @@ const formLines: ChunkComponent[] = [
     op: "root",
     type: "element",
     component: "Card",
-    props: '{ "children": scopes.root.count }',
+    props: { expr: '{ "children": scopes.root.count }' },
     deps: ["scopes.root.count"],
     defaults: [{ set: "scopes.root.count", literal: 0 }],
     children: ["input1"],
@@ -44,8 +49,9 @@ const formLines: ChunkComponent[] = [
     op: "child",
     type: "element",
     component: "Input",
-    props:
-      '{ "value": dyn(scopes.root.count), "label": dyn("Count"), "type": dyn("number") }',
+    props: {
+      expr: '{ "value": dyn(scopes.root.count), "label": dyn("Count"), "type": dyn("number") }',
+    },
     deps: ["scopes.root.count"],
     callbacks: {
       onChange: [{ set: "scopes.root.count", expr: "evt.valueAsNumber" }],
@@ -70,15 +76,15 @@ const listLines: ChunkComponent[] = [
     type: "list",
     itemScope: "itemScope",
     component: "Li",
-    items: "scopes.root.items",
-    props: '{ "children": scopes.itemScope.item }',
+    items: { expr: "scopes.root.items" },
+    props: { expr: '{ "children": scopes.itemScope.item }' },
   },
   {
     id: "add-item-button",
     op: "child",
     type: "element",
     component: "Button",
-    props: '{ "children": "Add Item" }',
+    props: { literal: { children: "Add Item" } },
     callbacks: {
       onClick: [
         {
@@ -123,28 +129,28 @@ export const tableChunks: ChunkComponent[] = [
     component: "Th",
     op: "child",
     type: "element",
-    props: '{"text": "A"}',
+    props: { literal: { text: "A" } },
   },
   {
     id: "th-b",
     component: "Th",
     op: "child",
     type: "element",
-    props: '{"text": "B"}',
+    props: { literal: { text: "B" } },
   },
   {
     id: "th-sum",
     component: "Th",
     op: "child",
     type: "element",
-    props: '{"text": "Sum"}',
+    props: { literal: { text: "Sum" } },
   },
   {
     id: "th-actions",
     component: "Th",
     op: "child",
     type: "element",
-    props: '{"text": "Actions"}',
+    props: { literal: { text: "Actions" } },
   },
   {
     id: "tbody",
@@ -158,8 +164,8 @@ export const tableChunks: ChunkComponent[] = [
     component: "Tr",
     op: "child",
     type: "list",
-    idKey: 'id',
-    items: "scopes.root.rows",
+    idKey: "id",
+    items: { expr: "scopes.root.rows" },
     itemScope: "row",
     children: ["td-input-a", "td-input-b", "td-sum", "td-delete"],
   },
@@ -175,14 +181,14 @@ export const tableChunks: ChunkComponent[] = [
     component: "NumberInput",
     op: "child",
     type: "element",
-    props: '{"value": scopes.row.item.a}',
+    props: { expr: '{"value": scopes.row.item.a}' },
     deps: ["scopes.row.item.a"],
     callbacks: {
       onChange: [
         { set: "scopes.row.item.a", expr: "evt.value" },
         {
           set: "scopes.root.totalSum",
-          expr: "reduce(scopes.root.childScopes.row.map(r, double(r.item.a) + double(r.item.b)), 0.0)",
+          expr: "reduce(scopes.root.childScopes.row, 0.0, acc, r, acc + double(r.item.a) + double(r.item.b))",
         },
       ],
     },
@@ -199,14 +205,14 @@ export const tableChunks: ChunkComponent[] = [
     component: "NumberInput",
     op: "child",
     type: "element",
-    props: '{"value": scopes.row.item.b}',
+    props: { expr: '{"value": scopes.row.item.b}' },
     deps: ["scopes.row.item.b"],
     callbacks: {
       onChange: [
         { set: "scopes.row.item.b", expr: "evt.value" },
         {
           set: "scopes.root.totalSum",
-          expr: "reduce(scopes.root.childScopes.row.map(r, double(r.item.a) + double(r.item.b)), 0.0)",
+          expr: "reduce(scopes.root.childScopes.row, 0.0, acc, r, acc + double(r.item.a) + double(r.item.b))",
         },
       ],
     },
@@ -223,7 +229,9 @@ export const tableChunks: ChunkComponent[] = [
     component: "Text",
     op: "child",
     type: "element",
-    props: '{"value": double(scopes.row.item.a) + double(scopes.row.item.b)}',
+    props: {
+      expr: '{"value": double(scopes.row.item.a) + double(scopes.row.item.b)}',
+    },
     deps: ["scopes.row.item.a", "scopes.row.item.b"],
   },
   {
@@ -244,7 +252,7 @@ export const tableChunks: ChunkComponent[] = [
     component: "Button",
     op: "child",
     type: "element",
-    props: '{"text": "Delete"}',
+    props: { literal: { text: "Delete" } },
     callbacks: {
       onClick: [
         {
@@ -253,7 +261,7 @@ export const tableChunks: ChunkComponent[] = [
         },
         {
           set: "scopes.root.totalSum",
-          expr: "reduce(scopes.root.childScopes.row.map(r, double(r.item.a) + double(r.item.b)), 0.0)",
+          expr: "reduce(scopes.root.childScopes.row, 0.0, acc, r, acc + double(r.item.a) + double(r.item.b))",
         },
       ],
     },
@@ -277,7 +285,7 @@ export const tableChunks: ChunkComponent[] = [
     component: "Td",
     op: "child",
     type: "element",
-    props: '{"text": "Total"}',
+    props: { literal: { text: "Total" } },
   },
   {
     id: "td-add-btn",
@@ -291,7 +299,7 @@ export const tableChunks: ChunkComponent[] = [
     component: "Button",
     op: "child",
     type: "element",
-    props: '{"text": "+ Add Row"}',
+    props: { literal: { text: "+ Add Row" } },
     callbacks: {
       onClick: [
         {
@@ -314,8 +322,7 @@ export const tableChunks: ChunkComponent[] = [
     component: "Text",
     op: "child",
     type: "element",
-    props:
-      '{"value": scopes.root.totalSum}',
+    props: { expr: '{"value": scopes.root.totalSum}' },
     deps: ["scopes.root.totalSum"],
   },
   {
@@ -327,150 +334,181 @@ export const tableChunks: ChunkComponent[] = [
   },
   {
     id: "row-count-text",
+    defaults: [
+      {
+        set: "scopes.root.foo",
+        expr: "size(UserRPC_getUsers())",
+      },
+    ],
     component: "Text",
     op: "child",
     type: "element",
-    props: '{"value": string(size(scopes.root.rows)) + " rows"}',
+    props: {
+      expr: '{"value": string(size(scopes.root.rows)) + " rows " + string(scopes.root.foo) }',
+    },
     deps: ["scopes.root.rows"],
   },
 ] as const;
 
+const asyncLines: ChunkComponent[] = [
+  {
+    id: "users-table",
+    component: "Table",
+    op: "root",
+    type: "element",
+    defaults: [
+      {
+        set: "scopes.root.users",
+        expr: "UserRPC_getUsers()",
+      },
+    ],
+    children: ["users-thead", "users-tbody"],
+  },
+  {
+    id: "users-thead",
+    component: "Thead",
+    op: "child",
+    type: "element",
+    children: ["users-header-row"],
+  },
+  {
+    id: "users-header-row",
+    component: "Tr",
+    op: "child",
+    type: "element",
+    children: ["th-name", "th-email"],
+  },
+  {
+    id: "th-name",
+    component: "Th",
+    op: "child",
+    type: "element",
+    props: { literal: { text: "Name" } },
+  },
+  {
+    id: "th-email",
+    component: "Th",
+    op: "child",
+    type: "element",
+    props: { literal: { text: "Email" } },
+  },
+  {
+    id: "users-tbody",
+    component: "Tbody",
+    op: "child",
+    type: "element",
+    children: ["user-rows"],
+  },
+  {
+    id: "user-rows",
+    component: "Tr",
+    op: "child",
+    type: "list",
+    idKey: "id",
+    items: { expr: "scopes.root.users" },
+    itemScope: "user",
+    children: ["td-name", "td-email"],
+  },
+  {
+    id: "td-name",
+    component: "Td",
+    op: "child",
+    type: "element",
+    children: ["name-text"],
+  },
+  {
+    id: "name-text",
+    component: "Text",
+    op: "child",
+    type: "element",
+    props: { expr: '{"value": scopes.user.item.fullName}' },
+    deps: ["scopes.user.item.fullName"],
+  },
+  {
+    id: "td-email",
+    component: "Td",
+    op: "child",
+    type: "element",
+    children: ["email-text"],
+  },
+  {
+    id: "email-text",
+    component: "Text",
+    op: "child",
+    type: "element",
+    props: { expr: '{"value": scopes.user.item.email}' },
+    deps: ["scopes.user.item.email"],
+  },
+] as const;
+
+function getPrompt() {
+  return `
+${INSTRUCTIONS}
+
+${getPartialFnPrompt()}
+
+${componentsRegistry.getDefPartialPrompt()}
+
+# EXAMPLES:
+## COUNTER:
+${countLines.map((line) => JSON.stringify(line)).join("\n")}
+## FORM WITH INPUT:
+${formLines.map((line) => JSON.stringify(line)).join("\n")}
+## DYNAMIC LIST:
+${listLines.map((line) => JSON.stringify(line)).join("\n")}
+## TABLE WITH COMPUTED COLUMNS, ADD/REMOVE ROWS:
+${tableChunks.map((line) => JSON.stringify(line)).join("\n")}
+## ASYNC DATA FETCHING (USERS TABLE):
+${asyncLines.map((line) => JSON.stringify(line)).join("\n")}
+`;
+}
+
 export default function Page() {
   return (
-    <>
-      <registry.Renderer lines={countLines} />
-      <registry.Renderer lines={formLines} />
-      <registry.Renderer lines={listLines} />
-      <registry.Renderer lines={tableChunks} />
-    </>
+    <NoSSR>
+      <pre className="p-4">{getPrompt()}</pre>
+      <componentsRegistry.Renderer lines={countLines} />
+      <componentsRegistry.Renderer lines={formLines} />
+      <componentsRegistry.Renderer lines={listLines} />
+      <componentsRegistry.Renderer lines={tableChunks} />
+      <componentsRegistry.Renderer lines={asyncLines} />
+    </NoSSR>
   );
 }
-/* 
-import React, { useState, useEffect } from 'react'
 
-const Card = ({ title, padding = 'md', children }: any) => (
-  <div className="bg-white rounded-xl shadow-lg border p-6">
-    <h2 className="text-2xl font-bold text-gray-800 mb-6">{title}</h2>
-    <div className="space-y-4">{children}</div>
-  </div>
-)
+/**
 
-const Grid = ({ columns = 2, gap = 'md', children }: any) => (
-  <div className="grid grid-cols-2 gap-6">
-    {children}
-  </div>
-)
+TODO
+- Define async functions for CEL with description, parameters, return type?
+- Placeholder logic, while loading async defaults
+- Make edits to a specific component in the tree
+- Entity registry and voice control
+- Rerender lines on CEL error (rerender loop)
+- Form data for files
+- Visibility
+- e2e tests
+- Sort, reverse <- custom CEL functions
+- Loading/error states
+- Pluralization function (item/items) ??
+- Multi-step flows / tabs / navigation - CLAUDE said that
+- Disabled state
 
-const Metric = ({ label, valuePath, format, trend, trendValue }: any) => {
-  const [value, setValue] = useState('Loading...')
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (format === 'currency') setValue('$1,245,890')
-      else if (format === 'percent') setValue('14.8%')
-    }, 600)
-    return () => clearTimeout(timer)
-  }, [format])
+>  I'd say loading/error + disabled + dropdown are the three that would actually close the gap. Everything else falls out from those plus visibility.
 
-  return (
-    <div className="bg-gray-50 rounded-lg p-5 border">
-      <div className="text-sm font-medium text-gray-500">{label}</div>
-      <div className="text-3xl font-bold text-gray-900 mt-1">{value}</div>
-      {trendValue && (
-        <div className="text-green-600 text-sm font-medium mt-1">{trendValue} from last month</div>
-      )}
-    </div>
-  )
-}
 
-const Chart = ({ type, dataPath, title }: any) => {
-  const [loaded, setLoaded] = useState(false)
 
-  useEffect(() => {
-    const timer = setTimeout(() => setLoaded(true), 900)
-    return () => clearTimeout(timer)
-  }, [])
 
-  return (
-    <div className="bg-white rounded-lg border p-6">
-      <h3 className="text-lg font-semibold text-gray-800 mb-4">{title}</h3>
-      <div className="h-64 bg-gray-100 rounded flex items-center justify-center text-gray-500">
-        {loaded ? `📊 ${type.toUpperCase()} Chart - Sales by Region` : 'Loading chart data...'}
-      </div>
-    </div>
-  )
-}
-
-const componentRegistry: Record<string, any> = {
-  Card,
-  Grid,
-  Metric,
-  Chart,
-}
-
-const RecursiveRenderer = ({ elementKey, elements }: { elementKey: string; elements: Record<string, any> }) => {
-  const element = elements[elementKey]
-  if (!element) return <div className="text-gray-400 italic">Loading component...</div>
-
-  const Component = componentRegistry[element.type]
-  if (!Component) return <div className="text-red-500">Unknown component: {element.type}</div>
-
-  const children = element.children
-    ? element.children.map((childKey: string) => (
-        <RecursiveRenderer key={childKey} elementKey={childKey} elements={elements} />
-      ))
-    : null
-
-  return <Component {...element.props}>{children}</Component>
-}
-
-export default function ProgressiveDashboardPage() {
-  const [elements, setElements] = useState<Record<string, any>>({})
-  const loadedCount = Object.keys(elements).length
-
-  const applyPatch = (patch: any) => {
-    if (patch.op !== 'add') return
-    const parts = patch.path.split('/').filter(Boolean)
-    if (parts[0] !== 'elements' || parts.length !== 2) return
-    const key = parts[1]
-    setElements(prev => ({ ...prev, [key]: patch.value }))
-  }
-
-  useEffect(() => {
-    const stream = [
-      {"op":"add","path":"/elements/main-card","value":{"key":"main-card","type":"Card","props":{"title":"Revenue Dashboard","padding":"md"},"children":["metrics-grid","chart"]}},
-      {"op":"add","path":"/elements/metrics-grid","value":{"key":"metrics-grid","type":"Grid","props":{"columns":2,"gap":"md"},"children":["revenue-metric","growth-metric"]}},
-      {"op":"add","path":"/elements/revenue-metric","value":{"key":"revenue-metric","type":"Metric","props":{"label":"Total Revenue","valuePath":"/analytics/revenue","format":"currency","trend":"up","trendValue":"+15%"}}},
-      {"op":"add","path":"/elements/growth-metric","value":{"key":"growth-metric","type":"Metric","props":{"label":"Growth Rate","valuePath":"/analytics/growth","format":"percent"}}},
-      {"op":"add","path":"/elements/chart","value":{"key":"chart","type":"Chart","props":{"type":"bar","dataPath":"/analytics/salesByRegion","title":"Sales by Region"}}}
-    ]
-
-    let index = 0
-    const interval = setInterval(() => {
-      if (index < stream.length) {
-        applyPatch(stream[index])
-        index++
-      } else {
-        clearInterval(interval)
-      }
-    }, 1400) // 1.4s delay per component for clear progressive effect
-
-    return () => clearInterval(interval)
-  }, [])
-
-  return (
-    <div className="min-h-screen bg-gray-50 py-12 px-6">
-      <div className="max-w-4xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Progressive Component Loading</h1>
-          <div className="text-sm text-gray-500 bg-white px-4 py-2 rounded-full border">
-            Loaded: {loadedCount}/5 components
-          </div>
-        </div>
-
-        <RecursiveRenderer elementKey="main-card" elements={elements} />
-      </div>
-    </div>
-  )
-}
-  */
+Here's what I'd consider the complete set:
+Layout: Card, Tabs, Accordion, Modal, Drawer, Divider, Grid, Stack, Spacer
+Typography: Heading, Text, Badge, Label
+Data Input: Input, Textarea, NumberInput, Select, MultiSelect, Checkbox, Radio, Switch, DatePicker, DateRangePicker, TimePicker, FileUpload, ColorPicker
+Buttons & Actions: Button, IconButton, ButtonGroup, DropdownMenu
+Data Display: Table, List, DataGrid (virtual scrolling for large datasets), Avatar, Icon, Tooltip, ProgressBar, Stat (label + big number + trend arrow), Tag, Image
+Charts: BarChart, LineChart, PieChart, AreaChart, FunnelChart (critical for CRM pipelines)
+Feedback: Alert, Toast, Skeleton (loading), Spinner, EmptyState
+Navigation: Breadcrumb, Pagination, Stepper (wizard flows)
+Overlay: Modal, Drawer, Popover, ConfirmDialog
+That's roughly 45 components. For a CRM specifically I'd prioritize these as your launch set (gets you to 90%): Card, Tabs, Modal, Heading, Text, Badge, Input, Select, DatePicker, Checkbox, Button, DropdownMenu, Table, Stat, Icon, Tag, Alert, Skeleton, EmptyState, Pagination, ConfirmDialog, BarChart, LineChart, PieChart, FunnelChart.
+That's 25 components. The rest you add when users ask for them.
+*/

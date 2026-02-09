@@ -27,7 +27,6 @@ export const createAIComponent = <
     props: { children?: ReactNode } & CombinedSpec.InferOutput<TProps> &
       CallbacksToFunctions<TCallbacks>,
   ) => React.ReactElement;
-  // scopes?: object[];
 }) => {
   const component = (myprops: {
     chunk: ChunkComponent;
@@ -73,7 +72,7 @@ export const createAIComponent = <
     });
 
     if (chunk.hidden) {
-      return <Activity mode={hidden ? "visible" : "hidden"}>{result}</Activity>;
+      return <Activity mode={hidden ? "hidden" : "visible"}>{result}</Activity>;
     }
 
     return result;

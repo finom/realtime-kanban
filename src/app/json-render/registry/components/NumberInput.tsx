@@ -1,0 +1,54 @@
+import z from "zod";
+import { createAIComponent } from "../../createAIComponent";
+
+export const NumberInput = createAIComponent({
+  description:
+    "A numeric input field specifically designed for entering numbers. Renders an HTML number input. Use NumberInput for quantities, amounts, scores, or any numeric-only data. For general text input, use Input instead.",
+  propDefs: z.strictObject({
+    value: z.number().meta({ description: "The current numeric value" }),
+    min: z.number().optional().meta({ description: "Minimum allowed value" }),
+    max: z.number().optional().meta({ description: "Maximum allowed value" }),
+    step: z
+      .number()
+      .optional()
+      .meta({ description: "Step increment for up/down arrows" }),
+    disabled: z
+      .boolean()
+      .default(false)
+      .meta({ description: "Whether the input is disabled" }),
+    placeholder: z
+      .string()
+      .optional()
+      .meta({ description: "Placeholder text when empty" }),
+  }),
+  callbackDefs: {
+    onChange: z.strictObject({
+      value: z
+        .number()
+        .meta({ description: "The new numeric value (0 if NaN)" }),
+    }),
+  },
+  render: ({
+    value,
+    min,
+    max,
+    step,
+    disabled = false,
+    placeholder,
+    onChange,
+  }) => {
+    return (
+      <input
+        type="number"
+        value={value}
+        min={min}
+        max={max}
+        step={step}
+        disabled={disabled}
+        placeholder={placeholder}
+        onChange={(e) => onChange?.({ value: e.target.valueAsNumber || 0 })}
+        className="border-input flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
+      />
+    );
+  },
+});

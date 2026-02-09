@@ -1,9 +1,10 @@
 import { Environment } from "@marcbachmann/cel-js";
 import { AssignableExpr, ValueExpr } from "./types";
 import * as api from "vovk-client";
-import { omit, pick } from "lodash";
-import { VovkJSONSchemaBase } from "vovk";
+import { pick } from "lodash";
+import { VovkJSONSchemaBase, VovkSchema } from "vovk";
 import { JSONSchemaToTs } from "./JSONSchemaToTs";
+import { VovkHandlerSchema } from "vovk/internal";
 
 const celEnv = new Environment()
   .registerVariable("scopes", "dyn")
@@ -205,6 +206,10 @@ CEL is used for all expressions. Key syntax rules:
 - Macros like map, filter, exists use a variable name (not a function): list.map(x, x.field) NOT list.map(x => x.field).
 - No spread operator, no destructuring, no import/export.
 - Numeric types matter: 1 is int, 1u is uint, 1.0 is double. Use double() or int() to convert when mixing types.
+- IMPORTANT: size() and other int-returning functions return BigInt internally. Chart components (PieChart, FunnelChart) require double values. Always use double(size(...)) when passing size() results as numeric chart values.
+- IMPORTANT: Never use dyn() wrappers on individual values inside map literals that are inside an array literal (e.g., [{"key": dyn(val)}] will fail with type error). Instead, precompute the array in defaults/callbacks and reference the state variable with dyn() in props.
+- CRITICAL: All defaults in a single chunk are evaluated BEFORE any are written. A later default CANNOT read a value set by an earlier default in the same chunk. Split dependent defaults across parent/child chunks.
+- Map value types must be consistent: if one value is dyn (e.g., u.fullName from dynamic scope), ALL values must be dyn. Wrap with dyn(): {"name": u.fullName, "value": dyn(double(size(...)))}. If all values are strings, use string() consistently.
 
 
 Type conversions:
@@ -251,16 +256,17 @@ function getPartialRPCPrompt() {
   Object.entries(modules).map(([moduleName, module]) => {
     Object.entries(module).forEach(([name, func]) => {
       if (typeof func !== "function") return;
-      const validation = (func as any).schema.validation ?? {};
+      const schema = (func as any).schema as VovkHandlerSchema;
+      const validation = schema.validation ?? {};
       const properties: NonNullable<VovkJSONSchemaBase["properties"]> = {};
       if ("body" in validation) {
-        properties.body = validation.body;
+        properties.body = validation.body!;
       }
       if ("query" in validation) {
-        properties.query = validation.query;
+        properties.query = validation.query!;
       }
       if ("params" in validation) {
-        properties.params = validation.params;
+        properties.params = validation.params!;
       }
       const tsInput = Object.keys(properties).length
         ? JSONSchemaToTs({
@@ -270,7 +276,7 @@ function getPartialRPCPrompt() {
           })
         : "";
       items.push(
-        `- ${moduleName}_${name}(${tsInput}): ${"output" in validation ? JSONSchemaToTs(validation.output) : "void"};`,
+        `- ${moduleName}_${name}(${tsInput}): ${"output" in validation ? JSONSchemaToTs(validation.output!) : "void"}; - ${schema.operationObject?.summary}; ${schema.operationObject?.description}`,
       );
     });
   });
@@ -281,6 +287,5 @@ export const evaluate = <T extends ValueExpr>(
   expr: T,
   context: Record<string, any>,
 ): T extends AssignableExpr ? Promise<unknown> : unknown => {
-  console.log("Evaluating expression:", expr, "with context:", context);
   return expr.literal ?? celEnv.evaluate(expr.expr ?? "null", context);
 };

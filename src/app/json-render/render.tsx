@@ -16,7 +16,7 @@ import {
   ChunkComponentList,
   ValueExpr,
 } from "./types";
-import { componentsRegistry } from "./registry";
+import { componentRenderers } from "./registry/renderers";
 import { evaluate } from "./evaluate";
 import { parseScope } from "./utils";
 
@@ -32,10 +32,35 @@ export const RecursiveRenderer = ({
   const element = elements[elementKey];
   const [, forceRender] = useReducer((x: number): number => x + 1, 0);
   const hasBeenRenderedRef = React.useRef(false);
+  const setDefaultsPromiseRef = useRef<Promise<void> | null>(null);
+
+  useEffect(() => {
+    if (element?.deps) {
+      const unsubscribers: (() => void)[] = [];
+      for (const dep of element.deps) {
+        const [targetScope, targetPath] = parseScope(dep);
+
+        const unsubscribe = scopes[targetScope].$emitter.on(
+          targetPath,
+          (newValue: unknown) => {
+            console.log(`Dependency changed: ${dep} =`, newValue);
+            forceRender();
+          },
+        );
+        unsubscribers.push(unsubscribe);
+      }
+      return () => {
+        unsubscribers.forEach((unsub) => unsub());
+      };
+    }
+
+    return () => {};
+  }, [element, scopes]);
+
   if (!element)
     return <div className="text-gray-400 italic">Generating component...</div>;
 
-  const Component = componentsRegistry.components[element.component].component;
+  const Component = componentRenderers.renderers[element.component as keyof typeof componentRenderers.renderers]?.component;
   if (!Component)
     return (
       <div className="text-red-500">Unknown component: {element.component}</div>
@@ -66,7 +91,6 @@ export const RecursiveRenderer = ({
       })
     : null;
 
-  const setDefaultsPromiseRef = useRef<Promise<void> | null>(null);
 
   if (element.defaults && !hasBeenRenderedRef.current) {
     const collected: {
@@ -102,29 +126,6 @@ export const RecursiveRenderer = ({
     }
     hasBeenRenderedRef.current = true;
   }
-
-  useEffect(() => {
-    if (element.deps) {
-      const unsubscribers: (() => void)[] = [];
-      for (const dep of element.deps) {
-        const [targetScope, targetPath] = parseScope(dep);
-
-        const unsubscribe = scopes[targetScope].$emitter.on(
-          targetPath,
-          (newValue: unknown) => {
-            console.log(`Dependency changed: ${dep} =`, newValue);
-            forceRender();
-          },
-        );
-        unsubscribers.push(unsubscribe);
-      }
-      return () => {
-        unsubscribers.forEach((unsub) => unsub());
-      };
-    }
-
-    return () => {};
-  }, [element, scopes]);
 
   if (setDefaultsPromiseRef.current) {
     const p = setDefaultsPromiseRef.current;

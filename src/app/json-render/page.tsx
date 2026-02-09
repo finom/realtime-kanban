@@ -1,5 +1,5 @@
 "use client";
-import { componentsRegistry } from "./registry";
+import { componentRenderers } from "./registry/renderers";
 import NoSSR from "react-no-ssr";
 import {
   asyncLines,
@@ -15,12 +15,12 @@ export default function Page() {
   return (
     <NoSSR>
       <pre className="p-4">{getPrompt()}</pre>
-      <componentsRegistry.Renderer lines={countLines} />
-      <componentsRegistry.Renderer lines={formLines} />
-      <componentsRegistry.Renderer lines={listLines} />
-      <componentsRegistry.Renderer lines={tableLines} />
-      <componentsRegistry.Renderer lines={asyncLines} />
-      <componentsRegistry.Renderer lines={claudeLines} />
+      <componentRenderers.Renderer lines={countLines} />
+      <componentRenderers.Renderer lines={formLines} />
+      <componentRenderers.Renderer lines={listLines} />
+      <componentRenderers.Renderer lines={tableLines} />
+      <componentRenderers.Renderer lines={asyncLines} />
+      <componentRenderers.Renderer lines={claudeLines} />
     </NoSSR>
   );
 }

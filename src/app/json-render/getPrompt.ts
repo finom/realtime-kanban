@@ -7,7 +7,7 @@ import {
   listLines,
   tableLines,
 } from "./examples";
-import { componentsRegistry } from "./registry";
+import { componentDefs } from "./registry/defs";
 
 export function getPrompt() {
   return `
@@ -15,7 +15,7 @@ ${INSTRUCTIONS}
 
 ${getPartialFnPrompt()}
 
-${componentsRegistry.getDefPartialPrompt()}
+${componentDefs.getDefPartialPrompt()}
 
 # EXAMPLES:
 ## COUNTER:

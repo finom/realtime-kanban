@@ -1484,6 +1484,17 @@
           }
         }
       }
+    },
+    "JsonRenderRPC": {
+      "rpcModuleName": "JsonRenderRPC",
+      "originalControllerName": "JsonRenderController",
+      "prefix": "",
+      "handlers": {
+        "render": {
+          "path": "stream",
+          "httpMethod": "GET"
+        }
+      }
     }
   }
 }

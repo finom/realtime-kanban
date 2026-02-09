@@ -4,6 +4,7 @@ import TaskController from "../../../modules/task/TaskController";
 import RealtimeController from "../../../modules/realtime/RealtimeController";
 import DatabasePollController from "../../../modules/database/DatabasePollController";
 import AiSdkController from "../../../modules/ai/AiSdkController";
+import JsonRenderController from "../../../modules/jsonRender/JsonRenderController";
 
 const controllers = {
   UserRPC: UserController,
@@ -11,6 +12,7 @@ const controllers = {
   RealtimeRPC: RealtimeController,
   DatabasePollRPC: DatabasePollController,
   AiSdkRPC: AiSdkController,
+  JsonRenderRPC: JsonRenderController,
 };
 
 export type Controllers = typeof controllers;

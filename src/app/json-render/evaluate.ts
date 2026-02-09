@@ -287,5 +287,5 @@ export const evaluate = <T extends ValueExpr>(
   expr: T,
   context: Record<string, any>,
 ): T extends AssignableExpr ? Promise<unknown> : unknown => {
-  return expr.literal ?? celEnv.evaluate(expr.expr ?? "null", context);
+  return expr.literal ?? celEnv.evaluate(expr.expr ? `dyn(${expr.expr})`: "null", context);
 };

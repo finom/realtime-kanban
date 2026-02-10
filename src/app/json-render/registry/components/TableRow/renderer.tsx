@@ -1,12 +1,21 @@
 import { createAIComponentRenderer } from "../../../createAIComponentRenderer";
-import { TableRow as ShadcnTableRow } from "@/components/ui/table";
+import { TableRow as ShadcnTableRow, TableCell } from "@/components/ui/table";
 import { pickClick } from "../../shared";
+import Skeleton from "react-loading-skeleton";
 import { TableRowDef } from "./def";
 
-export const TableRowRenderer = createAIComponentRenderer(TableRowDef, ({ children, onClick }) => {
+export const TableRowRenderer = createAIComponentRenderer({
+  def: TableRowDef,
+  renderer: ({ children, onClick }) => {
   return (
     <ShadcnTableRow onClick={(e) => onClick?.(pickClick(e))}>
       {children}
     </ShadcnTableRow>
   );
+  },
+  placeholder: () => (
+      <TableCell colSpan={1000}>
+        <Skeleton height={20} />
+      </TableCell>
+  ),
 });

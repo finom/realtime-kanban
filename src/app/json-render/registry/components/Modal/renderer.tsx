@@ -8,7 +8,9 @@ import {
 } from "@/components/ui/dialog";
 import { ModalDef } from "./def";
 
-export const ModalRenderer = createAIComponentRenderer(ModalDef, ({ open = false, title, description, children, onOpenChange }) => {
+export const ModalRenderer = createAIComponentRenderer({
+  def: ModalDef,
+  renderer: ({ open = false, title, description, children, onOpenChange }) => {
   return (
     <Dialog open={open} onOpenChange={(v) => onOpenChange?.({ open: v })}>
       <DialogContent>
@@ -24,4 +26,5 @@ export const ModalRenderer = createAIComponentRenderer(ModalDef, ({ open = false
       </DialogContent>
     </Dialog>
   );
+  },
 });

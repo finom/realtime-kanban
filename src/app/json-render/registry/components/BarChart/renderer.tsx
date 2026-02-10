@@ -11,7 +11,9 @@ import {
 } from "recharts";
 import { BarChartDef } from "./def";
 
-export const BarChartRenderer = createAIComponentRenderer(BarChartDef, ({
+export const BarChartRenderer = createAIComponentRenderer({
+  def: BarChartDef,
+  renderer: ({
   data = [],
   xKey,
   yKeys = [],
@@ -47,4 +49,5 @@ export const BarChartRenderer = createAIComponentRenderer(BarChartDef, ({
       </RechartsBarChart>
     </ResponsiveContainer>
   );
+  },
 });

@@ -1,4 +1,6 @@
 import { Activity, type ReactNode } from "react";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 import type {
   AssignableExpr,
   ChunkComponent,
@@ -13,16 +15,27 @@ type CallbacksToFunctions<T extends Record<string, CombinedSpec>> = {
   [K in keyof T]: (args: CombinedSpec.InferOutput<T[K]>) => Promise<void>;
 };
 
+export const DefaultPlaceholder = () => (
+  <div className="text-gray-400 italic">
+    <Skeleton count={1} />
+  </div>
+);
+
 export const createAIComponentRenderer = <
   TProps extends CombinedSpec,
   TCallbacks extends Record<string, CombinedSpec>,
->(
-  def: AIComponentDef & { propDefs: TProps; callbackDefs?: TCallbacks },
-  render: (
+>({
+  def,
+  renderer: render,
+  placeholder,
+}: {
+  def: AIComponentDef & { propDefs: TProps; callbackDefs?: TCallbacks };
+  renderer: (
     props: { children?: ReactNode } & CombinedSpec.InferOutput<TProps> &
       CallbacksToFunctions<TCallbacks>,
-  ) => React.ReactElement,
-) => {
+  ) => React.ReactElement;
+  placeholder?: () => React.ReactElement;
+}) => {
   const component = (myprops: {
     chunk: ChunkComponent;
     children: ReactNode;
@@ -72,7 +85,7 @@ export const createAIComponentRenderer = <
     return result;
   };
 
-  return { component, ...def };
+  return { component, placeholder: placeholder ?? null, ...def };
 };
 
 export type AIComponentRenderer = ReturnType<typeof createAIComponentRenderer>;

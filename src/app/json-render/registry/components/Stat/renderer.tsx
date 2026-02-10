@@ -2,7 +2,9 @@ import { createAIComponentRenderer } from "../../../createAIComponentRenderer";
 import { TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { StatDef } from "./def";
 
-export const StatRenderer = createAIComponentRenderer(StatDef, ({ label, value, trend, trendValue, helpText }) => {
+export const StatRenderer = createAIComponentRenderer({
+  def: StatDef,
+  renderer: ({ label, value, trend, trendValue, helpText }) => {
   const trendIcon =
     trend === "up" ? (
       <TrendingUp className="size-4 text-green-600" />
@@ -42,4 +44,5 @@ export const StatRenderer = createAIComponentRenderer(StatDef, ({ label, value, 
       )}
     </div>
   );
+  },
 });

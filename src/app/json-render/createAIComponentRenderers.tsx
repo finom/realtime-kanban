@@ -1,7 +1,7 @@
 import type { AIComponentRenderer } from "./createAIComponentRenderer";
 import type { ChunkComponent } from "./types";
 import { createReactiveProxy } from "./createReactiveProxy";
-import { ListRenderer, RecursiveRenderer } from "./render";
+import { ListRenderer, RecursiveRenderer } from "./RecursiveRenderer";
 
 export const createAIComponentRenderers = <
   T extends Record<string, AIComponentRenderer>,

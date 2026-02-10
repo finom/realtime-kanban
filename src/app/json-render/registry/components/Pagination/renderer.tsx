@@ -8,7 +8,9 @@ import {
 } from "lucide-react";
 import { PaginationDef } from "./def";
 
-export const PaginationRenderer = createAIComponentRenderer(PaginationDef, ({ currentPage, totalPages, showFirstLast = true, onPageChange }) => {
+export const PaginationRenderer = createAIComponentRenderer({
+  def: PaginationDef,
+  renderer: ({ currentPage, totalPages, showFirstLast = true, onPageChange }) => {
   const maxVisiblePages = 5;
   let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
   const endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
@@ -71,4 +73,5 @@ export const PaginationRenderer = createAIComponentRenderer(PaginationDef, ({ cu
       )}
     </nav>
   );
+  },
 });

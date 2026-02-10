@@ -9,7 +9,9 @@ import {
 } from "recharts";
 import { FunnelChartDef } from "./def";
 
-export const FunnelChartRenderer = createAIComponentRenderer(FunnelChartDef, ({ data = [], colors, height = 300 }) => {
+export const FunnelChartRenderer = createAIComponentRenderer({
+  def: FunnelChartDef,
+  renderer: ({ data = [], colors, height = 300 }) => {
   const defaultColors = [
     "#8884d8",
     "#83a6ed",
@@ -45,4 +47,5 @@ export const FunnelChartRenderer = createAIComponentRenderer(FunnelChartDef, ({ 
       </RechartsFunnelChart>
     </ResponsiveContainer>
   );
+  },
 });

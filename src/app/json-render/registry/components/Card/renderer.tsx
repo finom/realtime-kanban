@@ -9,7 +9,9 @@ import {
 } from "@/components/ui/card";
 import { CardDef } from "./def";
 
-export const CardRenderer = createAIComponentRenderer(CardDef, ({ title, description, children, onClick }) => {
+export const CardRenderer = createAIComponentRenderer({
+  def: CardDef,
+  renderer: ({ title, description, children, onClick }) => {
   return (
     <ShadcnCard onClick={(e) => onClick?.(pickClick(e))}>
       {(title || description) && (
@@ -21,4 +23,5 @@ export const CardRenderer = createAIComponentRenderer(CardDef, ({ title, descrip
       <CardContent>{children}</CardContent>
     </ShadcnCard>
   );
+  },
 });

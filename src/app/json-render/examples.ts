@@ -6,7 +6,7 @@ export const countLines: ChunkComponent[] = [
     op: "root",
     type: "element",
     component: "Card",
-    props: { expr: '{ "title": dyn("Counter") }' },
+    props: { expr: '({ title: "Counter" })' },
     deps: ["scopes.root.count"],
     defaults: [{ set: "scopes.root.count", literal: 0 }],
     children: ["count-text", "count-btn"],
@@ -17,7 +17,7 @@ export const countLines: ChunkComponent[] = [
     type: "element",
     component: "Text",
     props: {
-      expr: '{ "children": scopes.root.count, "variant": dyn("large") }',
+      expr: '({ children: scopes.root.count, variant: "large" })',
     },
     deps: ["scopes.root.count"],
   },
@@ -28,7 +28,7 @@ export const countLines: ChunkComponent[] = [
     component: "Button",
     props: { literal: { children: "Increment" } },
     callbacks: {
-      onClick: [{ set: "scopes.root.count", expr: "scopes.root.count + 1.0" }],
+      onClick: [{ set: "scopes.root.count", expr: "scopes.root.count + 1" }],
     },
   },
 ] as const;
@@ -63,7 +63,7 @@ export const formLines: ChunkComponent[] = [
     type: "element",
     component: "Input",
     props: {
-      expr: '{ "value": dyn(scopes.root.count), "type": dyn("number") }',
+      expr: '({ value: scopes.root.count, type: "number" })',
     },
     deps: ["scopes.root.count"],
     callbacks: {
@@ -106,7 +106,7 @@ export const listLines: ChunkComponent[] = [
     op: "child",
     type: "element",
     component: "Badge",
-    props: { expr: '{ "children": scopes.itemScope.item }' },
+    props: { expr: '({ children: scopes.itemScope.item })' },
   },
   {
     id: "add-item-button",
@@ -118,7 +118,7 @@ export const listLines: ChunkComponent[] = [
       onClick: [
         {
           set: "scopes.root.items",
-          expr: 'scopes.root.items + ["Item " + string(size(scopes.root.items) + 1)]',
+          expr: '[...scopes.root.items, "Item " + (scopes.root.items.length + 1)]',
         },
       ],
     },
@@ -209,14 +209,14 @@ export const tableLines: ChunkComponent[] = [
     component: "NumberInput",
     op: "child",
     type: "element",
-    props: { expr: '{"value": scopes.row.item.a}' },
+    props: { expr: '({value: scopes.row.item.a})' },
     deps: ["scopes.row.item.a"],
     callbacks: {
       onChange: [
         { set: "scopes.row.item.a", expr: "evt.value" },
         {
           set: "scopes.root.totalSum",
-          expr: "reduce(scopes.root.childScopes.row, 0.0, acc, r, acc + double(r.item.a) + double(r.item.b))",
+          expr: "scopes.root.childScopes.row.reduce((acc, r) => acc + r.item.a + r.item.b, 0)",
         },
       ],
     },
@@ -233,14 +233,14 @@ export const tableLines: ChunkComponent[] = [
     component: "NumberInput",
     op: "child",
     type: "element",
-    props: { expr: '{"value": scopes.row.item.b}' },
+    props: { expr: '({value: scopes.row.item.b})' },
     deps: ["scopes.row.item.b"],
     callbacks: {
       onChange: [
         { set: "scopes.row.item.b", expr: "evt.value" },
         {
           set: "scopes.root.totalSum",
-          expr: "reduce(scopes.root.childScopes.row, 0.0, acc, r, acc + double(r.item.a) + double(r.item.b))",
+          expr: "scopes.root.childScopes.row.reduce((acc, r) => acc + r.item.a + r.item.b, 0)",
         },
       ],
     },
@@ -258,7 +258,7 @@ export const tableLines: ChunkComponent[] = [
     op: "child",
     type: "element",
     props: {
-      expr: '{"children": double(scopes.row.item.a) + double(scopes.row.item.b)}',
+      expr: '({children: scopes.row.item.a + scopes.row.item.b})',
     },
     deps: ["scopes.row.item.a", "scopes.row.item.b"],
   },
@@ -281,11 +281,11 @@ export const tableLines: ChunkComponent[] = [
       onClick: [
         {
           set: "scopes.root.rows",
-          expr: "scopes.root.rows.filter(r, r.id != scopes.row.item.id)",
+          expr: "scopes.root.rows.filter(r => r.id !== scopes.row.item.id)",
         },
         {
           set: "scopes.root.totalSum",
-          expr: "reduce(scopes.root.childScopes.row, 0.0, acc, r, acc + double(r.item.a) + double(r.item.b))",
+          expr: "scopes.root.childScopes.row.reduce((acc, r) => acc + r.item.a + r.item.b, 0)",
         },
       ],
     },
@@ -330,9 +330,9 @@ export const tableLines: ChunkComponent[] = [
       onClick: [
         {
           set: "scopes.root.rows",
-          expr: "scopes.root.rows + [{'id': dyn(scopes.root.nextId), 'a': dyn(0.0), 'b': dyn(0.0)}]",
+          expr: "[...scopes.root.rows, { id: scopes.root.nextId, a: 0, b: 0 }]",
         },
-        { set: "scopes.root.nextId", expr: "scopes.root.nextId + 1.0" },
+        { set: "scopes.root.nextId", expr: "scopes.root.nextId + 1" },
       ],
     },
   },
@@ -348,7 +348,7 @@ export const tableLines: ChunkComponent[] = [
     component: "Text",
     op: "child",
     type: "element",
-    props: { expr: '{"children": scopes.root.totalSum}' },
+    props: { expr: '({children: scopes.root.totalSum})' },
     deps: ["scopes.root.totalSum"],
   },
   {
@@ -363,14 +363,14 @@ export const tableLines: ChunkComponent[] = [
     defaults: [
       {
         set: "scopes.root.foo",
-        expr: "size(UserRPC_getUsers())",
+        expr: "UserRPC_getUsers().then(u => u.length)",
       },
     ],
     component: "Text",
     op: "child",
     type: "element",
     props: {
-      expr: '{"children": string(size(scopes.root.rows)) + " rows " + string(scopes.root.foo) }',
+      expr: '({children: scopes.root.rows.length + " rows " + scopes.root.foo })',
     },
     deps: ["scopes.root.rows"],
   },
@@ -447,7 +447,7 @@ export const asyncLines: ChunkComponent[] = [
     component: "Text",
     op: "child",
     type: "element",
-    props: { expr: '{"children": scopes.user.item.fullName}' },
+    props: { expr: '({children: scopes.user.item.fullName})' },
     deps: ["scopes.user.item.fullName"],
   },
   {
@@ -462,7 +462,7 @@ export const asyncLines: ChunkComponent[] = [
     component: "Text",
     op: "child",
     type: "element",
-    props: { expr: '{"children": scopes.user.item.email}' },
+    props: { expr: '({children: scopes.user.item.email})' },
     deps: ["scopes.user.item.email"],
   },
 ] as const;
@@ -479,11 +479,11 @@ export const chartLines: ChunkComponent[] = [
       { set: "scopes.root.users", expr: "UserRPC_getUsers()" },
       {
         set: "scopes.root.barChartData",
-        expr: '[{"status": "TODO", "count": string(size(scopes.root.tasks.filter(t, t.status == "TODO")))}, {"status": "In Progress", "count": string(size(scopes.root.tasks.filter(t, t.status == "IN_PROGRESS")))}, {"status": "Done", "count": string(size(scopes.root.tasks.filter(t, t.status == "DONE")))}]',
+        expr: '[{status: "TODO", count: String(scopes.root.tasks.filter(t => t.status === "TODO").length)}, {status: "In Progress", count: String(scopes.root.tasks.filter(t => t.status === "IN_PROGRESS").length)}, {status: "Done", count: String(scopes.root.tasks.filter(t => t.status === "DONE").length)}]',
       },
       {
         set: "scopes.root.pieChartData",
-        expr: 'scopes.root.users.map(u, {"name": u.fullName, "value": dyn(double(size(scopes.root.tasks.filter(t, t.userId == u.id))))})',
+        expr: 'scopes.root.users.map(u => ({name: u.fullName, value: scopes.root.tasks.filter(t => t.userId === u.id).length}))',
       },
     ],
     children: ["bar-card", "pie-card"],
@@ -502,7 +502,7 @@ export const chartLines: ChunkComponent[] = [
     type: "element",
     component: "BarChart",
     props: {
-      expr: '{"data": dyn(scopes.root.barChartData), "xKey": dyn("status"), "yKeys": dyn(["count"]), "height": dyn(300)}',
+      expr: '({data: scopes.root.barChartData, xKey: "status", yKeys: ["count"], height: 300})',
     },
     deps: ["scopes.root.barChartData"],
   },
@@ -515,7 +515,7 @@ export const chartLines: ChunkComponent[] = [
     defaults: [
       {
         set: "scopes.root.pieChartData",
-        expr: 'scopes.root.users.map(u, {"name": u.fullName, "value": dyn(double(size(scopes.root.tasks.filter(t, t.userId == u.id))))})',
+        expr: 'scopes.root.users.map(u => ({name: u.fullName, value: scopes.root.tasks.filter(t => t.userId === u.id).length}))',
       },
     ],
     children: ["user-pie-chart"],
@@ -526,7 +526,7 @@ export const chartLines: ChunkComponent[] = [
     type: "element",
     component: "PieChart",
     props: {
-      expr: '{"data": dyn(scopes.root.pieChartData), "height": dyn(300), "donut": dyn(true)}',
+      expr: '({data: scopes.root.pieChartData, height: 300, donut: true})',
     },
     deps: ["scopes.root.pieChartData"],
   },
@@ -603,7 +603,7 @@ export const claudeLines: ChunkComponent[] = [
     type: "element",
     component: "Stat",
     props: {
-      expr: '{"label": dyn("Total Users"), "value": dyn(size(scopes.root.users))}',
+      expr: '({label: "Total Users", value: scopes.root.users.length})',
     },
     deps: ["scopes.root.users"],
   },
@@ -613,7 +613,7 @@ export const claudeLines: ChunkComponent[] = [
     type: "element",
     component: "Stat",
     props: {
-      expr: '{"label": dyn("Total Tasks"), "value": dyn(size(scopes.root.tasks))}',
+      expr: '({label: "Total Tasks", value: scopes.root.tasks.length})',
     },
     deps: ["scopes.root.tasks"],
   },
@@ -623,7 +623,7 @@ export const claudeLines: ChunkComponent[] = [
     type: "element",
     component: "Stat",
     props: {
-      expr: '{"label": dyn("In Progress"), "value": dyn(size(scopes.root.tasks.filter(t, t.status == "IN_PROGRESS"))), "trend": dyn("up"), "trendValue": dyn(string(size(scopes.root.tasks.filter(t, t.status == "IN_PROGRESS"))) + " active")}',
+      expr: '({label: "In Progress", value: scopes.root.tasks.filter(t => t.status === "IN_PROGRESS").length, trend: "up", trendValue: scopes.root.tasks.filter(t => t.status === "IN_PROGRESS").length + " active"})',
     },
     deps: ["scopes.root.tasks"],
   },
@@ -633,7 +633,7 @@ export const claudeLines: ChunkComponent[] = [
     type: "element",
     component: "Stat",
     props: {
-      expr: '{"label": dyn("Completed"), "value": dyn(size(scopes.root.tasks.filter(t, t.status == "DONE"))), "trend": dyn("up"), "trendValue": dyn(string(size(scopes.root.tasks.filter(t, t.status == "DONE"))) + " done")}',
+      expr: '({label: "Completed", value: scopes.root.tasks.filter(t => t.status === "DONE").length, trend: "up", trendValue: scopes.root.tasks.filter(t => t.status === "DONE").length + " done"})',
     },
     deps: ["scopes.root.tasks"],
   },
@@ -659,7 +659,7 @@ export const claudeLines: ChunkComponent[] = [
     type: "element",
     component: "BarChart",
     props: {
-      expr: '{"data": dyn([{"status": "TODO", "count": string(size(scopes.root.tasks.filter(t, t.status == "TODO")))}, {"status": "In Progress", "count": string(size(scopes.root.tasks.filter(t, t.status == "IN_PROGRESS")))}, {"status": "In Review", "count": string(size(scopes.root.tasks.filter(t, t.status == "IN_REVIEW")))}, {"status": "Done", "count": string(size(scopes.root.tasks.filter(t, t.status == "DONE")))}]), "xKey": dyn("status"), "yKeys": dyn(["count"]), "height": dyn(300), "colors": dyn(["#6366f1", "#f59e0b", "#8b5cf6", "#22c55e"])}',
+      expr: '({data: [{status: "TODO", count: String(scopes.root.tasks.filter(t => t.status === "TODO").length)}, {status: "In Progress", count: String(scopes.root.tasks.filter(t => t.status === "IN_PROGRESS").length)}, {status: "In Review", count: String(scopes.root.tasks.filter(t => t.status === "IN_REVIEW").length)}, {status: "Done", count: String(scopes.root.tasks.filter(t => t.status === "DONE").length)}], xKey: "status", yKeys: ["count"], height: 300, colors: ["#6366f1", "#f59e0b", "#8b5cf6", "#22c55e"]})',
     },
     deps: ["scopes.root.tasks"],
   },
@@ -677,7 +677,7 @@ export const claudeLines: ChunkComponent[] = [
     type: "element",
     component: "PieChart",
     props: {
-      expr: '{"data": dyn(scopes.root.users.map(u, {"name": u.fullName, "value": dyn(double(size(scopes.root.tasks.filter(t, t.userId == u.id))))})), "height": dyn(300), "donut": dyn(true), "showLabels": dyn(true)}',
+      expr: '({data: scopes.root.users.map(u => ({name: u.fullName, value: scopes.root.tasks.filter(t => t.userId === u.id).length})), height: 300, donut: true, showLabels: true})',
     },
     deps: ["scopes.root.tasks", "scopes.root.users"],
   },
@@ -686,7 +686,7 @@ export const claudeLines: ChunkComponent[] = [
     op: "child",
     type: "element",
     component: "Tabs",
-    props: { expr: '{"value": dyn(scopes.root.activeTab)}' },
+    props: { expr: '({value: scopes.root.activeTab})' },
     deps: ["scopes.root.activeTab"],
     callbacks: {
       onValueChange: [{ set: "scopes.root.activeTab", expr: "evt.value" }],
@@ -736,7 +736,7 @@ export const claudeLines: ChunkComponent[] = [
     type: "element",
     component: "Input",
     props: {
-      expr: '{"value": dyn(scopes.root.searchTerm), "placeholder": dyn("Search tasks by title..."), "type": dyn("search")}',
+      expr: '({value: scopes.root.searchTerm, placeholder: "Search tasks by title...", type: "search"})',
     },
     deps: ["scopes.root.searchTerm"],
     callbacks: {
@@ -822,7 +822,7 @@ export const claudeLines: ChunkComponent[] = [
     itemScope: "taskRow",
     idKey: "id",
     items: {
-      expr: 'scopes.root.tasks.filter(t, scopes.root.searchTerm == "" || t.title.lowerAscii().contains(scopes.root.searchTerm.lowerAscii()))',
+      expr: 'scopes.root.tasks.filter(t => scopes.root.searchTerm === "" || t.title.toLowerCase().includes(scopes.root.searchTerm.toLowerCase()))',
     },
     children: ["td-title", "td-desc", "td-status", "td-user", "td-actions"],
   },
@@ -838,7 +838,7 @@ export const claudeLines: ChunkComponent[] = [
     op: "child",
     type: "element",
     component: "Text",
-    props: { expr: '{"children": dyn(scopes.taskRow.item.title)}' },
+    props: { expr: '({children: scopes.taskRow.item.title})' },
     deps: ["scopes.taskRow.item.title"],
   },
   {
@@ -854,7 +854,7 @@ export const claudeLines: ChunkComponent[] = [
     type: "element",
     component: "Text",
     props: {
-      expr: '{"children": dyn(scopes.taskRow.item.description), "variant": dyn("muted")}',
+      expr: '({children: scopes.taskRow.item.description, variant: "muted"})',
     },
     deps: ["scopes.taskRow.item.description"],
   },
@@ -871,7 +871,7 @@ export const claudeLines: ChunkComponent[] = [
     type: "element",
     component: "Badge",
     props: {
-      expr: '{"children": dyn(scopes.taskRow.item.status == "IN_PROGRESS" ? "In Progress" : (scopes.taskRow.item.status == "IN_REVIEW" ? "In Review" : (scopes.taskRow.item.status == "DONE" ? "Done" : "To Do"))), "variant": dyn(scopes.taskRow.item.status == "DONE" ? "default" : (scopes.taskRow.item.status == "IN_PROGRESS" ? "secondary" : (scopes.taskRow.item.status == "IN_REVIEW" ? "outline" : "destructive")))}',
+      expr: '({children: scopes.taskRow.item.status === "IN_PROGRESS" ? "In Progress" : (scopes.taskRow.item.status === "IN_REVIEW" ? "In Review" : (scopes.taskRow.item.status === "DONE" ? "Done" : "To Do")), variant: scopes.taskRow.item.status === "DONE" ? "default" : (scopes.taskRow.item.status === "IN_PROGRESS" ? "secondary" : (scopes.taskRow.item.status === "IN_REVIEW" ? "outline" : "destructive"))})',
     },
     deps: ["scopes.taskRow.item.status"],
   },
@@ -888,7 +888,7 @@ export const claudeLines: ChunkComponent[] = [
     type: "element",
     component: "Text",
     props: {
-      expr: '{"children": dyn(cel.bind(matches, scopes.root.users.filter(u, u.id == scopes.taskRow.item.userId), size(matches) > 0 ? matches[0].fullName : "Unassigned"))}',
+      expr: '({children: scopes.root.users.find(u => u.id === scopes.taskRow.item.userId)?.fullName ?? "Unassigned"})',
     },
     deps: ["scopes.taskRow.item.userId", "scopes.root.users"],
   },
@@ -922,7 +922,7 @@ export const claudeLines: ChunkComponent[] = [
         },
         {
           set: "scopes.root.editTaskStatus",
-          expr: 'has(scopes.taskRow.item.status) ? scopes.taskRow.item.status : "TODO"',
+          expr: 'scopes.taskRow.item.status != null ? scopes.taskRow.item.status : "TODO"',
         },
         {
           set: "scopes.root.editTaskUserId",
@@ -1047,7 +1047,7 @@ export const claudeLines: ChunkComponent[] = [
     op: "child",
     type: "element",
     component: "Text",
-    props: { expr: '{"children": dyn(scopes.userRow.item.fullName)}' },
+    props: { expr: '({children: scopes.userRow.item.fullName})' },
     deps: ["scopes.userRow.item.fullName"],
   },
   {
@@ -1063,7 +1063,7 @@ export const claudeLines: ChunkComponent[] = [
     type: "element",
     component: "Text",
     props: {
-      expr: '{"children": dyn(scopes.userRow.item.email), "variant": dyn("muted")}',
+      expr: '({children: scopes.userRow.item.email, variant: "muted"})',
     },
     deps: ["scopes.userRow.item.email"],
   },
@@ -1080,7 +1080,7 @@ export const claudeLines: ChunkComponent[] = [
     type: "element",
     component: "Badge",
     props: {
-      expr: '{"children": dyn(size(scopes.root.tasks.filter(t, t.userId == scopes.userRow.item.id))), "variant": dyn("secondary")}',
+      expr: '({children: scopes.root.tasks.filter(t => t.userId === scopes.userRow.item.id).length, variant: "secondary"})',
     },
     deps: ["scopes.root.tasks", "scopes.userRow.item.id"],
   },
@@ -1135,7 +1135,7 @@ export const claudeLines: ChunkComponent[] = [
     type: "element",
     component: "Modal",
     props: {
-      expr: '{"open": dyn(scopes.root.showAddTask), "title": dyn("Add New Task"), "description": dyn("Fill in the details to create a new task.")}',
+      expr: '({open: scopes.root.showAddTask, title: "Add New Task", description: "Fill in the details to create a new task."})',
     },
     deps: ["scopes.root.showAddTask"],
     callbacks: {
@@ -1177,7 +1177,7 @@ export const claudeLines: ChunkComponent[] = [
     type: "element",
     component: "Input",
     props: {
-      expr: '{"value": dyn(scopes.root.newTaskTitle), "placeholder": dyn("Enter task title")}',
+      expr: '({value: scopes.root.newTaskTitle, placeholder: "Enter task title"})',
     },
     deps: ["scopes.root.newTaskTitle"],
     callbacks: {
@@ -1204,7 +1204,7 @@ export const claudeLines: ChunkComponent[] = [
     type: "element",
     component: "Input",
     props: {
-      expr: '{"value": dyn(scopes.root.newTaskDesc), "placeholder": dyn("Enter task description")}',
+      expr: '({value: scopes.root.newTaskDesc, placeholder: "Enter task description"})',
     },
     deps: ["scopes.root.newTaskDesc"],
     callbacks: {
@@ -1231,7 +1231,7 @@ export const claudeLines: ChunkComponent[] = [
     type: "element",
     component: "Select",
     props: {
-      expr: '{"value": dyn(scopes.root.newTaskStatus), "placeholder": dyn("Select status"), "options": dyn([{"label": "To Do", "value": "TODO"}, {"label": "In Progress", "value": "IN_PROGRESS"}, {"label": "In Review", "value": "IN_REVIEW"}, {"label": "Done", "value": "DONE"}])}',
+      expr: '({value: scopes.root.newTaskStatus, placeholder: "Select status", options: [{label: "To Do", value: "TODO"}, {label: "In Progress", value: "IN_PROGRESS"}, {label: "In Review", value: "IN_REVIEW"}, {label: "Done", value: "DONE"}]})',
     },
     deps: ["scopes.root.newTaskStatus"],
     callbacks: {
@@ -1258,7 +1258,7 @@ export const claudeLines: ChunkComponent[] = [
     type: "element",
     component: "Select",
     props: {
-      expr: '{"value": dyn(scopes.root.newTaskUserId), "placeholder": dyn("Select a user"), "options": dyn(scopes.root.users.map(u, {"label": u.fullName, "value": u.id}))}',
+      expr: '({value: scopes.root.newTaskUserId, placeholder: "Select a user", options: scopes.root.users.map(u => ({label: u.fullName, value: u.id}))})',
     },
     deps: ["scopes.root.newTaskUserId", "scopes.root.users"],
     callbacks: {
@@ -1293,7 +1293,7 @@ export const claudeLines: ChunkComponent[] = [
       onClick: [
         {
           set: "scopes.root._createTaskResult",
-          expr: 'TaskRPC_createTask({"body": {"title": scopes.root.newTaskTitle, "description": scopes.root.newTaskDesc, "status": scopes.root.newTaskStatus, "userId": scopes.root.newTaskUserId}})',
+          expr: 'TaskRPC_createTask({body: {title: scopes.root.newTaskTitle, description: scopes.root.newTaskDesc, status: scopes.root.newTaskStatus, userId: scopes.root.newTaskUserId}})',
         },
         { set: "scopes.root.tasks", expr: "TaskRPC_getTasks()" },
         { set: "scopes.root.showAddTask", literal: false },
@@ -1310,7 +1310,7 @@ export const claudeLines: ChunkComponent[] = [
     type: "element",
     component: "Modal",
     props: {
-      expr: '{"open": dyn(scopes.root.showEditTask), "title": dyn("Edit Task"), "description": dyn("Update the task details.")}',
+      expr: '({open: scopes.root.showEditTask, title: "Edit Task", description: "Update the task details."})',
     },
     deps: ["scopes.root.showEditTask"],
     callbacks: {
@@ -1352,7 +1352,7 @@ export const claudeLines: ChunkComponent[] = [
     type: "element",
     component: "Input",
     props: {
-      expr: '{"value": dyn(scopes.root.editTaskTitle), "placeholder": dyn("Enter task title")}',
+      expr: '({value: scopes.root.editTaskTitle, placeholder: "Enter task title"})',
     },
     deps: ["scopes.root.editTaskTitle"],
     callbacks: {
@@ -1379,7 +1379,7 @@ export const claudeLines: ChunkComponent[] = [
     type: "element",
     component: "Input",
     props: {
-      expr: '{"value": dyn(scopes.root.editTaskDesc), "placeholder": dyn("Enter task description")}',
+      expr: '({value: scopes.root.editTaskDesc, placeholder: "Enter task description"})',
     },
     deps: ["scopes.root.editTaskDesc"],
     callbacks: {
@@ -1406,7 +1406,7 @@ export const claudeLines: ChunkComponent[] = [
     type: "element",
     component: "Select",
     props: {
-      expr: '{"value": dyn(scopes.root.editTaskStatus), "placeholder": dyn("Select status"), "options": dyn([{"label": "To Do", "value": "TODO"}, {"label": "In Progress", "value": "IN_PROGRESS"}, {"label": "In Review", "value": "IN_REVIEW"}, {"label": "Done", "value": "DONE"}])}',
+      expr: '({value: scopes.root.editTaskStatus, placeholder: "Select status", options: [{label: "To Do", value: "TODO"}, {label: "In Progress", value: "IN_PROGRESS"}, {label: "In Review", value: "IN_REVIEW"}, {label: "Done", value: "DONE"}]})',
     },
     deps: ["scopes.root.editTaskStatus"],
     callbacks: {
@@ -1433,7 +1433,7 @@ export const claudeLines: ChunkComponent[] = [
     type: "element",
     component: "Select",
     props: {
-      expr: '{"value": dyn(scopes.root.editTaskUserId), "placeholder": dyn("Select a user"), "options": dyn(scopes.root.users.map(u, {"label": u.fullName, "value": u.id}))}',
+      expr: '({value: scopes.root.editTaskUserId, placeholder: "Select a user", options: scopes.root.users.map(u => ({label: u.fullName, value: u.id}))})',
     },
     deps: ["scopes.root.editTaskUserId", "scopes.root.users"],
     callbacks: {
@@ -1468,7 +1468,7 @@ export const claudeLines: ChunkComponent[] = [
       onClick: [
         {
           set: "scopes.root._updateTaskResult",
-          expr: 'TaskRPC_updateTask({"body": {"title": scopes.root.editTaskTitle, "description": scopes.root.editTaskDesc, "status": scopes.root.editTaskStatus, "userId": scopes.root.editTaskUserId}, "params": {"id": scopes.root.editTaskId}})',
+          expr: 'TaskRPC_updateTask({body: {title: scopes.root.editTaskTitle, description: scopes.root.editTaskDesc, status: scopes.root.editTaskStatus, userId: scopes.root.editTaskUserId}, params: {id: scopes.root.editTaskId}})',
         },
         { set: "scopes.root.tasks", expr: "TaskRPC_getTasks()" },
         { set: "scopes.root.showEditTask", literal: false },
@@ -1481,14 +1481,14 @@ export const claudeLines: ChunkComponent[] = [
     type: "element",
     component: "ConfirmDialog",
     props: {
-      expr: '{"open": dyn(scopes.root.showDeleteTask), "title": dyn("Delete Task"), "description": dyn("Are you sure you want to delete this task? This action cannot be undone."), "confirmLabel": dyn("Delete"), "cancelLabel": dyn("Cancel"), "variant": dyn("destructive")}',
+      expr: '({open: scopes.root.showDeleteTask, title: "Delete Task", description: "Are you sure you want to delete this task? This action cannot be undone.", confirmLabel: "Delete", cancelLabel: "Cancel", variant: "destructive"})',
     },
     deps: ["scopes.root.showDeleteTask"],
     callbacks: {
       onConfirm: [
         {
           set: "scopes.root._deleteTaskResult",
-          expr: 'TaskRPC_deleteTask({"params": {"id": scopes.root.deleteTaskId}})',
+          expr: 'TaskRPC_deleteTask({params: {id: scopes.root.deleteTaskId}})',
         },
         { set: "scopes.root.tasks", expr: "TaskRPC_getTasks()" },
         { set: "scopes.root.showDeleteTask", literal: false },
@@ -1506,7 +1506,7 @@ export const claudeLines: ChunkComponent[] = [
     type: "element",
     component: "Modal",
     props: {
-      expr: '{"open": dyn(scopes.root.showAddUser), "title": dyn("Add New User"), "description": dyn("Enter the user details.")}',
+      expr: '({open: scopes.root.showAddUser, title: "Add New User", description: "Enter the user details."})',
     },
     deps: ["scopes.root.showAddUser"],
     callbacks: {
@@ -1546,7 +1546,7 @@ export const claudeLines: ChunkComponent[] = [
     type: "element",
     component: "Input",
     props: {
-      expr: '{"value": dyn(scopes.root.newUserName), "placeholder": dyn("Enter full name")}',
+      expr: '({value: scopes.root.newUserName, placeholder: "Enter full name"})',
     },
     deps: ["scopes.root.newUserName"],
     callbacks: {
@@ -1573,7 +1573,7 @@ export const claudeLines: ChunkComponent[] = [
     type: "element",
     component: "Input",
     props: {
-      expr: '{"value": dyn(scopes.root.newUserEmail), "placeholder": dyn("Enter email address"), "type": dyn("email")}',
+      expr: '({value: scopes.root.newUserEmail, placeholder: "Enter email address", type: "email"})',
     },
     deps: ["scopes.root.newUserEmail"],
     callbacks: {
@@ -1608,7 +1608,7 @@ export const claudeLines: ChunkComponent[] = [
       onClick: [
         {
           set: "scopes.root._createUserResult",
-          expr: 'UserRPC_createUser({"body": {"fullName": scopes.root.newUserName, "email": scopes.root.newUserEmail}})',
+          expr: 'UserRPC_createUser({body: {fullName: scopes.root.newUserName, email: scopes.root.newUserEmail}})',
         },
         { set: "scopes.root.users", expr: "UserRPC_getUsers()" },
         { set: "scopes.root.showAddUser", literal: false },
@@ -1623,7 +1623,7 @@ export const claudeLines: ChunkComponent[] = [
     type: "element",
     component: "Modal",
     props: {
-      expr: '{"open": dyn(scopes.root.showEditUser), "title": dyn("Edit User"), "description": dyn("Update the user details.")}',
+      expr: '({open: scopes.root.showEditUser, title: "Edit User", description: "Update the user details."})',
     },
     deps: ["scopes.root.showEditUser"],
     callbacks: {
@@ -1663,7 +1663,7 @@ export const claudeLines: ChunkComponent[] = [
     type: "element",
     component: "Input",
     props: {
-      expr: '{"value": dyn(scopes.root.editUserName), "placeholder": dyn("Enter full name")}',
+      expr: '({value: scopes.root.editUserName, placeholder: "Enter full name"})',
     },
     deps: ["scopes.root.editUserName"],
     callbacks: {
@@ -1690,7 +1690,7 @@ export const claudeLines: ChunkComponent[] = [
     type: "element",
     component: "Input",
     props: {
-      expr: '{"value": dyn(scopes.root.editUserEmail), "placeholder": dyn("Enter email address"), "type": dyn("email")}',
+      expr: '({value: scopes.root.editUserEmail, placeholder: "Enter email address", type: "email"})',
     },
     deps: ["scopes.root.editUserEmail"],
     callbacks: {
@@ -1725,7 +1725,7 @@ export const claudeLines: ChunkComponent[] = [
       onClick: [
         {
           set: "scopes.root._updateUserResult",
-          expr: 'UserRPC_updateUser({"body": {"fullName": scopes.root.editUserName, "email": scopes.root.editUserEmail}, "params": {"id": scopes.root.editUserId}})',
+          expr: 'UserRPC_updateUser({body: {fullName: scopes.root.editUserName, email: scopes.root.editUserEmail}, params: {id: scopes.root.editUserId}})',
         },
         { set: "scopes.root.users", expr: "UserRPC_getUsers()" },
         { set: "scopes.root.showEditUser", literal: false },
@@ -1738,14 +1738,14 @@ export const claudeLines: ChunkComponent[] = [
     type: "element",
     component: "ConfirmDialog",
     props: {
-      expr: '{"open": dyn(scopes.root.showDeleteUser), "title": dyn("Delete User"), "description": dyn("Are you sure you want to delete this user? All tasks assigned to this user will also be removed. This action cannot be undone."), "confirmLabel": dyn("Delete User"), "cancelLabel": dyn("Cancel"), "variant": dyn("destructive")}',
+      expr: '({open: scopes.root.showDeleteUser, title: "Delete User", description: "Are you sure you want to delete this user? All tasks assigned to this user will also be removed. This action cannot be undone.", confirmLabel: "Delete User", cancelLabel: "Cancel", variant: "destructive"})',
     },
     deps: ["scopes.root.showDeleteUser"],
     callbacks: {
       onConfirm: [
         {
           set: "scopes.root._deleteUserResult",
-          expr: 'UserRPC_deleteUser({"params": {"id": scopes.root.deleteUserId}})',
+          expr: 'UserRPC_deleteUser({params: {id: scopes.root.deleteUserId}})',
         },
         { set: "scopes.root.users", expr: "UserRPC_getUsers()" },
         { set: "scopes.root.tasks", expr: "TaskRPC_getTasks()" },

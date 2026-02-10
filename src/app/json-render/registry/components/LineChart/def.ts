@@ -3,7 +3,7 @@ import { createAIComponentDef } from "../../../createAIComponentDef";
 
 export const LineChartDef = createAIComponentDef({
   description:
-    "A line chart for visualizing data trends over time or continuous categories. Each line represents a data series. Use LineChart for time series, trends, progress tracking, etc. The 'data' prop is an array of objects, 'xKey' is the key for x-axis labels, and 'yKeys' are the keys for line values. IMPORTANT: if using size() or other int-returning functions for values, convert with string(size(...)) or double(size(...)).",
+    "A line chart for visualizing data trends over time or continuous categories. Each line represents a data series. Use LineChart for time series, trends, progress tracking, etc. The 'data' prop is an array of objects, 'xKey' is the key for x-axis labels, and 'yKeys' are the keys for line values.",
   propDefs: z.strictObject({
     data: z
       .array(z.record(z.string(), z.union([z.string(), z.number(), z.boolean()]).nullable()))

@@ -2,7 +2,9 @@ import { createAIComponentRenderer } from "../../../createAIComponentRenderer";
 import { pickClick } from "../../shared";
 import { FlexRowDef } from "./def";
 
-export const FlexRowRenderer = createAIComponentRenderer(FlexRowDef, ({
+export const FlexRowRenderer = createAIComponentRenderer({
+  def: FlexRowDef,
+  renderer: ({
   gap = "2",
   align = "center",
   justify = "start",
@@ -34,4 +36,5 @@ export const FlexRowRenderer = createAIComponentRenderer(FlexRowDef, ({
       {children}
     </div>
   );
+  },
 });

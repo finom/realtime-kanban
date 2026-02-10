@@ -3,7 +3,7 @@ import { createAIComponentDef } from "../../../createAIComponentDef";
 
 export const BarChartDef = createAIComponentDef({
   description:
-    "A bar chart for visualizing categorical data with rectangular bars. Each bar represents a data value. Use BarChart for comparing quantities across categories (sales by month, revenue by product, etc.). The 'data' prop is an array of objects, 'xKey' is the key for x-axis labels, and 'yKeys' are the keys for bar values. Values for yKeys can be numbers or numeric strings. IMPORTANT: if using size() or other int-returning functions for values, convert with string(size(...)) or double(size(...)). Each yKey creates a set of bars with an auto-assigned color.",
+    "A bar chart for visualizing categorical data with rectangular bars. Each bar represents a data value. Use BarChart for comparing quantities across categories (sales by month, revenue by product, etc.). The 'data' prop is an array of objects, 'xKey' is the key for x-axis labels, and 'yKeys' are the keys for bar values. Values for yKeys must be numbers. Each yKey creates a set of bars with an auto-assigned color.",
   propDefs: z.strictObject({
     data: z
       .array(z.record(z.string(), z.union([z.string(), z.number(), z.boolean()]).nullable()))

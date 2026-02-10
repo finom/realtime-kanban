@@ -2,7 +2,9 @@ import { createAIComponentRenderer } from "../../../createAIComponentRenderer";
 import { pickClick } from "../../shared";
 import { FlexColDef } from "./def";
 
-export const FlexColRenderer = createAIComponentRenderer(FlexColDef, ({
+export const FlexColRenderer = createAIComponentRenderer({
+  def: FlexColDef,
+  renderer: ({
   gap = "2",
   align = "stretch",
   justify = "start",
@@ -32,4 +34,5 @@ export const FlexColRenderer = createAIComponentRenderer(FlexColDef, ({
       {children}
     </div>
   );
+  },
 });

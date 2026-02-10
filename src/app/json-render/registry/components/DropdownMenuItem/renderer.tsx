@@ -3,7 +3,9 @@ import { DropdownMenuItem as ShadcnDropdownMenuItem } from "@/components/ui/drop
 import { pickClick } from "../../shared";
 import { DropdownMenuItemDef } from "./def";
 
-export const DropdownMenuItemRenderer = createAIComponentRenderer(DropdownMenuItemDef, ({ children, variant = "default", disabled = false, onClick }) => {
+export const DropdownMenuItemRenderer = createAIComponentRenderer({
+  def: DropdownMenuItemDef,
+  renderer: ({ children, variant = "default", disabled = false, onClick }) => {
   return (
     <ShadcnDropdownMenuItem
       variant={variant}
@@ -13,4 +15,5 @@ export const DropdownMenuItemRenderer = createAIComponentRenderer(DropdownMenuIt
       {children}
     </ShadcnDropdownMenuItem>
   );
+  },
 });

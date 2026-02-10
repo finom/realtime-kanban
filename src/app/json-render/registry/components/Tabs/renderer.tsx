@@ -2,7 +2,9 @@ import { createAIComponentRenderer } from "../../../createAIComponentRenderer";
 import { Tabs as ShadcnTabs } from "@/components/ui/tabs";
 import { TabsDef } from "./def";
 
-export const TabsRenderer = createAIComponentRenderer(TabsDef, ({ value, defaultValue, children, onValueChange }) => {
+export const TabsRenderer = createAIComponentRenderer({
+  def: TabsDef,
+  renderer: ({ value, defaultValue, children, onValueChange }) => {
   return (
     <ShadcnTabs
       value={value}
@@ -12,4 +14,5 @@ export const TabsRenderer = createAIComponentRenderer(TabsDef, ({ value, default
       {children}
     </ShadcnTabs>
   );
+  },
 });

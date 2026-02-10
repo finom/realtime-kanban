@@ -2,7 +2,9 @@ import { createAIComponentRenderer } from "../../../createAIComponentRenderer";
 import { Checkbox as ShadcnCheckbox } from "@/components/ui/checkbox";
 import { CheckboxDef } from "./def";
 
-export const CheckboxRenderer = createAIComponentRenderer(CheckboxDef, ({ checked = false, disabled = false, label, onChange }) => {
+export const CheckboxRenderer = createAIComponentRenderer({
+  def: CheckboxDef,
+  renderer: ({ checked = false, disabled = false, label, onChange }) => {
   const id = label
     ? `checkbox-${label.replace(/\s/g, "-").toLowerCase()}`
     : undefined;
@@ -24,4 +26,5 @@ export const CheckboxRenderer = createAIComponentRenderer(CheckboxDef, ({ checke
       )}
     </div>
   );
+  },
 });

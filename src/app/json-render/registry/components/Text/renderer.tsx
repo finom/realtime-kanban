@@ -1,7 +1,9 @@
 import { createAIComponentRenderer } from "../../../createAIComponentRenderer";
 import { TextDef } from "./def";
 
-export const TextRenderer = createAIComponentRenderer(TextDef, ({ children, variant = "body", as: Tag = "span" }) => {
+export const TextRenderer = createAIComponentRenderer({
+  def: TextDef,
+  renderer: ({ children, variant = "body", as: Tag = "span" }) => {
   const styles: Record<string, string> = {
     body: "text-base",
     muted: "text-sm text-muted-foreground",
@@ -10,4 +12,5 @@ export const TextRenderer = createAIComponentRenderer(TextDef, ({ children, vari
     large: "text-lg font-semibold",
   };
   return <Tag className={styles[variant]}>{String(children ?? "")}</Tag>;
+  },
 });

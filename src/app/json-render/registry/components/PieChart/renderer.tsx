@@ -9,7 +9,9 @@ import {
 } from "recharts";
 import { PieChartDef } from "./def";
 
-export const PieChartRenderer = createAIComponentRenderer(PieChartDef, ({
+export const PieChartRenderer = createAIComponentRenderer({
+  def: PieChartDef,
+  renderer: ({
   data: rawData = [],
   colors,
   height = 300,
@@ -58,4 +60,5 @@ export const PieChartRenderer = createAIComponentRenderer(PieChartDef, ({
       </RechartsPieChart>
     </ResponsiveContainer>
   );
+  },
 });

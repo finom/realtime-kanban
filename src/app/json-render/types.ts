@@ -36,6 +36,7 @@ export type ChunkComponent = ChunkComponentElement | ChunkComponentList;
 
 export type ValueExpr = { expr?: string; literal?: unknown };
 export type AssignableExpr = { set: string } & ValueExpr;
+export type AssignableWithConfirmExpr = { confirm?: string } & AssignableExpr;
 
 export interface CombinedProps<Input = unknown, Output = Input>
   extends

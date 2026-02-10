@@ -3,7 +3,7 @@ import { createAIComponentDef } from "../../../createAIComponentDef";
 
 export const FunnelChartDef = createAIComponentDef({
   description:
-    "A funnel chart for visualizing stages in a pipeline or conversion process. Each stage is narrower than the previous one. Use FunnelChart for sales funnels, conversion funnels, recruitment pipelines, or any sequential stage-based data. The 'data' prop is an array of objects with 'name' (string) and 'value' (number) keys, ordered from largest (top) to smallest (bottom). IMPORTANT: 'value' must be a double, not an int. Use double(size(...)) or double(intValue) to convert int values.",
+    "A funnel chart for visualizing stages in a pipeline or conversion process. Each stage is narrower than the previous one. Use FunnelChart for sales funnels, conversion funnels, recruitment pipelines, or any sequential stage-based data. The 'data' prop is an array of objects with 'name' (string) and 'value' (number) keys, ordered from largest (top) to smallest (bottom).",
   propDefs: z.strictObject({
     data: z
       .array(

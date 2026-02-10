@@ -14,7 +14,9 @@ const iconMap: Record<string, React.ReactNode> = {
   error: <AlertCircle className="size-4" />,
 };
 
-export const AlertRenderer = createAIComponentRenderer(AlertDef, ({ title, description, status = "info" }) => {
+export const AlertRenderer = createAIComponentRenderer({
+  def: AlertDef,
+  renderer: ({ title, description, status = "info" }) => {
   const variant = status === "error" ? "destructive" : "default";
   return (
     <ShadcnAlert variant={variant}>
@@ -23,4 +25,5 @@ export const AlertRenderer = createAIComponentRenderer(AlertDef, ({ title, descr
       {description && <AlertDescription>{description}</AlertDescription>}
     </ShadcnAlert>
   );
+  },
 });

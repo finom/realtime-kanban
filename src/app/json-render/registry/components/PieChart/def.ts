@@ -3,7 +3,7 @@ import { createAIComponentDef } from "../../../createAIComponentDef";
 
 export const PieChartDef = createAIComponentDef({
   description:
-    "A pie/donut chart for visualizing proportions and parts-of-a-whole relationships. Use PieChart for market share, budget breakdown, category distribution, etc. The 'data' prop is an array of objects with 'name' (string) and 'value' (number) keys. IMPORTANT: 'value' must be a double, not an int. Use double(size(...)) or double(intValue) to convert int values. Set 'donut' to true for a donut chart with a hole in the center.",
+    "A pie/donut chart for visualizing proportions and parts-of-a-whole relationships. Use PieChart for market share, budget breakdown, category distribution, etc. The 'data' prop is an array of objects with 'name' (string) and 'value' (number) keys. Set 'donut' to true for a donut chart with a hole in the center.",
   propDefs: z.strictObject({
     data: z
       .array(
@@ -11,7 +11,7 @@ export const PieChartDef = createAIComponentDef({
           name: z.string().meta({ description: "The label for this slice" }),
           value: z
             .number()
-            .meta({ description: "The numeric value for this slice. Must be a double, not an int. Use double() to convert." }),
+            .meta({ description: "The numeric value for this slice." }),
         }),
       )
       .meta({ description: "Array of data objects with name and value" }),

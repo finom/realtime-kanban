@@ -91,6 +91,16 @@ function createReactiveProxy<T extends object>(
           if (prop === "$setDefault") return setDefault;
         }
         const value = Reflect.get(target, prop, receiver);
+
+        // Proxy invariant: for non-configurable, non-writable properties
+        // the trap MUST return the exact target value.
+        if (value !== null && typeof value === "object") {
+          const desc = Object.getOwnPropertyDescriptor(target, prop);
+          if (desc && !desc.configurable && !desc.writable) {
+            return value;
+          }
+        }
+
         return wrap(value, path.concat(prop));
       },
 

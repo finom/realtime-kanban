@@ -10,7 +10,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { ConfirmDialogDef } from "./def";
 
-export const ConfirmDialogRenderer = createAIComponentRenderer(ConfirmDialogDef, ({
+export const ConfirmDialogRenderer = createAIComponentRenderer({
+  def: ConfirmDialogDef,
+  renderer: ({
   open = false,
   title = "Are you sure?",
   description,
@@ -40,4 +42,5 @@ export const ConfirmDialogRenderer = createAIComponentRenderer(ConfirmDialogDef,
       </DialogContent>
     </Dialog>
   );
+  },
 });

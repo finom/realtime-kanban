@@ -3,7 +3,9 @@ import { pickClick } from "../../shared";
 import { InboxIcon } from "lucide-react";
 import { EmptyStateDef } from "./def";
 
-export const EmptyStateRenderer = createAIComponentRenderer(EmptyStateDef, ({ title = "No data", description, children, onClick }) => {
+export const EmptyStateRenderer = createAIComponentRenderer({
+  def: EmptyStateDef,
+  renderer: ({ title = "No data", description, children, onClick }) => {
   return (
     <div
       className="flex flex-col items-center justify-center py-12 text-center"
@@ -19,4 +21,5 @@ export const EmptyStateRenderer = createAIComponentRenderer(EmptyStateDef, ({ ti
       {children && <div className="mt-4">{children}</div>}
     </div>
   );
+  },
 });

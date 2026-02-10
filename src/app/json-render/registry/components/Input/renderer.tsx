@@ -2,7 +2,9 @@ import { createAIComponentRenderer } from "../../../createAIComponentRenderer";
 import { Input as ShadcnInput } from "@/components/ui/input";
 import { InputDef } from "./def";
 
-export const InputRenderer = createAIComponentRenderer(InputDef, ({
+export const InputRenderer = createAIComponentRenderer({
+  def: InputDef,
+  renderer: ({
   value,
   type = "text",
   placeholder,
@@ -23,4 +25,5 @@ export const InputRenderer = createAIComponentRenderer(InputDef, ({
       }
     />
   );
+  },
 });

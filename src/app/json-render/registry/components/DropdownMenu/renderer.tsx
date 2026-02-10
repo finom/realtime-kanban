@@ -8,7 +8,9 @@ import { Button } from "@/components/ui/button";
 import { MoreHorizontal } from "lucide-react";
 import { DropdownMenuDef } from "./def";
 
-export const DropdownMenuRenderer = createAIComponentRenderer(DropdownMenuDef, ({ triggerLabel, children }) => {
+export const DropdownMenuRenderer = createAIComponentRenderer({
+  def: DropdownMenuDef,
+  renderer: ({ triggerLabel, children }) => {
   return (
     <ShadcnDropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -23,4 +25,5 @@ export const DropdownMenuRenderer = createAIComponentRenderer(DropdownMenuDef, (
       <DropdownMenuContent align="end">{children}</DropdownMenuContent>
     </ShadcnDropdownMenu>
   );
+  },
 });

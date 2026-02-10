@@ -4,7 +4,9 @@ import { X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { TagDef } from "./def";
 
-export const TagRenderer = createAIComponentRenderer(TagDef, ({
+export const TagRenderer = createAIComponentRenderer({
+  def: TagDef,
+  renderer: ({
   children,
   variant = "secondary",
   removable = false,
@@ -32,4 +34,5 @@ export const TagRenderer = createAIComponentRenderer(TagDef, ({
       )}
     </Badge>
   );
+  },
 });

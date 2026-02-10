@@ -28,27 +28,24 @@ Stream chunks in order: emit the root chunk first, then its children depth-first
 
 ## 2. Props
 
-- Props are provided via a `ValueExpr` object: either `{ "literal": { ... } }` for static values or `{ "expr": "..." }` for dynamic CEL expressions.
+- Props are provided via a `ValueExpr` object: either `{ "literal": { ... } }` for static values or `{ "expr": "..." }` for dynamic JavaScript expressions.
 - Use `literal` when all prop values are known at build time and never change. Use `expr` when any prop value depends on state.
 - A `literal` ValueExpr passes its value directly as the component's props object: `"props": { "literal": { "children": "Hello" } }`.
-- An `expr` ValueExpr is a CEL expression that must evaluate to an object matching the component's props shape: `"props": { "expr": "{\"value\": scopes.root.count}" }`.
-- Inside `expr`, use the `dyn()` wrapper around values that reference reactive scope state. This ensures the CEL type checker treats them as dynamic. For static values inside an expr, `dyn()` is also used for consistency: `"props": { "expr": "{\"value\": dyn(scopes.root.count), \"placeholder\": dyn(\"Enter value\")}" }`.
+- An `expr` ValueExpr is a JavaScript expression that must evaluate to an object matching the component's props shape: `"props": { "expr": "({ value: scopes.root.count })" }`.
+- When the expression IS an object literal, wrap it in parentheses to distinguish from a block statement: `"props": { "expr": "({ value: scopes.root.count, placeholder: \"Enter value\" })" }`.
 - Props expressions must NEVER call async functions (RPC calls). Props are evaluated synchronously during render.
-- **IMPORTANT: Never construct array-of-maps literals directly inside `props.expr` or `items.expr` with `dyn()` wrappers on individual map values.** CEL's type checker cannot reconcile `dyn`-wrapped values inside map literals nested inside an array literal — it produces: `expected type 'list<map<string, dyn>>' but found 'dyn'`. Instead, precompute the array in `defaults` (for initial data) or `callbacks` (after mutations) and store it in state, then reference the state variable in `props.expr` with `dyn()`. For example, instead of `"props": {"expr": "{\"data\": [{\"name\": dyn(\"A\"), \"value\": dyn(1)}]}"}`, compute in defaults: `{"set": "scopes.root.chartData", "expr": "[{\"name\": \"A\", \"value\": 1}]"}` and reference as `"props": {"expr": "{\"data\": dyn(scopes.root.chartData)}"}`.
 - Some components accept a special `children` prop (e.g., Card, Text, Badge, Button). When set via `literal` or `expr`, this renders as inline text/content. This is distinct from the `children` array on the chunk, which references child chunks. Both can coexist: the `children` array renders child chunks, and if the component also reads `props.children`, inline content is rendered too. Typically you use one or the other.
 
 ## 3. State & Defaults
 
 - State is initialized via `defaults` on any chunk: an array of `AssignableExpr` objects.
-- Each default is `{ "set": "scopes.<scope>.<path>", "literal": <value> }` or `{ "set": "scopes.<scope>.<path>", "expr": "<CEL>" }`.
+- Each default is `{ "set": "scopes.<scope>.<path>", "literal": <value> }` or `{ "set": "scopes.<scope>.<path>", "expr": "<JavaScript expression>" }`.
 - `literal` defaults are synchronous. `expr` defaults may call async functions (e.g., RPC) and the chunk will suspend (show a loading placeholder) until all async defaults resolve.
 - Defaults are evaluated exactly once when the chunk first mounts.
 - State paths are safe to assign deeply even if parent objects don't exist yet: `{ "set": "scopes.root.foo.bar.baz", "literal": 1 }` works because paths are backed by Proxy internally.
 - However, expressions must NEVER read a scope path that hasn't been set yet. If `scopes.root.foo` is not initialized, no expression should reference it. Always initialize before reading.
 - **CRITICAL: All `defaults` expressions within a single chunk are evaluated BEFORE any values are written.** This means a later default in the same chunk CANNOT read a value set by an earlier default in the same array. If default B depends on a value set by default A, they must be in **different chunks** — put default A in a parent chunk and default B in a child chunk. Child chunk defaults run after the parent chunk's defaults have fully completed.
 - The root chunk should initialize all root-level state in its `defaults` before any child references it.
-- Use numeric values consistently: use `0.0` (double) rather than `0` (int) for numbers that will participate in arithmetic to avoid type mismatch errors. CEL distinguishes `int`, `uint`, and `double`.
-- **Map value type consistency:** All values in a CEL map literal must have the same type. When one map value is `dyn` (e.g., from dynamic scope access like `u.fullName`), ALL other values must also be `dyn`. Use `dyn()` to wrap concrete-typed values: `{"name": u.fullName, "value": dyn(size(...))}` not `{"name": u.fullName, "value": string(size(...))}`. Conversely, when all values are concrete strings (e.g., `{"status": "TODO", "count": string(size(...))}`), use `string()` consistently. Mixing `dyn` and `string`/`int` causes: `Map value uses wrong type, expected type 'dyn' but found 'string'`.
 
 ## 4. Scopes
 
@@ -85,20 +82,20 @@ Stream chunks in order: emit the root chunk first, then its children depth-first
 
 - Callbacks are declared as named event handlers on a chunk: `"callbacks": { "onClick": [...], "onChange": [...] }`.
 - Only declare callback names that match the component's documented event handlers.
-- Each callback is an array of `AssignableExpr` objects executed sequentially: `{ "set": "scopes.<scope>.<path>", "expr": "<CEL>" }` or `{ "set": "scopes.<scope>.<path>", "literal": <value> }`.
+- Each callback is an array of `AssignableExpr` objects executed sequentially: `{ "set": "scopes.<scope>.<path>", "expr": "<JavaScript expression>" }` or `{ "set": "scopes.<scope>.<path>", "literal": <value> }`.
 - The `evt` object is available in callback expressions and contains event-specific data. Check each component's event handler signature for available fields (e.g., `evt.value`, `evt.valueAsNumber` for Input's onChange).
 - Callbacks CAN call async RPC functions. Each step in the array is awaited before the next executes.
 - Multiple assignments in one callback execute in order. Use this for chained updates (e.g., update a row value, then recompute a total).
 - Common patterns:
-  - Append to array: `{ "set": "scopes.root.rows", "expr": "scopes.root.rows + [{'id': dyn(scopes.root.nextId), 'a': dyn(0.0)}]" }`
-  - Filter array: `{ "set": "scopes.root.rows", "expr": "scopes.root.rows.filter(r, r.id != scopes.row.item.id)" }`
-  - Aggregate: `{ "set": "scopes.root.total", "expr": "reduce(scopes.root.childScopes.row, 0.0, acc, r, acc + double(r.item.value))" }`
-  - Call RPC: `{ "set": "scopes.root.result", "expr": "UserRPC_deleteUser({\"params\": {\"id\": scopes.row.item.id}})" }`
+  - Append to array: `{ "set": "scopes.root.rows", "expr": "[...scopes.root.rows, { id: scopes.root.nextId, a: 0 }]" }`
+  - Filter array: `{ "set": "scopes.root.rows", "expr": "scopes.root.rows.filter(r => r.id !== scopes.row.item.id)" }`
+  - Aggregate: `{ "set": "scopes.root.total", "expr": "scopes.root.childScopes.row.reduce((acc, r) => acc + r.item.value, 0)" }`
+  - Call RPC: `{ "set": "scopes.root.result", "expr": "UserRPC_deleteUser({ params: { id: scopes.row.item.id } })" }`
 
 ## 8. Hidden (Conditional Visibility)
 
 - Any chunk can have a `hidden` property as a `ValueExpr`.
-- `{ "hidden": { "expr": "scopes.root.activeTab != 'settings'" } }` hides the chunk when the expression evaluates to truthy.
+- `{ "hidden": { "expr": "scopes.root.activeTab !== 'settings'" } }` hides the chunk when the expression evaluates to truthy.
 - Hidden chunks are not rendered but retain their state. When unhidden, they reappear with their state intact.
 - `hidden` expressions must NOT call async functions (RPC calls). They are evaluated synchronously.
 
@@ -106,14 +103,14 @@ Stream chunks in order: emit the root chunk first, then its children depth-first
 
 - RPC functions (e.g., `UserRPC_getUsers()`) are available in `defaults` expressions and `callbacks` expressions ONLY.
 - RPC calls are NEVER allowed in `props.expr`, `items.expr`, or `hidden.expr` — these are evaluated synchronously during render.
-- RPC functions are called with a single map literal argument matching their documented input type. Functions with no input take no arguments.
+- RPC functions are called with a single object argument matching their documented input type. Functions with no input take no arguments.
   - Correct: `UserRPC_getUsers()` (no input)
-  - Correct: `UserRPC_deleteUser({"params": {"id": scopes.row.item.id}})` (with input)
-  - Correct: `UserRPC_createUser({"body": {"fullName": "Alice", "email": "a@b.com"}})` (with body)
-  - Correct: `TaskRPC_findTasks({"query": {"search": scopes.root.searchTerm}})` (with query)
+  - Correct: `UserRPC_deleteUser({ params: { id: scopes.row.item.id } })` (with input)
+  - Correct: `UserRPC_createUser({ body: { fullName: "Alice", email: "a@b.com" } })` (with body)
+  - Correct: `TaskRPC_findTasks({ query: { search: scopes.root.searchTerm } })` (with query)
   - WRONG: `UserRPC_deleteUser(scopes.row.item.id)` — must wrap in the expected shape.
 - Use `defaults` with `expr` to fetch initial data on mount: `{ "set": "scopes.root.users", "expr": "UserRPC_getUsers()" }`. The chunk will suspend until the data loads.
-- Use `callbacks` to trigger mutations in response to user actions: `{ "set": "scopes.root.result", "expr": "UserRPC_deleteUser({\"params\": {\"id\": scopes.row.item.id}})" }`.
+- Use `callbacks` to trigger mutations in response to user actions: `{ "set": "scopes.root.result", "expr": "UserRPC_deleteUser({ params: { id: scopes.row.item.id } })" }`.
 - After a mutation, you typically need to re-fetch or update the local state. Chain multiple assignments in the callback to achieve this: first mutate, then refresh.
 
 ## 10. Ordering
@@ -194,4 +191,4 @@ Stream chunks in order: emit the root chunk first, then its children depth-first
 - **PieChart**: Proportional chart. Set `data` as `[{name, value}]` array. Optional: `colors`, `height`, `donut`, `showLabels`.
 - **FunnelChart**: Pipeline/conversion funnel. Set `data` as `[{name, value}]` ordered widest to narrowest. Optional: `colors`, `height`.
 
-**Chart data pattern:** Chart `data` props are arrays of map objects. Due to the CEL `dyn()` limitation (see Rule 2), never build chart data inline in `props.expr`. Instead, precompute the data array in `defaults` (using an `expr` that builds the array without `dyn()` wrappers) and store it in a state variable (e.g., `scopes.root.barChartData`). Then reference it in the chart's `props.expr` as `dyn(scopes.root.barChartData)`. After any mutation that changes the underlying data, recompute and re-set the chart data state variable in the callback. **Important:** The chart data defaults must be in a **child chunk** (not the same chunk that fetches the source data via RPC), because all defaults in one chunk are evaluated before any are written (see Rule 3). Place the chart data computation in the chart's container chunk (e.g., the Card or FlexRow wrapping the chart).
+**Chart data pattern:** Chart `data` props are arrays of objects. You can build chart data inline in `props.expr` or precompute it in `defaults` and store it in a state variable. If the data depends on an async RPC call, the chart data computation defaults must be in a **child chunk** (not the same chunk that fetches the source data via RPC), because all defaults in one chunk are evaluated before any are written (see Rule 3). Place the chart data computation in the chart's container chunk (e.g., the Card or FlexRow wrapping the chart).

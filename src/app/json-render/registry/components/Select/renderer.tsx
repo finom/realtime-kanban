@@ -8,7 +8,9 @@ import {
 } from "@/components/ui/select";
 import { SelectDef } from "./def";
 
-export const SelectRenderer = createAIComponentRenderer(SelectDef, ({
+export const SelectRenderer = createAIComponentRenderer({
+  def: SelectDef,
+  renderer: ({
   value,
   placeholder,
   options = [],
@@ -33,4 +35,5 @@ export const SelectRenderer = createAIComponentRenderer(SelectDef, ({
       </SelectContent>
     </ShadcnSelect>
   );
+  },
 });

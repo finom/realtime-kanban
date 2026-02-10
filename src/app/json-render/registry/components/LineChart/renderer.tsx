@@ -11,7 +11,9 @@ import {
 } from "recharts";
 import { LineChartDef } from "./def";
 
-export const LineChartRenderer = createAIComponentRenderer(LineChartDef, ({
+export const LineChartRenderer = createAIComponentRenderer({
+  def: LineChartDef,
+  renderer: ({
   data = [],
   xKey,
   yKeys = [],
@@ -50,4 +52,5 @@ export const LineChartRenderer = createAIComponentRenderer(LineChartDef, ({
       </RechartsLineChart>
     </ResponsiveContainer>
   );
+  },
 });

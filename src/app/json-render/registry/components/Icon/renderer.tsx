@@ -3,7 +3,9 @@ import * as LucideIcons from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { IconDef } from "./def";
 
-export const IconRenderer = createAIComponentRenderer(IconDef, ({ name, size = "md", color }) => {
+export const IconRenderer = createAIComponentRenderer({
+  def: IconDef,
+  renderer: ({ name, size = "md", color }) => {
   const sizeMap: Record<string, string> = {
     sm: "size-4",
     md: "size-5",
@@ -21,4 +23,5 @@ export const IconRenderer = createAIComponentRenderer(IconDef, ({ name, size = "
       className={`${sizeMap[size]} ${color ? `text-${color}` : ""}`}
     />
   );
+  },
 });

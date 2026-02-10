@@ -15,7 +15,7 @@ export default class JsonRenderController {
           const result = streamText({
             model: "anthropic/claude-opus-4.6",
             system: systemPrompt,
-            prompt: PROMPT,
+            prompt: 'график по дате выаолнения задач линейный и таблицы', // 'Generate me a users ui that displays number of tasks, allows to add search delete users, shows pie chart',
           });
         
           return new Response(result.textStream, {

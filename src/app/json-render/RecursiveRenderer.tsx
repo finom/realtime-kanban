@@ -17,6 +17,7 @@ import {
   ValueExpr,
 } from "./types";
 import { componentRenderers } from "./registry/renderers";
+import { DefaultPlaceholder } from "./createAIComponentRenderer";
 import { evaluate } from "./evaluate";
 import { parseScope } from "./utils";
 
@@ -58,37 +59,44 @@ export const RecursiveRenderer = ({
   }, [element, scopes]);
 
   if (!element)
-    return <div className="text-gray-400 italic">Generating component...</div>;
+    return <></>;
 
-  const Component = componentRenderers.renderers[element.component as keyof typeof componentRenderers.renderers]?.component;
+  const rendererEntry = componentRenderers.renderers[element.component as keyof typeof componentRenderers.renderers];
+  const Component = rendererEntry?.component;
   if (!Component)
     return (
       <div className="text-red-500">Unknown component: {element.component}</div>
     );
 
+  const Placeholder = rendererEntry?.placeholder ?? DefaultPlaceholder;
+
+  const hasUnloadedChildren = element.children?.some((childKey: string) => !elements[childKey]);
+
   const children = element.children
-    ? element.children.map((childKey: string) => {
-        const childElement = elements[childKey];
-        if (childElement?.type === "list") {
+    ? hasUnloadedChildren
+      ? <Placeholder />
+      : element.children.map((childKey: string) => {
+          const childElement = elements[childKey];
+          if (childElement?.type === "list") {
+            return (
+              <ListRenderer
+                key={childKey}
+                elementKey={childKey}
+                elements={elements}
+                scopes={scopes}
+                line={childElement}
+              />
+            );
+          }
           return (
-            <ListRenderer
+            <RecursiveRenderer
               key={childKey}
               elementKey={childKey}
               elements={elements}
               scopes={scopes}
-              line={childElement}
             />
           );
-        }
-        return (
-          <RecursiveRenderer
-            key={childKey}
-            elementKey={childKey}
-            elements={elements}
-            scopes={scopes}
-          />
-        );
-      })
+        })
     : null;
 
 
@@ -140,7 +148,7 @@ export const RecursiveRenderer = ({
     return (
       <Suspense
         fallback={
-          <div className="text-gray-400 italic">Setting defaults...</div>
+          <Placeholder />
         }
       >
         <Comp />
@@ -184,8 +192,11 @@ export const ListRenderer = ({
     Map<string | number, ReturnType<typeof createReactiveProxy>>
   >(new Map());
 
+  const listRendererEntry = componentRenderers.renderers[line.component as keyof typeof componentRenderers.renderers];
+  const ListPlaceholder = listRendererEntry?.placeholder ?? DefaultPlaceholder;
+
   if (!element)
-    return <div className="text-gray-400 italic">Loading list...</div>;
+    return <></>;
 
   if (element.type !== "list")
     return (
@@ -193,7 +204,7 @@ export const ListRenderer = ({
     );
 
   // Subscribe to changes in the items expression
-  // items is a CEL expression like "scopes.root.rows", we need to extract "root.rows" for subscription
+  // items is an expression like "scopes.root.rows", we need to extract "root.rows" for subscription
   useEffect(() => {
     if (line.items.expr) {
       // Parse "scopes.root.path" -> ["root", "path"]

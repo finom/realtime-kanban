@@ -3,7 +3,9 @@ import { Button as ShadcnButton } from "@/components/ui/button";
 import { pickClick } from "../../shared";
 import { ButtonDef } from "./def";
 
-export const ButtonRenderer = createAIComponentRenderer(ButtonDef, ({
+export const ButtonRenderer = createAIComponentRenderer({
+  def: ButtonDef,
+  renderer: ({
   children,
   variant = "default",
   size = "default",
@@ -20,4 +22,5 @@ export const ButtonRenderer = createAIComponentRenderer(ButtonDef, ({
       {children}
     </ShadcnButton>
   );
+  },
 });

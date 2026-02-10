@@ -6,7 +6,7 @@ import { TabListDef } from "./def";
 export const TabListRenderer = createAIComponentRenderer({
   def: TabListDef,
   renderer: ({ children }) => {
-  return <TabsList>{children}</TabsList>;
+    return <TabsList>{children}</TabsList>;
   },
   placeholder: () => (
     <>

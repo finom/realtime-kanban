@@ -1,9 +1,7 @@
 import type { AIComponentDef } from "./createAIComponentDef";
 import { JSONSchemaToTs } from "./JSONSchemaToTs";
 
-export const createAIComponentDefs = <
-  T extends Record<string, AIComponentDef>,
->(
+export const createAIComponentDefs = <T extends Record<string, AIComponentDef>>(
   defs: T,
 ) => {
   function getDefPartialPrompt() {

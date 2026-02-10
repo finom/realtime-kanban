@@ -7,17 +7,17 @@ import { TableDef } from "./def";
 export const TableRenderer = createAIComponentRenderer({
   def: TableDef,
   renderer: ({ children }) => {
-  return <ShadcnTable>{children}</ShadcnTable>;
+    return <ShadcnTable>{children}</ShadcnTable>;
   },
   placeholder: () => (
-      <TableBody>
-        {[0, 1, 2].map((i) => (
-          <TableRow key={i}>
-            <TableCell colSpan={1000}>
-              <Skeleton height={20} />
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
+    <TableBody>
+      {[0, 1, 2].map((i) => (
+        <TableRow key={i}>
+          <TableCell colSpan={1000}>
+            <Skeleton height={20} />
+          </TableCell>
+        </TableRow>
+      ))}
+    </TableBody>
   ),
 });

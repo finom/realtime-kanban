@@ -4,7 +4,10 @@ export type ComponentSchema = z.ZodType<Record<string, unknown>>;
 
 export interface ComponentDefinition<
   TProps extends ComponentSchema = ComponentSchema,
-  TCallbacks extends Record<string, ComponentSchema> = Record<string, ComponentSchema>,
+  TCallbacks extends Record<string, ComponentSchema> = Record<
+    string,
+    ComponentSchema
+  >,
 > {
   /** Zod schema for component props */
   propDefs: TProps;
@@ -42,17 +45,12 @@ export interface Catalog<
 
 export function createCatalog<
   TComponents extends Record<string, ComponentDefinition>,
->(
-  config: CatalogConfig<TComponents>,
-): Catalog<TComponents> {
-  const {
-    name = "unnamed",
-    components,
-  } = config;
+>(config: CatalogConfig<TComponents>): Catalog<TComponents> {
+  const { name = "unnamed", components } = config;
 
   const componentNames = Object.keys(components) as (keyof TComponents)[];
 
-  return {        
+  return {
     name,
     componentNames,
     components,

@@ -6,6 +6,6 @@ import { TableCellDef } from "./def";
 export const TableCellRenderer = createAIComponentRenderer({
   def: TableCellDef,
   renderer: ({ children }) => {
-  return <ShadcnTableCell>{children}</ShadcnTableCell>;
+    return <ShadcnTableCell>{children}</ShadcnTableCell>;
   },
 });

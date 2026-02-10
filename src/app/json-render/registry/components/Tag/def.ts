@@ -14,12 +14,9 @@ export const TagDef = createAIComponentDef({
         description:
           "Visual style variant: default (primary), secondary (muted), destructive (red), outline (bordered)",
       }),
-    removable: z
-      .boolean()
-      .default(false)
-      .meta({
-        description: "Whether to show a close/remove button on the tag",
-      }),
+    removable: z.boolean().default(false).meta({
+      description: "Whether to show a close/remove button on the tag",
+    }),
   }),
   callbackDefs: {
     onClick: onClickSchema,

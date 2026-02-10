@@ -17,13 +17,13 @@ const iconMap: Record<string, React.ReactNode> = {
 export const AlertRenderer = createAIComponentRenderer({
   def: AlertDef,
   renderer: ({ title, description, status = "info" }) => {
-  const variant = status === "error" ? "destructive" : "default";
-  return (
-    <ShadcnAlert variant={variant}>
-      {iconMap[status]}
-      <AlertTitle>{title}</AlertTitle>
-      {description && <AlertDescription>{description}</AlertDescription>}
-    </ShadcnAlert>
-  );
+    const variant = status === "error" ? "destructive" : "default";
+    return (
+      <ShadcnAlert variant={variant}>
+        {iconMap[status]}
+        <AlertTitle>{title}</AlertTitle>
+        {description && <AlertDescription>{description}</AlertDescription>}
+      </ShadcnAlert>
+    );
   },
 });

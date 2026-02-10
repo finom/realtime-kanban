@@ -6,14 +6,14 @@ import { DropdownMenuItemDef } from "./def";
 export const DropdownMenuItemRenderer = createAIComponentRenderer({
   def: DropdownMenuItemDef,
   renderer: ({ children, variant = "default", disabled = false, onClick }) => {
-  return (
-    <ShadcnDropdownMenuItem
-      variant={variant}
-      disabled={disabled}
-      onClick={(e) => onClick?.(pickClick(e))}
-    >
-      {children}
-    </ShadcnDropdownMenuItem>
-  );
+    return (
+      <ShadcnDropdownMenuItem
+        variant={variant}
+        disabled={disabled}
+        onClick={(e) => onClick?.(pickClick(e))}
+      >
+        {children}
+      </ShadcnDropdownMenuItem>
+    );
   },
 });

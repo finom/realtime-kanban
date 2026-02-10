@@ -19,12 +19,9 @@ export const StatDef = createAIComponentDef({
     trendValue: z.string().optional().meta({
       description: "Optional trend text, e.g. '+12%' or '-3.2%'",
     }),
-    helpText: z
-      .string()
-      .optional()
-      .meta({
-        description:
-          "Optional helper text below the value, e.g. 'vs. last month'",
-      }),
+    helpText: z.string().optional().meta({
+      description:
+        "Optional helper text below the value, e.g. 'vs. last month'",
+    }),
   }),
 });

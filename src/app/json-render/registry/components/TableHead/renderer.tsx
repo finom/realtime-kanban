@@ -6,6 +6,6 @@ import { TableHeadDef } from "./def";
 export const TableHeadRenderer = createAIComponentRenderer({
   def: TableHeadDef,
   renderer: ({ children }) => {
-  return <ShadcnTableHead>{children}</ShadcnTableHead>;
+    return <ShadcnTableHead>{children}</ShadcnTableHead>;
   },
 });

@@ -5,6 +5,6 @@ import { DividerDef } from "./def";
 export const DividerRenderer = createAIComponentRenderer({
   def: DividerDef,
   renderer: ({ orientation = "horizontal" }) => {
-  return <Separator orientation={orientation} />;
+    return <Separator orientation={orientation} />;
   },
 });

@@ -6,6 +6,6 @@ import { TabTriggerDef } from "./def";
 export const TabTriggerRenderer = createAIComponentRenderer({
   def: TabTriggerDef,
   renderer: ({ value, children }) => {
-  return <TabsTrigger value={value}>{String(children ?? value)}</TabsTrigger>;
+    return <TabsTrigger value={value}>{String(children ?? value)}</TabsTrigger>;
   },
 });

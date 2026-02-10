@@ -127,6 +127,45 @@ const FORBIDDEN_NODE_TYPES = new Set([
   "MetaProperty", // import.meta, new.target
 ]);
 
+// --- Safe constructors allowed with `new` ---
+const SAFE_NEW_CONSTRUCTORS = new Set([
+  "Date",
+  "Array",
+  "Object",
+  "Map",
+  "Set",
+  "WeakMap",
+  "WeakSet",
+  "RegExp",
+  "Error",
+  "TypeError",
+  "RangeError",
+  "SyntaxError",
+  "ReferenceError",
+  "URIError",
+  "EvalError",
+  "Number",
+  "String",
+  "Boolean",
+  "Int8Array",
+  "Uint8Array",
+  "Uint8ClampedArray",
+  "Int16Array",
+  "Uint16Array",
+  "Int32Array",
+  "Uint32Array",
+  "Float32Array",
+  "Float64Array",
+  "BigInt64Array",
+  "BigUint64Array",
+  "ArrayBuffer",
+  "DataView",
+  "URL",
+  "URLSearchParams",
+  "TextEncoder",
+  "TextDecoder",
+]);
+
 // --- Forbidden property names accessed on any object ---
 const FORBIDDEN_PROPERTIES = new Set([
   "constructor",
@@ -219,7 +258,9 @@ function validateNode(
       if (
         node.property &&
         (node.property as ASTNode).type === "Identifier" &&
-        FORBIDDEN_PROPERTIES.has((node.property as ASTNode & { name: string }).name)
+        FORBIDDEN_PROPERTIES.has(
+          (node.property as ASTNode & { name: string }).name,
+        )
       ) {
         throw new SafeEvalError(
           `Access to "${(node.property as ASTNode & { name: string }).name}" is not allowed`,
@@ -232,7 +273,8 @@ function validateNode(
       if (
         node.property &&
         (node.property as ASTNode).type === "Literal" &&
-        typeof (node.property as ASTNode & { value: unknown }).value === "string" &&
+        typeof (node.property as ASTNode & { value: unknown }).value ===
+          "string" &&
         FORBIDDEN_PROPERTIES.has(
           (node.property as ASTNode & { value: string }).value,
         )
@@ -243,14 +285,15 @@ function validateNode(
       }
     }
 
-    // Prevent `new` - no constructor calls (except `new Date`)
+    // Prevent `new` - only allow safe built-in constructors
     if (node.type === "NewExpression") {
       const callee = node.callee as ASTNode | undefined;
-      const isNewDate =
-        callee?.type === "Identifier" && callee.name === "Date";
-      if (!isNewDate) {
+      const isSafe =
+        callee?.type === "Identifier" &&
+        SAFE_NEW_CONSTRUCTORS.has(callee.name!);
+      if (!isSafe) {
         throw new SafeEvalError(
-          '"new" expressions are not allowed (except "new Date")',
+          `"new" expressions are only allowed for safe built-in constructors (${[...SAFE_NEW_CONSTRUCTORS].join(", ")})`,
         );
       }
     }
@@ -306,7 +349,8 @@ function containsAwait(node: ASTNode | null | undefined): boolean {
     const child = node[key];
     if (Array.isArray(child)) {
       for (const c of child) {
-        if (c && typeof c === "object" && containsAwait(c as ASTNode)) return true;
+        if (c && typeof c === "object" && containsAwait(c as ASTNode))
+          return true;
       }
     } else if (child && typeof child === "object" && (child as ASTNode).type) {
       if (containsAwait(child as ASTNode)) return true;
@@ -317,7 +361,8 @@ function containsAwait(node: ASTNode | null | undefined): boolean {
 
 // AsyncFunction constructor for evaluating expressions that use `await`
 // eslint-disable-next-line @typescript-eslint/no-empty-function
-const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor as typeof Function;
+const AsyncFunction = Object.getPrototypeOf(async function () {})
+  .constructor as typeof Function;
 
 // --- Error class ---
 
@@ -331,7 +376,10 @@ export class SafeEvalError extends Error {
 // --- SafeEval class ---
 
 export class SafeEval {
-  #cache = new Map<string, { fn: (context: Record<string, unknown>) => unknown; isAsync: boolean }>();
+  #cache = new Map<
+    string,
+    { fn: (context: Record<string, unknown>) => unknown; isAsync: boolean }
+  >();
   #maxCacheSize: number;
   #shadowParams: string[];
 
@@ -425,10 +473,7 @@ export class SafeEval {
       ];
 
       // Build and execute (AsyncFunction for await, Function otherwise)
-      const fn = new Ctor(
-        ...allParams,
-        `"use strict"; return (${expr})`,
-      );
+      const fn = new Ctor(...allParams, `"use strict"; return (${expr})`);
 
       return fn(...allArgs);
     };

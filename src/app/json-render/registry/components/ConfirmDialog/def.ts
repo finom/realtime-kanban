@@ -31,16 +31,11 @@ export const ConfirmDialogDef = createAIComponentDef({
     }),
   }),
   callbackDefs: {
-    onConfirm: z
-      .object({})
-      .meta({
-        description: "Callback when the user clicks the confirm button",
-      }),
-    onCancel: z
-      .object({})
-      .meta({
-        description:
-          "Callback when the user clicks cancel or closes the dialog",
-      }),
+    onConfirm: z.object({}).meta({
+      description: "Callback when the user clicks the confirm button",
+    }),
+    onCancel: z.object({}).meta({
+      description: "Callback when the user clicks cancel or closes the dialog",
+    }),
   },
 });

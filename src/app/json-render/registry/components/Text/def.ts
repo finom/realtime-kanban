@@ -16,12 +16,9 @@ export const TextDef = createAIComponentDef({
         description:
           "Text style variant: body (default), muted (gray, secondary info), lead (larger intro text), small (smaller text), large (bigger text)",
       }),
-    as: z
-      .enum(["span", "p", "div"])
-      .default("span")
-      .meta({
-        description:
-          "HTML element to render: span (inline), p (paragraph), div (block)",
-      }),
+    as: z.enum(["span", "p", "div"]).default("span").meta({
+      description:
+        "HTML element to render: span (inline), p (paragraph), div (block)",
+    }),
   }),
 });

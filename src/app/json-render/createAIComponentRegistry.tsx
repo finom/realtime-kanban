@@ -1,11 +1,12 @@
 import { createReactiveProxy } from "./createReactiveProxy";
-import type { createAIComponent } from "./createAIComponent";
+import type { createAIComponentDef } from "./createAIComponentDef";
 import type { ChunkComponent } from "./types";
 import { ListRenderer, RecursiveRenderer } from "./RecursiveRenderer";
 import { JSONSchemaToTs } from "./JSONSchemaToTs";
+import { buildElementsById } from "./utils";
 
 export const createAIComponentRegistry = (
-  components: Record<string, ReturnType<typeof createAIComponent>>,
+  components: Record<string, ReturnType<typeof createAIComponentDef>>,
 ) => {
   const root = createReactiveProxy({});
 
@@ -41,13 +42,7 @@ export const createAIComponentRegistry = (
     components,
     getDefPartialPrompt,
     Renderer: ({ lines }: { lines: ChunkComponent[] }) => {
-      const elementsById = lines.reduce(
-        (acc, line) => {
-          acc[line.id] = line;
-          return acc;
-        },
-        {} as Record<string, ChunkComponent>,
-      );
+      const elementsById = buildElementsById(lines);
 
       // Only render root elements - children will be rendered recursively
       const rootElements = lines.filter((line) => line.op === "root");

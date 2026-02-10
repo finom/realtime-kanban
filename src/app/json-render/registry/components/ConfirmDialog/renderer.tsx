@@ -13,34 +13,34 @@ import { ConfirmDialogDef } from "./def";
 export const ConfirmDialogRenderer = createAIComponentRenderer({
   def: ConfirmDialogDef,
   renderer: ({
-  open = false,
-  title = "Are you sure?",
-  description,
-  confirmLabel = "Confirm",
-  cancelLabel = "Cancel",
-  variant = "default",
-  onConfirm,
-  onCancel,
-}) => {
-  return (
-    <Dialog open={open} onOpenChange={(v) => !v && onCancel?.({})}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-          {description && (
-            <DialogDescription>{description}</DialogDescription>
-          )}
-        </DialogHeader>
-        <DialogFooter>
-          <Button variant="outline" onClick={() => onCancel?.({})}>
-            {cancelLabel}
-          </Button>
-          <Button variant={variant} onClick={() => onConfirm?.({})}>
-            {confirmLabel}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  );
+    open = false,
+    title = "Are you sure?",
+    description,
+    confirmLabel = "Confirm",
+    cancelLabel = "Cancel",
+    variant = "default",
+    onConfirm,
+    onCancel,
+  }) => {
+    return (
+      <Dialog open={open} onOpenChange={(v) => !v && onCancel?.({})}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{title}</DialogTitle>
+            {description && (
+              <DialogDescription>{description}</DialogDescription>
+            )}
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => onCancel?.({})}>
+              {cancelLabel}
+            </Button>
+            <Button variant={variant} onClick={() => onConfirm?.({})}>
+              {confirmLabel}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    );
   },
 });

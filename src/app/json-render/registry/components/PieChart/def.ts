@@ -23,13 +23,10 @@ export const PieChartDef = createAIComponentDef({
       .number()
       .default(300)
       .meta({ description: "Chart height in pixels" }),
-    donut: z
-      .boolean()
-      .default(false)
-      .meta({
-        description:
-          "Whether to render as a donut chart (with a hole in the center)",
-      }),
+    donut: z.boolean().default(false).meta({
+      description:
+        "Whether to render as a donut chart (with a hole in the center)",
+    }),
     showLabels: z
       .boolean()
       .default(true)

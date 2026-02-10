@@ -58,10 +58,12 @@ export const RecursiveRenderer = ({
     return () => {};
   }, [element, scopes]);
 
-  if (!element)
-    return <></>;
+  if (!element) return <></>;
 
-  const rendererEntry = componentRenderers.renderers[element.component as keyof typeof componentRenderers.renderers];
+  const rendererEntry =
+    componentRenderers.renderers[
+      element.component as keyof typeof componentRenderers.renderers
+    ];
   const Component = rendererEntry?.component;
   if (!Component)
     return (
@@ -70,35 +72,38 @@ export const RecursiveRenderer = ({
 
   const Placeholder = rendererEntry?.placeholder ?? DefaultPlaceholder;
 
-  const hasUnloadedChildren = element.children?.some((childKey: string) => !elements[childKey]);
+  const hasUnloadedChildren = element.children?.some(
+    (childKey: string) => !elements[childKey],
+  );
 
-  const children = element.children
-    ? hasUnloadedChildren
-      ? <Placeholder />
-      : element.children.map((childKey: string) => {
-          const childElement = elements[childKey];
-          if (childElement?.type === "list") {
-            return (
-              <ListRenderer
-                key={childKey}
-                elementKey={childKey}
-                elements={elements}
-                scopes={scopes}
-                line={childElement}
-              />
-            );
-          }
+  const children = element.children ? (
+    hasUnloadedChildren ? (
+      <Placeholder />
+    ) : (
+      element.children.map((childKey: string) => {
+        const childElement = elements[childKey];
+        if (childElement?.type === "list") {
           return (
-            <RecursiveRenderer
+            <ListRenderer
               key={childKey}
               elementKey={childKey}
               elements={elements}
               scopes={scopes}
+              line={childElement}
             />
           );
-        })
-    : null;
-
+        }
+        return (
+          <RecursiveRenderer
+            key={childKey}
+            elementKey={childKey}
+            elements={elements}
+            scopes={scopes}
+          />
+        );
+      })
+    )
+  ) : null;
 
   if (element.defaults && !hasBeenRenderedRef.current) {
     const collected: {
@@ -148,7 +153,9 @@ export const RecursiveRenderer = ({
     return (
       <Suspense
         fallback={
-          <Placeholder />
+          <Component chunk={element} scopes={scopes}>
+            <Placeholder />
+          </Component>
         }
       >
         <Comp />
@@ -192,11 +199,13 @@ export const ListRenderer = ({
     Map<string | number, ReturnType<typeof createReactiveProxy>>
   >(new Map());
 
-  const listRendererEntry = componentRenderers.renderers[line.component as keyof typeof componentRenderers.renderers];
+  const listRendererEntry =
+    componentRenderers.renderers[
+      line.component as keyof typeof componentRenderers.renderers
+    ];
   const ListPlaceholder = listRendererEntry?.placeholder ?? DefaultPlaceholder;
 
-  if (!element)
-    return <></>;
+  if (!element) return <></>;
 
   if (element.type !== "list")
     return (
@@ -206,21 +215,28 @@ export const ListRenderer = ({
   // Subscribe to changes in the items expression
   // items is an expression like "scopes.root.rows", we need to extract "root.rows" for subscription
   useEffect(() => {
-    if (line.items.expr) {
+    if (line.itemsSource) {
       // Parse "scopes.root.path" -> ["root", "path"]
-      const [targetScope, targetPath] = parseScope(line.items.expr);
+      const [targetScope, targetPath] = parseScope(line.itemsSource);
+      console.log(
+        `Subscribing to list items changes: ${line.itemsSource} -> ${targetScope}.${targetPath}`,
+      );
       const unsubscribe = scopes[targetScope].$emitter.on(targetPath, () => {
-        console.log(`List items changed: ${line.items.expr}`);
+        console.log(`List items changed: ${line.itemsSource}`);
         forceRender();
       });
       return unsubscribe;
     }
     return () => {};
-  }, [line.items, scopes]);
+  }, [line.itemsSource, scopes]);
 
-  const items = evaluate<ValueExpr>(line.items || "[]", {
-    scopes,
-  }) as unknown[];
+  const items =
+    (evaluate<ValueExpr>(
+      { expr: line.itemsSource },
+      {
+        scopes,
+      },
+    ) as unknown[]) ?? [];
 
   // Clean up proxies for removed items (by ID)
   const currentIds = new Set(

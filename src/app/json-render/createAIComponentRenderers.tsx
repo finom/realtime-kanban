@@ -2,6 +2,8 @@ import type { AIComponentRenderer } from "./createAIComponentRenderer";
 import type { ChunkComponent } from "./types";
 import { createReactiveProxy } from "./createReactiveProxy";
 import { ListRenderer, RecursiveRenderer } from "./RecursiveRenderer";
+import { uniqBy } from "lodash";
+import { buildElementsById } from "./utils";
 
 export const createAIComponentRenderers = <
   T extends Record<string, AIComponentRenderer>,
@@ -13,15 +15,12 @@ export const createAIComponentRenderers = <
   return {
     renderers,
     Renderer: ({ lines }: { lines: ChunkComponent[] }) => {
-      const elementsById = lines.reduce(
-        (acc, line) => {
-          acc[line.id] = line;
-          return acc;
-        },
-        {} as Record<string, ChunkComponent>,
-      );
+      const elementsById = buildElementsById(lines);
 
-      const rootElements = lines.filter((line) => line.op === "root");
+      const rootElements = uniqBy(
+        lines.filter((line) => line.op === "root"),
+        "id",
+      );
 
       return rootElements.map((line) => {
         const comp = renderers[line.component];

@@ -5,6 +5,6 @@ import { TabContentDef } from "./def";
 export const TabContentRenderer = createAIComponentRenderer({
   def: TabContentDef,
   renderer: ({ value, children }) => {
-  return <TabsContent value={value}>{children}</TabsContent>;
+    return <TabsContent value={value}>{children}</TabsContent>;
   },
 });

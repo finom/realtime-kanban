@@ -12,7 +12,7 @@ export type ChunkComponentElement = {
   deps?: string[];
   defaults?: AssignableExpr[];
   hidden?: ValueExpr;
-  callbacks?: Record<string, AssignableExpr[]>;
+  callbacks?: Record<string, AssignableWithConfirmExpr[]>;
   children?: string[];
 };
 
@@ -23,12 +23,12 @@ export type ChunkComponentList = {
   type: "list";
   idKey?: (string & {}) | "_index" | "_item";
   itemScope: string;
-  items: ValueExpr;
+  itemsSource: string;
   props?: ValueExpr;
   deps?: string[];
   defaults?: AssignableExpr[];
   hidden?: ValueExpr;
-  callbacks?: Record<string, AssignableExpr[]>;
+  callbacks?: Record<string, AssignableWithConfirmExpr[]>;
   children?: string[];
 };
 
@@ -61,6 +61,6 @@ export namespace CombinedSpec {
 }
 
 // props: expr, literal
-// items: expr, literal
+// itemsSource: string (scope reference like scopes.root.myItems)
 // callbacks: set, expr, literal, async
 // defaults: set, expr, literal, async

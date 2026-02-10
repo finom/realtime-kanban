@@ -9,18 +9,12 @@ export const DatePickerDef = createAIComponentDef({
       .string()
       .optional()
       .meta({ description: "The selected date as ISO string (YYYY-MM-DD)" }),
-    min: z
-      .string()
-      .optional()
-      .meta({
-        description: "Minimum selectable date as ISO string (YYYY-MM-DD)",
-      }),
-    max: z
-      .string()
-      .optional()
-      .meta({
-        description: "Maximum selectable date as ISO string (YYYY-MM-DD)",
-      }),
+    min: z.string().optional().meta({
+      description: "Minimum selectable date as ISO string (YYYY-MM-DD)",
+    }),
+    max: z.string().optional().meta({
+      description: "Maximum selectable date as ISO string (YYYY-MM-DD)",
+    }),
     disabled: z
       .boolean()
       .default(false)

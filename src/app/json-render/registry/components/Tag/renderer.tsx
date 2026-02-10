@@ -7,32 +7,32 @@ import { TagDef } from "./def";
 export const TagRenderer = createAIComponentRenderer({
   def: TagDef,
   renderer: ({
-  children,
-  variant = "secondary",
-  removable = false,
-  onClick,
-  onRemove,
-}) => {
-  return (
-    <Badge
-      variant={variant}
-      className="gap-1 cursor-pointer"
-      onClick={(e) => onClick?.(pickClick(e))}
-    >
-      {String(children ?? "")}
-      {removable && (
-        <button
-          type="button"
-          className="ml-0.5 rounded-full outline-none hover:bg-foreground/20 p-0.5"
-          onClick={(e) => {
-            e.stopPropagation();
-            onRemove?.({});
-          }}
-        >
-          <X className="size-3" />
-        </button>
-      )}
-    </Badge>
-  );
+    children,
+    variant = "secondary",
+    removable = false,
+    onClick,
+    onRemove,
+  }) => {
+    return (
+      <Badge
+        variant={variant}
+        className="gap-1 cursor-pointer"
+        onClick={(e) => onClick?.(pickClick(e))}
+      >
+        {String(children ?? "")}
+        {removable && (
+          <button
+            type="button"
+            className="ml-0.5 rounded-full outline-none hover:bg-foreground/20 p-0.5"
+            onClick={(e) => {
+              e.stopPropagation();
+              onRemove?.({});
+            }}
+          >
+            <X className="size-3" />
+          </button>
+        )}
+      </Badge>
+    );
   },
 });

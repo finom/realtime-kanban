@@ -2,7 +2,7 @@ import { Activity, type ReactNode } from "react";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import type {
-  AssignableExpr,
+  AssignableWithConfirmExpr,
   ChunkComponent,
   CombinedSpec,
   ValueExpr,
@@ -10,6 +10,7 @@ import type {
 import type { AIComponentDef } from "./createAIComponentDef";
 import { parseScope } from "./utils";
 import { evaluate } from "./evaluate";
+import { useConfirm } from "./ConfirmModal";
 
 type CallbacksToFunctions<T extends Record<string, CombinedSpec>> = {
   [K in keyof T]: (args: CombinedSpec.InferOutput<T[K]>) => Promise<void>;
@@ -42,6 +43,7 @@ export const createAIComponentRenderer = <
     scopes: Record<string, any>;
   }) => {
     const { chunk, children } = myprops;
+    const confirm = useConfirm();
     const props: CombinedSpec.InferOutput<TProps> = chunk.props
       ? (evaluate<ValueExpr>(chunk.props, {
           scopes: myprops.scopes,
@@ -58,7 +60,11 @@ export const createAIComponentRenderer = <
         key,
         async (evt: any) => {
           for (const setExpr of chunkCallbacks[key]) {
-            const result = await evaluate<AssignableExpr>(setExpr, {
+            if (setExpr.confirm) {
+              const confirmed = await confirm(setExpr.confirm);
+              if (!confirmed) return;
+            }
+            const result = await evaluate<AssignableWithConfirmExpr>(setExpr, {
               evt,
               scopes: myprops.scopes,
             });

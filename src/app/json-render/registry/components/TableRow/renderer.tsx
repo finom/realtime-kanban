@@ -7,15 +7,15 @@ import { TableRowDef } from "./def";
 export const TableRowRenderer = createAIComponentRenderer({
   def: TableRowDef,
   renderer: ({ children, onClick }) => {
-  return (
-    <ShadcnTableRow onClick={(e) => onClick?.(pickClick(e))}>
-      {children}
-    </ShadcnTableRow>
-  );
+    return (
+      <ShadcnTableRow onClick={(e) => onClick?.(pickClick(e))}>
+        {children}
+      </ShadcnTableRow>
+    );
   },
   placeholder: () => (
-      <TableCell colSpan={1000}>
-        <Skeleton height={20} />
-      </TableCell>
+    <TableCell colSpan={1000}>
+      <Skeleton height={20} />
+    </TableCell>
   ),
 });

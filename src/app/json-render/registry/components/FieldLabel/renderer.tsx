@@ -5,6 +5,6 @@ import { FieldLabelDef } from "./def";
 export const FieldLabelRenderer = createAIComponentRenderer({
   def: FieldLabelDef,
   renderer: ({ children, htmlFor }) => {
-  return <Label htmlFor={htmlFor}>{String(children ?? "")}</Label>;
+    return <Label htmlFor={htmlFor}>{String(children ?? "")}</Label>;
   },
 });

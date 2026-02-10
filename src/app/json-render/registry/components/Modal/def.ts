@@ -21,11 +21,9 @@ export const ModalDef = createAIComponentDef({
   callbackDefs: {
     onOpenChange: z
       .object({
-        open: z
-          .boolean()
-          .meta({
-            description: "The new open state (typically false when closing)",
-          }),
+        open: z.boolean().meta({
+          description: "The new open state (typically false when closing)",
+        }),
       })
       .meta({
         description:

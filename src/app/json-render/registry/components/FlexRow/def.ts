@@ -6,12 +6,9 @@ export const FlexRowDef = createAIComponentDef({
   description:
     "A horizontal flex container that lays out children in a row. Use FlexRow to arrange components side by side horizontally with configurable gap, alignment, and wrapping. Common uses: button groups, inline form fields, stat cards in a row, icon + text combos.",
   propDefs: z.strictObject({
-    gap: z
-      .enum(["0", "1", "2", "3", "4", "6", "8"])
-      .default("2")
-      .meta({
-        description: "Gap between children using Tailwind spacing scale (0-8)",
-      }),
+    gap: z.enum(["0", "1", "2", "3", "4", "6", "8"]).default("2").meta({
+      description: "Gap between children using Tailwind spacing scale (0-8)",
+    }),
     align: z
       .enum(["start", "center", "end", "stretch", "baseline"])
       .default("center")
@@ -20,13 +17,10 @@ export const FlexRowDef = createAIComponentDef({
       .enum(["start", "center", "end", "between", "around", "evenly"])
       .default("start")
       .meta({ description: "Horizontal distribution of children" }),
-    wrap: z
-      .boolean()
-      .default(false)
-      .meta({
-        description:
-          "Whether children wrap to the next line when there is no space",
-      }),
+    wrap: z.boolean().default(false).meta({
+      description:
+        "Whether children wrap to the next line when there is no space",
+    }),
   }),
   callbackDefs: {
     onClick: onClickSchema,

@@ -11,19 +11,19 @@ import { DropdownMenuDef } from "./def";
 export const DropdownMenuRenderer = createAIComponentRenderer({
   def: DropdownMenuDef,
   renderer: ({ triggerLabel, children }) => {
-  return (
-    <ShadcnDropdownMenu>
-      <DropdownMenuTrigger asChild>
-        {triggerLabel ? (
-          <Button variant="outline">{triggerLabel}</Button>
-        ) : (
-          <Button variant="ghost" size="icon">
-            <MoreHorizontal className="size-4" />
-          </Button>
-        )}
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">{children}</DropdownMenuContent>
-    </ShadcnDropdownMenu>
-  );
+    return (
+      <ShadcnDropdownMenu>
+        <DropdownMenuTrigger asChild>
+          {triggerLabel ? (
+            <Button variant="outline">{triggerLabel}</Button>
+          ) : (
+            <Button variant="ghost" size="icon">
+              <MoreHorizontal className="size-4" />
+            </Button>
+          )}
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">{children}</DropdownMenuContent>
+      </ShadcnDropdownMenu>
+    );
   },
 });

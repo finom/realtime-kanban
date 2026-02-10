@@ -97,7 +97,7 @@ export const listLines: ChunkComponent[] = [
     type: "list",
     itemScope: "itemScope",
     component: "FlexRow",
-    items: { expr: "scopes.root.items" },
+    itemsSource: "scopes.root.items",
     props: { literal: { gap: "2" } },
     children: ["item-badge"],
   },
@@ -106,7 +106,7 @@ export const listLines: ChunkComponent[] = [
     op: "child",
     type: "element",
     component: "Badge",
-    props: { expr: '({ children: scopes.itemScope.item })' },
+    props: { expr: "({ children: scopes.itemScope.item })" },
   },
   {
     id: "add-item-button",
@@ -193,7 +193,7 @@ export const tableLines: ChunkComponent[] = [
     op: "child",
     type: "list",
     idKey: "id",
-    items: { expr: "scopes.root.rows" },
+    itemsSource: "scopes.root.rows",
     itemScope: "row",
     children: ["td-input-a", "td-input-b", "td-sum", "td-delete"],
   },
@@ -209,7 +209,7 @@ export const tableLines: ChunkComponent[] = [
     component: "NumberInput",
     op: "child",
     type: "element",
-    props: { expr: '({value: scopes.row.item.a})' },
+    props: { expr: "({value: scopes.row.item.a})" },
     deps: ["scopes.row.item.a"],
     callbacks: {
       onChange: [
@@ -233,7 +233,7 @@ export const tableLines: ChunkComponent[] = [
     component: "NumberInput",
     op: "child",
     type: "element",
-    props: { expr: '({value: scopes.row.item.b})' },
+    props: { expr: "({value: scopes.row.item.b})" },
     deps: ["scopes.row.item.b"],
     callbacks: {
       onChange: [
@@ -258,7 +258,7 @@ export const tableLines: ChunkComponent[] = [
     op: "child",
     type: "element",
     props: {
-      expr: '({children: scopes.row.item.a + scopes.row.item.b})',
+      expr: "({children: scopes.row.item.a + scopes.row.item.b})",
     },
     deps: ["scopes.row.item.a", "scopes.row.item.b"],
   },
@@ -282,6 +282,7 @@ export const tableLines: ChunkComponent[] = [
         {
           set: "scopes.root.rows",
           expr: "scopes.root.rows.filter(r => r.id !== scopes.row.item.id)",
+          confirm: "Are you sure you want to delete this row?",
         },
         {
           set: "scopes.root.totalSum",
@@ -348,7 +349,7 @@ export const tableLines: ChunkComponent[] = [
     component: "Text",
     op: "child",
     type: "element",
-    props: { expr: '({children: scopes.root.totalSum})' },
+    props: { expr: "({children: scopes.root.totalSum})" },
     deps: ["scopes.root.totalSum"],
   },
   {
@@ -431,7 +432,7 @@ export const asyncLines: ChunkComponent[] = [
     op: "child",
     type: "list",
     idKey: "id",
-    items: { expr: "scopes.root.users" },
+    itemsSource: "scopes.root.users",
     itemScope: "user",
     children: ["td-name", "td-email"],
   },
@@ -447,7 +448,7 @@ export const asyncLines: ChunkComponent[] = [
     component: "Text",
     op: "child",
     type: "element",
-    props: { expr: '({children: scopes.user.item.fullName})' },
+    props: { expr: "({children: scopes.user.item.fullName})" },
     deps: ["scopes.user.item.fullName"],
   },
   {
@@ -462,7 +463,7 @@ export const asyncLines: ChunkComponent[] = [
     component: "Text",
     op: "child",
     type: "element",
-    props: { expr: '({children: scopes.user.item.email})' },
+    props: { expr: "({children: scopes.user.item.email})" },
     deps: ["scopes.user.item.email"],
   },
 ] as const;
@@ -483,7 +484,7 @@ export const chartLines: ChunkComponent[] = [
       },
       {
         set: "scopes.root.pieChartData",
-        expr: 'scopes.root.users.map(u => ({name: u.fullName, value: scopes.root.tasks.filter(t => t.userId === u.id).length}))',
+        expr: "scopes.root.users.map(u => ({name: u.fullName, value: scopes.root.tasks.filter(t => t.userId === u.id).length}))",
       },
     ],
     children: ["bar-card", "pie-card"],
@@ -515,7 +516,7 @@ export const chartLines: ChunkComponent[] = [
     defaults: [
       {
         set: "scopes.root.pieChartData",
-        expr: 'scopes.root.users.map(u => ({name: u.fullName, value: scopes.root.tasks.filter(t => t.userId === u.id).length}))',
+        expr: "scopes.root.users.map(u => ({name: u.fullName, value: scopes.root.tasks.filter(t => t.userId === u.id).length}))",
       },
     ],
     children: ["user-pie-chart"],
@@ -526,7 +527,7 @@ export const chartLines: ChunkComponent[] = [
     type: "element",
     component: "PieChart",
     props: {
-      expr: '({data: scopes.root.pieChartData, height: 300, donut: true})',
+      expr: "({data: scopes.root.pieChartData, height: 300, donut: true})",
     },
     deps: ["scopes.root.pieChartData"],
   },
@@ -546,10 +547,6 @@ export const claudeLines: ChunkComponent[] = [
       { set: "scopes.root.searchTerm", literal: "" },
       { set: "scopes.root.showAddTask", literal: false },
       { set: "scopes.root.showAddUser", literal: false },
-      { set: "scopes.root.showDeleteTask", literal: false },
-      { set: "scopes.root.deleteTaskId", literal: "" },
-      { set: "scopes.root.showDeleteUser", literal: false },
-      { set: "scopes.root.deleteUserId", literal: "" },
       { set: "scopes.root.newTaskTitle", literal: "" },
       { set: "scopes.root.newTaskDesc", literal: "" },
       { set: "scopes.root.newTaskStatus", literal: "TODO" },
@@ -574,10 +571,8 @@ export const claudeLines: ChunkComponent[] = [
       "tabs",
       "add-task-modal",
       "edit-task-modal",
-      "delete-task-dialog",
       "add-user-modal",
       "edit-user-modal",
-      "delete-user-dialog",
     ],
   },
   {
@@ -677,7 +672,7 @@ export const claudeLines: ChunkComponent[] = [
     type: "element",
     component: "PieChart",
     props: {
-      expr: '({data: scopes.root.users.map(u => ({name: u.fullName, value: scopes.root.tasks.filter(t => t.userId === u.id).length})), height: 300, donut: true, showLabels: true})',
+      expr: "({data: scopes.root.users.map(u => ({name: u.fullName, value: scopes.root.tasks.filter(t => t.userId === u.id).length})), height: 300, donut: true, showLabels: true})",
     },
     deps: ["scopes.root.tasks", "scopes.root.users"],
   },
@@ -686,7 +681,7 @@ export const claudeLines: ChunkComponent[] = [
     op: "child",
     type: "element",
     component: "Tabs",
-    props: { expr: '({value: scopes.root.activeTab})' },
+    props: { expr: "({value: scopes.root.activeTab})" },
     deps: ["scopes.root.activeTab"],
     callbacks: {
       onValueChange: [{ set: "scopes.root.activeTab", expr: "evt.value" }],
@@ -740,7 +735,13 @@ export const claudeLines: ChunkComponent[] = [
     },
     deps: ["scopes.root.searchTerm"],
     callbacks: {
-      onChange: [{ set: "scopes.root.searchTerm", expr: "evt.value" }],
+      onChange: [
+        { set: "scopes.root.searchTerm", expr: "evt.value" },
+        {
+          set: "scopes.root.filteredTasks",
+          expr: 'scopes.root.tasks.filter(t => evt.value === "" || t.title.toLowerCase().includes(evt.value.toLowerCase()))',
+        },
+      ],
     },
   },
   {
@@ -812,6 +813,7 @@ export const claudeLines: ChunkComponent[] = [
     op: "child",
     type: "element",
     component: "TableBody",
+    defaults: [{ set: "scopes.root.filteredTasks", expr: "scopes.root.tasks" }],
     children: ["task-rows"],
   },
   {
@@ -821,9 +823,7 @@ export const claudeLines: ChunkComponent[] = [
     component: "TableRow",
     itemScope: "taskRow",
     idKey: "id",
-    items: {
-      expr: 'scopes.root.tasks.filter(t => scopes.root.searchTerm === "" || t.title.toLowerCase().includes(scopes.root.searchTerm.toLowerCase()))',
-    },
+    itemsSource: "scopes.root.filteredTasks",
     children: ["td-title", "td-desc", "td-status", "td-user", "td-actions"],
   },
   {
@@ -838,7 +838,7 @@ export const claudeLines: ChunkComponent[] = [
     op: "child",
     type: "element",
     component: "Text",
-    props: { expr: '({children: scopes.taskRow.item.title})' },
+    props: { expr: "({children: scopes.taskRow.item.title})" },
     deps: ["scopes.taskRow.item.title"],
   },
   {
@@ -940,8 +940,17 @@ export const claudeLines: ChunkComponent[] = [
     props: { literal: { children: "Delete", variant: "destructive" } },
     callbacks: {
       onClick: [
-        { set: "scopes.root.deleteTaskId", expr: "scopes.taskRow.item.id" },
-        { set: "scopes.root.showDeleteTask", literal: true },
+        {
+          set: "scopes.root._deleteTaskResult",
+          expr: "TaskRPC_deleteTask({params: {id: scopes.taskRow.item.id}})",
+          confirm:
+            "Are you sure you want to delete this task? This action cannot be undone.",
+        },
+        { set: "scopes.root.tasks", expr: "TaskRPC_getTasks()" },
+        {
+          set: "scopes.root.filteredTasks",
+          expr: 'scopes.root.tasks.filter(t => scopes.root.searchTerm === "" || t.title.toLowerCase().includes(scopes.root.searchTerm.toLowerCase()))',
+        },
       ],
     },
   },
@@ -1032,7 +1041,7 @@ export const claudeLines: ChunkComponent[] = [
     component: "TableRow",
     itemScope: "userRow",
     idKey: "id",
-    items: { expr: "scopes.root.users" },
+    itemsSource: "scopes.root.users",
     children: ["utd-name", "utd-email", "utd-task-count", "utd-actions"],
   },
   {
@@ -1047,7 +1056,7 @@ export const claudeLines: ChunkComponent[] = [
     op: "child",
     type: "element",
     component: "Text",
-    props: { expr: '({children: scopes.userRow.item.fullName})' },
+    props: { expr: "({children: scopes.userRow.item.fullName})" },
     deps: ["scopes.userRow.item.fullName"],
   },
   {
@@ -1124,8 +1133,18 @@ export const claudeLines: ChunkComponent[] = [
     props: { literal: { children: "Delete", variant: "destructive" } },
     callbacks: {
       onClick: [
-        { set: "scopes.root.deleteUserId", expr: "scopes.userRow.item.id" },
-        { set: "scopes.root.showDeleteUser", literal: true },
+        {
+          set: "scopes.root._deleteUserResult",
+          expr: "UserRPC_deleteUser({params: {id: scopes.userRow.item.id}})",
+          confirm:
+            "Are you sure you want to delete this user? All tasks assigned to this user will also be removed. This action cannot be undone.",
+        },
+        { set: "scopes.root.users", expr: "UserRPC_getUsers()" },
+        { set: "scopes.root.tasks", expr: "TaskRPC_getTasks()" },
+        {
+          set: "scopes.root.filteredTasks",
+          expr: 'scopes.root.tasks.filter(t => scopes.root.searchTerm === "" || t.title.toLowerCase().includes(scopes.root.searchTerm.toLowerCase()))',
+        },
       ],
     },
   },
@@ -1293,9 +1312,13 @@ export const claudeLines: ChunkComponent[] = [
       onClick: [
         {
           set: "scopes.root._createTaskResult",
-          expr: 'TaskRPC_createTask({body: {title: scopes.root.newTaskTitle, description: scopes.root.newTaskDesc, status: scopes.root.newTaskStatus, userId: scopes.root.newTaskUserId}})',
+          expr: "TaskRPC_createTask({body: {title: scopes.root.newTaskTitle, description: scopes.root.newTaskDesc, status: scopes.root.newTaskStatus, userId: scopes.root.newTaskUserId}})",
         },
         { set: "scopes.root.tasks", expr: "TaskRPC_getTasks()" },
+        {
+          set: "scopes.root.filteredTasks",
+          expr: 'scopes.root.tasks.filter(t => scopes.root.searchTerm === "" || t.title.toLowerCase().includes(scopes.root.searchTerm.toLowerCase()))',
+        },
         { set: "scopes.root.showAddTask", literal: false },
         { set: "scopes.root.newTaskTitle", literal: "" },
         { set: "scopes.root.newTaskDesc", literal: "" },
@@ -1468,35 +1491,14 @@ export const claudeLines: ChunkComponent[] = [
       onClick: [
         {
           set: "scopes.root._updateTaskResult",
-          expr: 'TaskRPC_updateTask({body: {title: scopes.root.editTaskTitle, description: scopes.root.editTaskDesc, status: scopes.root.editTaskStatus, userId: scopes.root.editTaskUserId}, params: {id: scopes.root.editTaskId}})',
+          expr: "TaskRPC_updateTask({body: {title: scopes.root.editTaskTitle, description: scopes.root.editTaskDesc, status: scopes.root.editTaskStatus, userId: scopes.root.editTaskUserId}, params: {id: scopes.root.editTaskId}})",
         },
         { set: "scopes.root.tasks", expr: "TaskRPC_getTasks()" },
-        { set: "scopes.root.showEditTask", literal: false },
-      ],
-    },
-  },
-  {
-    id: "delete-task-dialog",
-    op: "child",
-    type: "element",
-    component: "ConfirmDialog",
-    props: {
-      expr: '({open: scopes.root.showDeleteTask, title: "Delete Task", description: "Are you sure you want to delete this task? This action cannot be undone.", confirmLabel: "Delete", cancelLabel: "Cancel", variant: "destructive"})',
-    },
-    deps: ["scopes.root.showDeleteTask"],
-    callbacks: {
-      onConfirm: [
         {
-          set: "scopes.root._deleteTaskResult",
-          expr: 'TaskRPC_deleteTask({params: {id: scopes.root.deleteTaskId}})',
+          set: "scopes.root.filteredTasks",
+          expr: 'scopes.root.tasks.filter(t => scopes.root.searchTerm === "" || t.title.toLowerCase().includes(scopes.root.searchTerm.toLowerCase()))',
         },
-        { set: "scopes.root.tasks", expr: "TaskRPC_getTasks()" },
-        { set: "scopes.root.showDeleteTask", literal: false },
-        { set: "scopes.root.deleteTaskId", literal: "" },
-      ],
-      onCancel: [
-        { set: "scopes.root.showDeleteTask", literal: false },
-        { set: "scopes.root.deleteTaskId", literal: "" },
+        { set: "scopes.root.showEditTask", literal: false },
       ],
     },
   },
@@ -1608,7 +1610,7 @@ export const claudeLines: ChunkComponent[] = [
       onClick: [
         {
           set: "scopes.root._createUserResult",
-          expr: 'UserRPC_createUser({body: {fullName: scopes.root.newUserName, email: scopes.root.newUserEmail}})',
+          expr: "UserRPC_createUser({body: {fullName: scopes.root.newUserName, email: scopes.root.newUserEmail}})",
         },
         { set: "scopes.root.users", expr: "UserRPC_getUsers()" },
         { set: "scopes.root.showAddUser", literal: false },
@@ -1725,36 +1727,10 @@ export const claudeLines: ChunkComponent[] = [
       onClick: [
         {
           set: "scopes.root._updateUserResult",
-          expr: 'UserRPC_updateUser({body: {fullName: scopes.root.editUserName, email: scopes.root.editUserEmail}, params: {id: scopes.root.editUserId}})',
+          expr: "UserRPC_updateUser({body: {fullName: scopes.root.editUserName, email: scopes.root.editUserEmail}, params: {id: scopes.root.editUserId}})",
         },
         { set: "scopes.root.users", expr: "UserRPC_getUsers()" },
         { set: "scopes.root.showEditUser", literal: false },
-      ],
-    },
-  },
-  {
-    id: "delete-user-dialog",
-    op: "child",
-    type: "element",
-    component: "ConfirmDialog",
-    props: {
-      expr: '({open: scopes.root.showDeleteUser, title: "Delete User", description: "Are you sure you want to delete this user? All tasks assigned to this user will also be removed. This action cannot be undone.", confirmLabel: "Delete User", cancelLabel: "Cancel", variant: "destructive"})',
-    },
-    deps: ["scopes.root.showDeleteUser"],
-    callbacks: {
-      onConfirm: [
-        {
-          set: "scopes.root._deleteUserResult",
-          expr: 'UserRPC_deleteUser({params: {id: scopes.root.deleteUserId}})',
-        },
-        { set: "scopes.root.users", expr: "UserRPC_getUsers()" },
-        { set: "scopes.root.tasks", expr: "TaskRPC_getTasks()" },
-        { set: "scopes.root.showDeleteUser", literal: false },
-        { set: "scopes.root.deleteUserId", literal: "" },
-      ],
-      onCancel: [
-        { set: "scopes.root.showDeleteUser", literal: false },
-        { set: "scopes.root.deleteUserId", literal: "" },
       ],
     },
   },

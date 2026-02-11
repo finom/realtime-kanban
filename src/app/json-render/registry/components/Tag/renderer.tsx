@@ -12,12 +12,14 @@ export const TagRenderer = createAIComponentRenderer({
     removable = false,
     onClick,
     onRemove,
+    generatedId,
   }) => {
     return (
       <Badge
         variant={variant}
         className="gap-1 cursor-pointer"
         onClick={(e) => onClick?.(pickClick(e))}
+        data-id={generatedId}
       >
         {String(children ?? "")}
         {removable && (

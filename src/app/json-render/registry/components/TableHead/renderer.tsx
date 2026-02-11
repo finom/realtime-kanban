@@ -5,7 +5,7 @@ import { TableHeadDef } from "./def";
 
 export const TableHeadRenderer = createAIComponentRenderer({
   def: TableHeadDef,
-  renderer: ({ children }) => {
-    return <ShadcnTableHead>{children}</ShadcnTableHead>;
+  renderer: ({ children, generatedId }) => {
+    return <ShadcnTableHead data-id={generatedId}>{children}</ShadcnTableHead>;
   },
 });

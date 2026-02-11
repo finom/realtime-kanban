@@ -5,11 +5,12 @@ import { EmptyStateDef } from "./def";
 
 export const EmptyStateRenderer = createAIComponentRenderer({
   def: EmptyStateDef,
-  renderer: ({ title = "No data", description, children, onClick }) => {
+  renderer: ({ title = "No data", description, children, onClick, generatedId }) => {
     return (
       <div
         className="flex flex-col items-center justify-center py-12 text-center"
         onClick={(e) => onClick?.(pickClick(e))}
+        data-id={generatedId}
       >
         <InboxIcon className="size-12 text-muted-foreground mb-4" />
         <h3 className="text-lg font-semibold">{title}</h3>

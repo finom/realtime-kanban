@@ -10,27 +10,27 @@ import z from "zod";
 
 export default class JsonRenderController {
   @post("/stream")
-  static render = procedure({ 
+  static render = procedure({
     body: z.object({
-      prompt: z.string()
+      prompt: z.string(),
     }),
     handle: async (req) => {
-    const system = getPrompt();
-    const { prompt } = await req.json();
+      const system = getPrompt();
+      const { prompt } = await req.json();
 
-    console.log("systemPrompt:", system);
+      // console.log("systemPrompt:", system);
 
-    const result = streamText({
-      model: "anthropic/claude-opus-4.6",
-      system,
-      prompt,
-    });
+      const result = streamText({
+        model: "anthropic/claude-opus-4.6",
+        system,
+        prompt,
+      });
 
-    return new Response(result.textStream, {
-      headers: { "Content-Type": "text/plain; charset=utf-8" },
-    }) as unknown as JSONLinesResponder<
-      ChunkComponentElement | ChunkComponentList
-    >;
-}
+      return new Response(result.textStream, {
+        headers: { "Content-Type": "text/plain; charset=utf-8" },
+      }) as unknown as JSONLinesResponder<
+        ChunkComponentElement | ChunkComponentList
+      >;
+    },
   });
 }

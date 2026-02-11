@@ -11,9 +11,9 @@ import { CardDef } from "./def";
 
 export const CardRenderer = createAIComponentRenderer({
   def: CardDef,
-  renderer: ({ title, description, children, onClick }) => {
+  renderer: ({ title, description, children, onClick, generatedId }) => {
     return (
-      <ShadcnCard onClick={(e) => onClick?.(pickClick(e))}>
+      <ShadcnCard onClick={(e) => onClick?.(pickClick(e))} data-id={generatedId}>
         {(title || description) && (
           <CardHeader>
             {title && <CardTitle>{title}</CardTitle>}

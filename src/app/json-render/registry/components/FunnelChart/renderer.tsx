@@ -11,7 +11,7 @@ import { FunnelChartDef } from "./def";
 
 export const FunnelChartRenderer = createAIComponentRenderer({
   def: FunnelChartDef,
-  renderer: ({ data = [], colors, height = 300 }) => {
+  renderer: ({ data = [], colors, height = 300, generatedId }) => {
     const defaultColors = [
       "#8884d8",
       "#83a6ed",
@@ -30,7 +30,7 @@ export const FunnelChartRenderer = createAIComponentRenderer({
       fill: stageColors[i % stageColors.length],
     }));
     return (
-      <ResponsiveContainer width="100%" height={height}>
+      <ResponsiveContainer width="100%" height={height} data-id={generatedId}>
         <RechartsFunnelChart>
           <Tooltip />
           <Funnel dataKey="value" data={dataWithFill} isAnimationActive>

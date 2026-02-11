@@ -16,10 +16,10 @@ const iconMap: Record<string, React.ReactNode> = {
 
 export const AlertRenderer = createAIComponentRenderer({
   def: AlertDef,
-  renderer: ({ title, description, status = "info" }) => {
+  renderer: ({ title, description, status = "info", generatedId }) => {
     const variant = status === "error" ? "destructive" : "default";
     return (
-      <ShadcnAlert variant={variant}>
+      <ShadcnAlert variant={variant} data-id={generatedId}>
         {iconMap[status]}
         <AlertTitle>{title}</AlertTitle>
         {description && <AlertDescription>{description}</AlertDescription>}

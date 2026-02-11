@@ -5,7 +5,7 @@ import { IconDef } from "./def";
 
 export const IconRenderer = createAIComponentRenderer({
   def: IconDef,
-  renderer: ({ name, size = "md", color }) => {
+  renderer: ({ name, size = "md", color, generatedId }) => {
     const sizeMap: Record<string, string> = {
       sm: "size-4",
       md: "size-5",
@@ -16,12 +16,14 @@ export const IconRenderer = createAIComponentRenderer({
       LucideIcons as unknown as Record<string, LucideIcon>
     )[name];
     if (!IconComponent) {
-      return <span className="text-muted-foreground text-xs">[{name}]</span>;
+      return <span className="text-muted-foreground text-xs" data-id={generatedId}>[{name}]</span>;
     }
     return (
+      <span data-id={generatedId}>
       <IconComponent
         className={`${sizeMap[size]} ${color ? `text-${color}` : ""}`}
       />
+      </span>
     );
   },
 });

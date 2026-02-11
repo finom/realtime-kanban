@@ -20,6 +20,7 @@ export const LineChartRenderer = createAIComponentRenderer({
     colors,
     height = 300,
     curved = true,
+    generatedId,
   }) => {
     const defaultColors = [
       "#8884d8",
@@ -31,7 +32,7 @@ export const LineChartRenderer = createAIComponentRenderer({
     ];
     const lineColors = colors ?? defaultColors;
     return (
-      <ResponsiveContainer width="100%" height={height}>
+      <ResponsiveContainer width="100%" height={height} data-id={generatedId}>
         <RechartsLineChart data={data}>
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey={xKey} />

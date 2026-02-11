@@ -8,7 +8,7 @@ import {
   formLines,
   listLines,
   tableLines,
-} from "./examples";
+} from "./examples/index";
 import { getPrompt } from "./getPrompt";
 
 export default function Page() {

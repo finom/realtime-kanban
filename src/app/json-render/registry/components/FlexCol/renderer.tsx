@@ -10,6 +10,7 @@ export const FlexColRenderer = createAIComponentRenderer({
     justify = "start",
     children,
     onClick,
+    generatedId,
   }) => {
     const gapClass = `gap-${gap}`;
     const alignMap: Record<string, string> = {
@@ -30,6 +31,7 @@ export const FlexColRenderer = createAIComponentRenderer({
       <div
         className={`flex flex-col ${gapClass} ${alignMap[align]} ${justifyMap[justify]}`}
         onClick={(e) => onClick?.(pickClick(e))}
+        data-id={generatedId}
       >
         {children}
       </div>

@@ -32,7 +32,7 @@ export const createAIComponentRenderer = <
 }: {
   def: AIComponentDef & { propDefs: TProps; callbackDefs?: TCallbacks };
   renderer: (
-    props: { children?: ReactNode } & CombinedSpec.InferOutput<TProps> &
+    props: { children?: ReactNode; generatedId: string } & CombinedSpec.InferOutput<TProps> &
       CallbacksToFunctions<TCallbacks>,
   ) => React.ReactElement;
   placeholder?: () => React.ReactElement;
@@ -58,7 +58,7 @@ export const createAIComponentRenderer = <
     const callbacks = Object.fromEntries(
       Object.keys(chunkCallbacks).map((key) => [
         key,
-        async (evt: any) => {
+        async (evt: unknown) => {
           for (const setExpr of chunkCallbacks[key]) {
             if (setExpr.confirm) {
               const confirmed = await confirm(setExpr.confirm);
@@ -71,6 +71,14 @@ export const createAIComponentRenderer = <
             if (setExpr.set) {
               const [targetScope, targetPath] = parseScope(setExpr.set);
               myprops.scopes[targetScope].$set(targetPath, result);
+              console.log(
+                `Set ${setExpr.set} to`,
+                result,
+                "from event",
+                evt,
+                targetScope,
+                targetPath,
+              );
             }
             await new Promise((resolve) => setTimeout(resolve, 0));
           }
@@ -82,6 +90,7 @@ export const createAIComponentRenderer = <
       ...(props as object),
       ...(children ? { children } : {}),
       ...callbacks,
+      generatedId: chunk.id,
     });
 
     if (chunk.hidden) {

@@ -10,8 +10,9 @@ import { DropdownMenuDef } from "./def";
 
 export const DropdownMenuRenderer = createAIComponentRenderer({
   def: DropdownMenuDef,
-  renderer: ({ triggerLabel, children }) => {
+  renderer: ({ triggerLabel, children, generatedId }) => {
     return (
+      <span data-id={generatedId}>
       <ShadcnDropdownMenu>
         <DropdownMenuTrigger asChild>
           {triggerLabel ? (
@@ -24,6 +25,7 @@ export const DropdownMenuRenderer = createAIComponentRenderer({
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">{children}</DropdownMenuContent>
       </ShadcnDropdownMenu>
+      </span>
     );
   },
 });

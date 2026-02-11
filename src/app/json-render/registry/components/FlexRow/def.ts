@@ -21,6 +21,10 @@ export const FlexRowDef = createAIComponentDef({
       description:
         "Whether children wrap to the next line when there is no space",
     }),
+    equalWidth: z.boolean().default(false).meta({
+      description:
+        "Whether all children should have equal width (flex: 1). Useful for side-by-side columns.",
+    }),
   }),
   callbackDefs: {
     onClick: onClickSchema,

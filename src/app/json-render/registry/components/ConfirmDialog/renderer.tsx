@@ -21,8 +21,10 @@ export const ConfirmDialogRenderer = createAIComponentRenderer({
     variant = "default",
     onConfirm,
     onCancel,
+    generatedId,
   }) => {
     return (
+      <span data-id={generatedId}>
       <Dialog open={open} onOpenChange={(v) => !v && onCancel?.({})}>
         <DialogContent>
           <DialogHeader>
@@ -41,6 +43,7 @@ export const ConfirmDialogRenderer = createAIComponentRenderer({
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      </span>
     );
   },
 });

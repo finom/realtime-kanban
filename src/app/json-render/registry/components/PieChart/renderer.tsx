@@ -17,6 +17,7 @@ export const PieChartRenderer = createAIComponentRenderer({
     height = 300,
     donut = false,
     showLabels = true,
+    generatedId,
   }) => {
     const data = rawData.map((d) => ({ ...d, value: Number(d.value) }));
     const defaultColors = [
@@ -33,7 +34,7 @@ export const PieChartRenderer = createAIComponentRenderer({
     ];
     const sliceColors = colors ?? defaultColors;
     return (
-      <ResponsiveContainer width="100%" height={height}>
+      <ResponsiveContainer width="100%" height={height} data-id={generatedId}>
         <RechartsPieChart>
           <Pie
             data={data}

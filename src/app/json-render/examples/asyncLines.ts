@@ -1,0 +1,92 @@
+import { ChunkComponent } from "../types";
+
+export const asyncLines: ChunkComponent[] = [
+  {
+    id: "users-table",
+    component: "Table",
+    op: "root",
+    type: "element",
+    defaults: [
+      {
+        set: "scopes.root.users",
+        expr: "UserRPC_getUsers()",
+      },
+    ],
+    children: ["users-thead", "users-tbody"],
+  },
+  {
+    id: "users-thead",
+    component: "TableHeader",
+    op: "child",
+    type: "element",
+    children: ["users-header-row"],
+  },
+  {
+    id: "users-header-row",
+    component: "TableRow",
+    op: "child",
+    type: "element",
+    children: ["th-name", "th-email"],
+  },
+  {
+    id: "th-name",
+    component: "TableHead",
+    op: "child",
+    type: "element",
+    props: { literal: { children: "Name" } },
+  },
+  {
+    id: "th-email",
+    component: "TableHead",
+    op: "child",
+    type: "element",
+    props: { literal: { children: "Email" } },
+  },
+  {
+    id: "users-tbody",
+    component: "TableBody",
+    op: "child",
+    type: "element",
+    children: ["user-rows"],
+  },
+  {
+    id: "user-rows",
+    component: "TableRow",
+    op: "child",
+    type: "list",
+    idKey: "id",
+    itemsSource: "scopes.root.users",
+    itemScope: "user",
+    children: ["td-name", "td-email"],
+  },
+  {
+    id: "td-name",
+    component: "TableCell",
+    op: "child",
+    type: "element",
+    children: ["name-text"],
+  },
+  {
+    id: "name-text",
+    component: "Text",
+    op: "child",
+    type: "element",
+    props: { expr: "({children: scopes.user.item.fullName})" },
+    deps: ["scopes.user.item.fullName"],
+  },
+  {
+    id: "td-email",
+    component: "TableCell",
+    op: "child",
+    type: "element",
+    children: ["email-text"],
+  },
+  {
+    id: "email-text",
+    component: "Text",
+    op: "child",
+    type: "element",
+    props: { expr: "({children: scopes.user.item.email})" },
+    deps: ["scopes.user.item.email"],
+  },
+] as const;

@@ -3,7 +3,7 @@ import { HeadingDef } from "./def";
 
 export const HeadingRenderer = createAIComponentRenderer({
   def: HeadingDef,
-  renderer: ({ level = "2", children }) => {
+  renderer: ({ level = "2", children, generatedId }) => {
     const Tag = `h${level}` as keyof Pick<
       React.JSX.IntrinsicElements,
       "h1" | "h2" | "h3" | "h4" | "h5" | "h6"
@@ -16,6 +16,6 @@ export const HeadingRenderer = createAIComponentRenderer({
       "5": "text-lg font-medium",
       "6": "text-base font-medium",
     };
-    return <Tag className={sizes[level]}>{children}</Tag>;
+    return <Tag className={sizes[level]} data-id={generatedId}>{children}</Tag>;
   },
 });

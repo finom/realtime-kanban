@@ -4,6 +4,7 @@ import { createReactiveProxy } from "./createReactiveProxy";
 import { ListRenderer, RecursiveRenderer } from "./RecursiveRenderer";
 import { uniqBy } from "lodash";
 import { buildElementsById } from "./utils";
+import { EditModeOverlay } from "./EditModeOverlay";
 
 export const createAIComponentRenderers = <
   T extends Record<string, AIComponentRenderer>,
@@ -14,7 +15,13 @@ export const createAIComponentRenderers = <
 
   return {
     renderers,
-    Renderer: ({ lines }: { lines: ChunkComponent[] }) => {
+    Renderer: ({
+      lines,
+      editMode = false,
+    }: {
+      lines: ChunkComponent[];
+      editMode?: boolean;
+    }) => {
       const elementsById = buildElementsById(lines);
 
       const rootElements = uniqBy(
@@ -22,7 +29,7 @@ export const createAIComponentRenderers = <
         "id",
       );
 
-      return rootElements.map((line) => {
+      const content = rootElements.map((line) => {
         const comp = renderers[line.component];
         if (!comp) {
           return <div key={line.id}>Unknown component: {line.component}</div>;
@@ -47,6 +54,10 @@ export const createAIComponentRenderers = <
           />
         );
       });
+
+      return (
+        <EditModeOverlay enabled={editMode}>{content}</EditModeOverlay>
+      );
     },
   };
 };

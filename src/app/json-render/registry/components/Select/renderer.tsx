@@ -16,6 +16,7 @@ export const SelectRenderer = createAIComponentRenderer({
     options = [],
     disabled = false,
     onChange,
+    generatedId,
   }) => {
     return (
       <ShadcnSelect
@@ -23,7 +24,7 @@ export const SelectRenderer = createAIComponentRenderer({
         disabled={disabled}
         onValueChange={(v) => onChange?.({ value: v })}
       >
-        <SelectTrigger className="w-full">
+        <SelectTrigger className="w-full" data-id={generatedId}>
           <SelectValue placeholder={placeholder ?? "Select..."} />
         </SelectTrigger>
         <SelectContent>

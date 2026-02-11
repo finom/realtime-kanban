@@ -10,8 +10,9 @@ import { ModalDef } from "./def";
 
 export const ModalRenderer = createAIComponentRenderer({
   def: ModalDef,
-  renderer: ({ open = false, title, description, children, onOpenChange }) => {
+  renderer: ({ open = false, title, description, children, onOpenChange, generatedId }) => {
     return (
+      <span data-id={generatedId}>
       <Dialog open={open} onOpenChange={(v) => onOpenChange?.({ open: v })}>
         <DialogContent>
           {(title || description) && (
@@ -25,6 +26,7 @@ export const ModalRenderer = createAIComponentRenderer({
           {children}
         </DialogContent>
       </Dialog>
+      </span>
     );
   },
 });

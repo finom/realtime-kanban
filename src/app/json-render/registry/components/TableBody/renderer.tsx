@@ -9,8 +9,8 @@ import { TableBodyDef } from "./def";
 
 export const TableBodyRenderer = createAIComponentRenderer({
   def: TableBodyDef,
-  renderer: ({ children }) => {
-    return <ShadcnTableBody>{children}</ShadcnTableBody>;
+  renderer: ({ children, generatedId }) => {
+    return <ShadcnTableBody data-id={generatedId}>{children}</ShadcnTableBody>;
   },
   placeholder: () => (
     <>

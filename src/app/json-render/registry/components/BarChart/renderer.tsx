@@ -20,6 +20,7 @@ export const BarChartRenderer = createAIComponentRenderer({
     colors,
     height = 300,
     stacked = false,
+    generatedId,
   }) => {
     const defaultColors = [
       "#8884d8",
@@ -31,7 +32,7 @@ export const BarChartRenderer = createAIComponentRenderer({
     ];
     const barColors = colors ?? defaultColors;
     return (
-      <ResponsiveContainer width="100%" height={height}>
+      <ResponsiveContainer width="100%" height={height} data-id={generatedId}>
         <RechartsBarChart data={data}>
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey={xKey} />

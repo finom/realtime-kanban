@@ -1,537 +1,4 @@
-import { ChunkComponent } from "./types";
-
-export const countLines: ChunkComponent[] = [
-  {
-    id: "card1",
-    op: "root",
-    type: "element",
-    component: "Card",
-    props: { expr: '({ title: "Counter" })' },
-    deps: ["scopes.root.count"],
-    defaults: [{ set: "scopes.root.count", literal: 0 }],
-    children: ["count-text", "count-btn"],
-  },
-  {
-    id: "count-text",
-    op: "child",
-    type: "element",
-    component: "Text",
-    props: {
-      expr: '({ children: scopes.root.count, variant: "large" })',
-    },
-    deps: ["scopes.root.count"],
-  },
-  {
-    id: "count-btn",
-    op: "child",
-    type: "element",
-    component: "Button",
-    props: { literal: { children: "Increment" } },
-    callbacks: {
-      onClick: [{ set: "scopes.root.count", expr: "scopes.root.count + 1" }],
-    },
-  },
-] as const;
-
-export const formLines: ChunkComponent[] = [
-  {
-    id: "card2",
-    op: "root",
-    type: "element",
-    component: "Card",
-    props: { literal: { title: "Form Example" } },
-    defaults: [{ set: "scopes.root.count", literal: 0 }],
-    children: ["field1"],
-  },
-  {
-    id: "field1",
-    op: "child",
-    type: "element",
-    component: "Field",
-    children: ["field1-label", "input1", "field1-desc"],
-  },
-  {
-    id: "field1-label",
-    op: "child",
-    type: "element",
-    component: "FieldLabel",
-    props: { literal: { children: "Count" } },
-  },
-  {
-    id: "input1",
-    op: "child",
-    type: "element",
-    component: "Input",
-    props: {
-      expr: '({ value: scopes.root.count, type: "number" })',
-    },
-    deps: ["scopes.root.count"],
-    callbacks: {
-      onChange: [{ set: "scopes.root.count", expr: "evt.valueAsNumber" }],
-    },
-  },
-  {
-    id: "field1-desc",
-    op: "child",
-    type: "element",
-    component: "FieldDescription",
-    props: { literal: { children: "Enter a number value" } },
-  },
-] as const;
-
-export const listLines: ChunkComponent[] = [
-  {
-    id: "list-card",
-    op: "root",
-    type: "element",
-    component: "Card",
-    props: { literal: { title: "Dynamic List" } },
-    children: ["list-items", "add-item-button"],
-    defaults: [
-      { set: "scopes.root.items", literal: ["Item 1", "Item 2", "Item 3"] },
-    ],
-  },
-  {
-    id: "list-items",
-    op: "child",
-    type: "list",
-    itemScope: "itemScope",
-    component: "FlexRow",
-    itemsSource: "scopes.root.items",
-    props: { literal: { gap: "2" } },
-    children: ["item-badge"],
-  },
-  {
-    id: "item-badge",
-    op: "child",
-    type: "element",
-    component: "Badge",
-    props: { expr: "({ children: scopes.itemScope.item })" },
-  },
-  {
-    id: "add-item-button",
-    op: "child",
-    type: "element",
-    component: "Button",
-    props: { literal: { children: "Add Item", variant: "outline" } },
-    callbacks: {
-      onClick: [
-        {
-          set: "scopes.root.items",
-          expr: '[...scopes.root.items, "Item " + (scopes.root.items.length + 1)]',
-        },
-      ],
-    },
-  },
-] as const;
-
-export const tableLines: ChunkComponent[] = [
-  {
-    id: "table-card",
-    component: "Table",
-    op: "root",
-    type: "element",
-    defaults: [
-      { set: "scopes.root.rows", literal: [{ id: 1.0, a: 0.0, b: 0.0 }] },
-      { set: "scopes.root.nextId", literal: 2.0 },
-      { set: "scopes.root.totalSum", literal: 0.0 },
-    ],
-    children: ["thead", "tbody", "tfoot"],
-  },
-  {
-    id: "thead",
-    component: "TableHeader",
-    op: "child",
-    type: "element",
-    children: ["header-row"],
-  },
-  {
-    id: "header-row",
-    component: "TableRow",
-    op: "child",
-    type: "element",
-    children: ["th-a", "th-b", "th-sum", "th-actions"],
-  },
-  {
-    id: "th-a",
-    component: "TableHead",
-    op: "child",
-    type: "element",
-    props: { literal: { children: "A" } },
-  },
-  {
-    id: "th-b",
-    component: "TableHead",
-    op: "child",
-    type: "element",
-    props: { literal: { children: "B" } },
-  },
-  {
-    id: "th-sum",
-    component: "TableHead",
-    op: "child",
-    type: "element",
-    props: { literal: { children: "Sum" } },
-  },
-  {
-    id: "th-actions",
-    component: "TableHead",
-    op: "child",
-    type: "element",
-    props: { literal: { children: "Actions" } },
-  },
-  {
-    id: "tbody",
-    component: "TableBody",
-    op: "child",
-    type: "element",
-    children: ["data-rows"],
-  },
-  {
-    id: "data-rows",
-    component: "TableRow",
-    op: "child",
-    type: "list",
-    idKey: "id",
-    itemsSource: "scopes.root.rows",
-    itemScope: "row",
-    children: ["td-input-a", "td-input-b", "td-sum", "td-delete"],
-  },
-  {
-    id: "td-input-a",
-    component: "TableCell",
-    op: "child",
-    type: "element",
-    children: ["input-a"],
-  },
-  {
-    id: "input-a",
-    component: "NumberInput",
-    op: "child",
-    type: "element",
-    props: { expr: "({value: scopes.row.item.a})" },
-    deps: ["scopes.row.item.a"],
-    callbacks: {
-      onChange: [
-        { set: "scopes.row.item.a", expr: "evt.value" },
-        {
-          set: "scopes.root.totalSum",
-          expr: "scopes.root.childScopes.row.reduce((acc, r) => acc + r.item.a + r.item.b, 0)",
-        },
-      ],
-    },
-  },
-  {
-    id: "td-input-b",
-    component: "TableCell",
-    op: "child",
-    type: "element",
-    children: ["input-b"],
-  },
-  {
-    id: "input-b",
-    component: "NumberInput",
-    op: "child",
-    type: "element",
-    props: { expr: "({value: scopes.row.item.b})" },
-    deps: ["scopes.row.item.b"],
-    callbacks: {
-      onChange: [
-        { set: "scopes.row.item.b", expr: "evt.value" },
-        {
-          set: "scopes.root.totalSum",
-          expr: "scopes.root.childScopes.row.reduce((acc, r) => acc + r.item.a + r.item.b, 0)",
-        },
-      ],
-    },
-  },
-  {
-    id: "td-sum",
-    component: "TableCell",
-    op: "child",
-    type: "element",
-    children: ["sum-text"],
-  },
-  {
-    id: "sum-text",
-    component: "Text",
-    op: "child",
-    type: "element",
-    props: {
-      expr: "({children: scopes.row.item.a + scopes.row.item.b})",
-    },
-    deps: ["scopes.row.item.a", "scopes.row.item.b"],
-  },
-  {
-    id: "td-delete",
-    component: "TableCell",
-    op: "child",
-    type: "element",
-    children: ["delete-btn"],
-  },
-  {
-    id: "delete-btn",
-    component: "Button",
-    op: "child",
-    type: "element",
-    props: {
-      literal: { children: "Delete", variant: "destructive", size: "sm" },
-    },
-    callbacks: {
-      onClick: [
-        {
-          set: "scopes.root.rows",
-          expr: "scopes.root.rows.filter(r => r.id !== scopes.row.item.id)",
-          confirm: "Are you sure you want to delete this row?",
-        },
-        {
-          set: "scopes.root.totalSum",
-          expr: "scopes.root.childScopes.row.reduce((acc, r) => acc + r.item.a + r.item.b, 0)",
-        },
-      ],
-    },
-  },
-  {
-    id: "tfoot",
-    component: "TableFooter",
-    op: "child",
-    type: "element",
-    children: ["footer-row"],
-  },
-  {
-    id: "footer-row",
-    component: "TableRow",
-    op: "child",
-    type: "element",
-    children: ["td-total-label", "td-add-btn", "td-total-sum", "td-row-count"],
-  },
-  {
-    id: "td-total-label",
-    component: "TableCell",
-    op: "child",
-    type: "element",
-    props: { literal: { children: "Total" } },
-  },
-  {
-    id: "td-add-btn",
-    component: "TableCell",
-    op: "child",
-    type: "element",
-    children: ["add-btn"],
-  },
-  {
-    id: "add-btn",
-    component: "Button",
-    op: "child",
-    type: "element",
-    props: {
-      literal: { children: "+ Add Row", variant: "outline", size: "sm" },
-    },
-    callbacks: {
-      onClick: [
-        {
-          set: "scopes.root.rows",
-          expr: "[...scopes.root.rows, { id: scopes.root.nextId, a: 0, b: 0 }]",
-        },
-        { set: "scopes.root.nextId", expr: "scopes.root.nextId + 1" },
-      ],
-    },
-  },
-  {
-    id: "td-total-sum",
-    component: "TableCell",
-    op: "child",
-    type: "element",
-    children: ["total-sum-text"],
-  },
-  {
-    id: "total-sum-text",
-    component: "Text",
-    op: "child",
-    type: "element",
-    props: { expr: "({children: scopes.root.totalSum})" },
-    deps: ["scopes.root.totalSum"],
-  },
-  {
-    id: "td-row-count",
-    component: "TableCell",
-    op: "child",
-    type: "element",
-    children: ["row-count-text"],
-  },
-  {
-    id: "row-count-text",
-    defaults: [
-      {
-        set: "scopes.root.foo",
-        expr: "UserRPC_getUsers().then(u => u.length)",
-      },
-    ],
-    component: "Text",
-    op: "child",
-    type: "element",
-    props: {
-      expr: '({children: scopes.root.rows.length + " rows " + scopes.root.foo })',
-    },
-    deps: ["scopes.root.rows"],
-  },
-] as const;
-
-export const asyncLines: ChunkComponent[] = [
-  {
-    id: "users-table",
-    component: "Table",
-    op: "root",
-    type: "element",
-    defaults: [
-      {
-        set: "scopes.root.users",
-        expr: "UserRPC_getUsers()",
-      },
-    ],
-    children: ["users-thead", "users-tbody"],
-  },
-  {
-    id: "users-thead",
-    component: "TableHeader",
-    op: "child",
-    type: "element",
-    children: ["users-header-row"],
-  },
-  {
-    id: "users-header-row",
-    component: "TableRow",
-    op: "child",
-    type: "element",
-    children: ["th-name", "th-email"],
-  },
-  {
-    id: "th-name",
-    component: "TableHead",
-    op: "child",
-    type: "element",
-    props: { literal: { children: "Name" } },
-  },
-  {
-    id: "th-email",
-    component: "TableHead",
-    op: "child",
-    type: "element",
-    props: { literal: { children: "Email" } },
-  },
-  {
-    id: "users-tbody",
-    component: "TableBody",
-    op: "child",
-    type: "element",
-    children: ["user-rows"],
-  },
-  {
-    id: "user-rows",
-    component: "TableRow",
-    op: "child",
-    type: "list",
-    idKey: "id",
-    itemsSource: "scopes.root.users",
-    itemScope: "user",
-    children: ["td-name", "td-email"],
-  },
-  {
-    id: "td-name",
-    component: "TableCell",
-    op: "child",
-    type: "element",
-    children: ["name-text"],
-  },
-  {
-    id: "name-text",
-    component: "Text",
-    op: "child",
-    type: "element",
-    props: { expr: "({children: scopes.user.item.fullName})" },
-    deps: ["scopes.user.item.fullName"],
-  },
-  {
-    id: "td-email",
-    component: "TableCell",
-    op: "child",
-    type: "element",
-    children: ["email-text"],
-  },
-  {
-    id: "email-text",
-    component: "Text",
-    op: "child",
-    type: "element",
-    props: { expr: "({children: scopes.user.item.email})" },
-    deps: ["scopes.user.item.email"],
-  },
-] as const;
-
-export const chartLines: ChunkComponent[] = [
-  {
-    id: "chart-root",
-    op: "root",
-    type: "element",
-    component: "FlexCol",
-    props: { literal: { gap: "4" } },
-    defaults: [
-      { set: "scopes.root.tasks", expr: "TaskRPC_getTasks()" },
-      { set: "scopes.root.users", expr: "UserRPC_getUsers()" },
-      {
-        set: "scopes.root.barChartData",
-        expr: '[{status: "TODO", count: String(scopes.root.tasks.filter(t => t.status === "TODO").length)}, {status: "In Progress", count: String(scopes.root.tasks.filter(t => t.status === "IN_PROGRESS").length)}, {status: "Done", count: String(scopes.root.tasks.filter(t => t.status === "DONE").length)}]',
-      },
-      {
-        set: "scopes.root.pieChartData",
-        expr: "scopes.root.users.map(u => ({name: u.fullName, value: scopes.root.tasks.filter(t => t.userId === u.id).length}))",
-      },
-    ],
-    children: ["bar-card", "pie-card"],
-  },
-  {
-    id: "bar-card",
-    op: "child",
-    type: "element",
-    component: "Card",
-    props: { literal: { title: "Tasks by Status" } },
-    children: ["status-bar-chart"],
-  },
-  {
-    id: "status-bar-chart",
-    op: "child",
-    type: "element",
-    component: "BarChart",
-    props: {
-      expr: '({data: scopes.root.barChartData, xKey: "status", yKeys: ["count"], height: 300})',
-    },
-    deps: ["scopes.root.barChartData"],
-  },
-  {
-    id: "pie-card",
-    op: "child",
-    type: "element",
-    component: "Card",
-    props: { literal: { title: "Tasks per User" } },
-    defaults: [
-      {
-        set: "scopes.root.pieChartData",
-        expr: "scopes.root.users.map(u => ({name: u.fullName, value: scopes.root.tasks.filter(t => t.userId === u.id).length}))",
-      },
-    ],
-    children: ["user-pie-chart"],
-  },
-  {
-    id: "user-pie-chart",
-    op: "child",
-    type: "element",
-    component: "PieChart",
-    props: {
-      expr: "({data: scopes.root.pieChartData, height: 300, donut: true})",
-    },
-    deps: ["scopes.root.pieChartData"],
-  },
-] as const;
+import { ChunkComponent } from "../types";
 
 export const claudeLines: ChunkComponent[] = [
   {
@@ -563,6 +30,9 @@ export const claudeLines: ChunkComponent[] = [
       { set: "scopes.root.editUserId", literal: "" },
       { set: "scopes.root.editUserName", literal: "" },
       { set: "scopes.root.editUserEmail", literal: "" },
+      { set: "scopes.root.userSearchTerm", literal: "" },
+      { set: "scopes.root.taskPage", literal: 1 },
+      { set: "scopes.root.userPage", literal: 1 },
     ],
     children: [
       "heading",
@@ -636,8 +106,8 @@ export const claudeLines: ChunkComponent[] = [
     id: "charts-row",
     op: "child",
     type: "element",
-    component: "FlexCol",
-    props: { literal: { gap: "4" } },
+    component: "FlexRow",
+    props: { literal: { gap: "4", equalWidth: true } },
     children: ["bar-chart-card", "pie-chart-card"],
   },
   {
@@ -715,7 +185,7 @@ export const claudeLines: ChunkComponent[] = [
     type: "element",
     component: "TabContent",
     props: { literal: { value: "tasks" } },
-    children: ["tasks-toolbar", "tasks-table"],
+    children: ["tasks-toolbar", "tasks-table", "tasks-pagination-row"],
   },
   {
     id: "tasks-toolbar",
@@ -740,6 +210,11 @@ export const claudeLines: ChunkComponent[] = [
         {
           set: "scopes.root.filteredTasks",
           expr: 'scopes.root.tasks.filter(t => evt.value === "" || t.title.toLowerCase().includes(evt.value.toLowerCase()))',
+        },
+        { set: "scopes.root.taskPage", literal: 1 },
+        {
+          set: "scopes.root.paginatedTasks",
+          expr: "scopes.root.filteredTasks.slice(0, 25)",
         },
       ],
     },
@@ -813,7 +288,13 @@ export const claudeLines: ChunkComponent[] = [
     op: "child",
     type: "element",
     component: "TableBody",
-    defaults: [{ set: "scopes.root.filteredTasks", expr: "scopes.root.tasks" }],
+    defaults: [
+      { set: "scopes.root.filteredTasks", expr: "scopes.root.tasks" },
+      {
+        set: "scopes.root.paginatedTasks",
+        expr: "scopes.root.tasks.slice(0, 25)",
+      },
+    ],
     children: ["task-rows"],
   },
   {
@@ -823,7 +304,7 @@ export const claudeLines: ChunkComponent[] = [
     component: "TableRow",
     itemScope: "taskRow",
     idKey: "id",
-    itemsSource: "scopes.root.filteredTasks",
+    itemsSource: "scopes.root.paginatedTasks",
     children: ["td-title", "td-desc", "td-status", "td-user", "td-actions"],
   },
   {
@@ -951,6 +432,41 @@ export const claudeLines: ChunkComponent[] = [
           set: "scopes.root.filteredTasks",
           expr: 'scopes.root.tasks.filter(t => scopes.root.searchTerm === "" || t.title.toLowerCase().includes(scopes.root.searchTerm.toLowerCase()))',
         },
+        {
+          set: "scopes.root.paginatedTasks",
+          expr: "scopes.root.filteredTasks.slice((scopes.root.taskPage - 1) * 25, scopes.root.taskPage * 25)",
+        },
+      ],
+    },
+  },
+  {
+    id: "tasks-pagination-row",
+    op: "child",
+    type: "element",
+    component: "FlexRow",
+    props: { literal: { justify: "center" } },
+    hidden: {
+      expr: "scopes.root.filteredTasks.length <= 25",
+    },
+    deps: ["scopes.root.filteredTasks"],
+    children: ["tasks-pagination"],
+  },
+  {
+    id: "tasks-pagination",
+    op: "child",
+    type: "element",
+    component: "Pagination",
+    props: {
+      expr: "({currentPage: scopes.root.taskPage, totalPages: Math.ceil(scopes.root.filteredTasks.length / 25)})",
+    },
+    deps: ["scopes.root.taskPage", "scopes.root.filteredTasks"],
+    callbacks: {
+      onPageChange: [
+        { set: "scopes.root.taskPage", expr: "evt.page" },
+        {
+          set: "scopes.root.paginatedTasks",
+          expr: "scopes.root.filteredTasks.slice((evt.page - 1) * 25, evt.page * 25)",
+        },
       ],
     },
   },
@@ -960,15 +476,39 @@ export const claudeLines: ChunkComponent[] = [
     type: "element",
     component: "TabContent",
     props: { literal: { value: "team" } },
-    children: ["team-toolbar", "users-table"],
+    children: ["team-toolbar", "users-table", "users-pagination-row"],
   },
   {
     id: "team-toolbar",
     op: "child",
     type: "element",
     component: "FlexRow",
-    props: { literal: { gap: "4", justify: "end", align: "center" } },
-    children: ["add-user-btn"],
+    props: { literal: { gap: "4", justify: "between", align: "center" } },
+    children: ["user-search-input", "add-user-btn"],
+  },
+  {
+    id: "user-search-input",
+    op: "child",
+    type: "element",
+    component: "Input",
+    props: {
+      expr: '({value: scopes.root.userSearchTerm, placeholder: "Search users by name...", type: "search"})',
+    },
+    deps: ["scopes.root.userSearchTerm"],
+    callbacks: {
+      onChange: [
+        { set: "scopes.root.userSearchTerm", expr: "evt.value" },
+        {
+          set: "scopes.root.filteredUsers",
+          expr: 'scopes.root.users.filter(u => evt.value === "" || u.fullName.toLowerCase().includes(evt.value.toLowerCase()))',
+        },
+        { set: "scopes.root.userPage", literal: 1 },
+        {
+          set: "scopes.root.paginatedUsers",
+          expr: "scopes.root.filteredUsers.slice(0, 25)",
+        },
+      ],
+    },
   },
   {
     id: "add-user-btn",
@@ -1032,6 +572,13 @@ export const claudeLines: ChunkComponent[] = [
     op: "child",
     type: "element",
     component: "TableBody",
+    defaults: [
+      { set: "scopes.root.filteredUsers", expr: "scopes.root.users" },
+      {
+        set: "scopes.root.paginatedUsers",
+        expr: "scopes.root.users.slice(0, 25)",
+      },
+    ],
     children: ["user-rows"],
   },
   {
@@ -1041,7 +588,7 @@ export const claudeLines: ChunkComponent[] = [
     component: "TableRow",
     itemScope: "userRow",
     idKey: "id",
-    itemsSource: "scopes.root.users",
+    itemsSource: "scopes.root.paginatedUsers",
     children: ["utd-name", "utd-email", "utd-task-count", "utd-actions"],
   },
   {
@@ -1144,6 +691,49 @@ export const claudeLines: ChunkComponent[] = [
         {
           set: "scopes.root.filteredTasks",
           expr: 'scopes.root.tasks.filter(t => scopes.root.searchTerm === "" || t.title.toLowerCase().includes(scopes.root.searchTerm.toLowerCase()))',
+        },
+        {
+          set: "scopes.root.paginatedTasks",
+          expr: "scopes.root.filteredTasks.slice((scopes.root.taskPage - 1) * 25, scopes.root.taskPage * 25)",
+        },
+        {
+          set: "scopes.root.filteredUsers",
+          expr: 'scopes.root.users.filter(u => scopes.root.userSearchTerm === "" || u.fullName.toLowerCase().includes(scopes.root.userSearchTerm.toLowerCase()))',
+        },
+        {
+          set: "scopes.root.paginatedUsers",
+          expr: "scopes.root.filteredUsers.slice((scopes.root.userPage - 1) * 25, scopes.root.userPage * 25)",
+        },
+      ],
+    },
+  },
+  {
+    id: "users-pagination-row",
+    op: "child",
+    type: "element",
+    component: "FlexRow",
+    props: { literal: { justify: "center" } },
+    hidden: {
+      expr: "scopes.root.filteredUsers.length <= 25",
+    },
+    deps: ["scopes.root.filteredUsers"],
+    children: ["users-pagination"],
+  },
+  {
+    id: "users-pagination",
+    op: "child",
+    type: "element",
+    component: "Pagination",
+    props: {
+      expr: "({currentPage: scopes.root.userPage, totalPages: Math.ceil(scopes.root.filteredUsers.length / 25)})",
+    },
+    deps: ["scopes.root.userPage", "scopes.root.filteredUsers"],
+    callbacks: {
+      onPageChange: [
+        { set: "scopes.root.userPage", expr: "evt.page" },
+        {
+          set: "scopes.root.paginatedUsers",
+          expr: "scopes.root.filteredUsers.slice((evt.page - 1) * 25, evt.page * 25)",
         },
       ],
     },
@@ -1318,6 +908,10 @@ export const claudeLines: ChunkComponent[] = [
         {
           set: "scopes.root.filteredTasks",
           expr: 'scopes.root.tasks.filter(t => scopes.root.searchTerm === "" || t.title.toLowerCase().includes(scopes.root.searchTerm.toLowerCase()))',
+        },
+        {
+          set: "scopes.root.paginatedTasks",
+          expr: "scopes.root.filteredTasks.slice((scopes.root.taskPage - 1) * 25, scopes.root.taskPage * 25)",
         },
         { set: "scopes.root.showAddTask", literal: false },
         { set: "scopes.root.newTaskTitle", literal: "" },
@@ -1498,6 +1092,10 @@ export const claudeLines: ChunkComponent[] = [
           set: "scopes.root.filteredTasks",
           expr: 'scopes.root.tasks.filter(t => scopes.root.searchTerm === "" || t.title.toLowerCase().includes(scopes.root.searchTerm.toLowerCase()))',
         },
+        {
+          set: "scopes.root.paginatedTasks",
+          expr: "scopes.root.filteredTasks.slice((scopes.root.taskPage - 1) * 25, scopes.root.taskPage * 25)",
+        },
         { set: "scopes.root.showEditTask", literal: false },
       ],
     },
@@ -1613,6 +1211,14 @@ export const claudeLines: ChunkComponent[] = [
           expr: "UserRPC_createUser({body: {fullName: scopes.root.newUserName, email: scopes.root.newUserEmail}})",
         },
         { set: "scopes.root.users", expr: "UserRPC_getUsers()" },
+        {
+          set: "scopes.root.filteredUsers",
+          expr: 'scopes.root.users.filter(u => scopes.root.userSearchTerm === "" || u.fullName.toLowerCase().includes(scopes.root.userSearchTerm.toLowerCase()))',
+        },
+        {
+          set: "scopes.root.paginatedUsers",
+          expr: "scopes.root.filteredUsers.slice((scopes.root.userPage - 1) * 25, scopes.root.userPage * 25)",
+        },
         { set: "scopes.root.showAddUser", literal: false },
         { set: "scopes.root.newUserName", literal: "" },
         { set: "scopes.root.newUserEmail", literal: "" },
@@ -1730,6 +1336,14 @@ export const claudeLines: ChunkComponent[] = [
           expr: "UserRPC_updateUser({body: {fullName: scopes.root.editUserName, email: scopes.root.editUserEmail}, params: {id: scopes.root.editUserId}})",
         },
         { set: "scopes.root.users", expr: "UserRPC_getUsers()" },
+        {
+          set: "scopes.root.filteredUsers",
+          expr: 'scopes.root.users.filter(u => scopes.root.userSearchTerm === "" || u.fullName.toLowerCase().includes(scopes.root.userSearchTerm.toLowerCase()))',
+        },
+        {
+          set: "scopes.root.paginatedUsers",
+          expr: "scopes.root.filteredUsers.slice((scopes.root.userPage - 1) * 25, scopes.root.userPage * 25)",
+        },
         { set: "scopes.root.showEditUser", literal: false },
       ],
     },

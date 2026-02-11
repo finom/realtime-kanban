@@ -5,7 +5,7 @@ import { TableCellDef } from "./def";
 
 export const TableCellRenderer = createAIComponentRenderer({
   def: TableCellDef,
-  renderer: ({ children }) => {
-    return <ShadcnTableCell>{children}</ShadcnTableCell>;
+  renderer: ({ children, generatedId }) => {
+    return <ShadcnTableCell data-id={generatedId}>{children}</ShadcnTableCell>;
   },
 });

@@ -4,7 +4,7 @@ import { FieldLabelDef } from "./def";
 
 export const FieldLabelRenderer = createAIComponentRenderer({
   def: FieldLabelDef,
-  renderer: ({ children, htmlFor }) => {
-    return <Label htmlFor={htmlFor}>{String(children ?? "")}</Label>;
+  renderer: ({ children, htmlFor, generatedId }) => {
+    return <Label htmlFor={htmlFor} data-id={generatedId}>{String(children ?? "")}</Label>;
   },
 });

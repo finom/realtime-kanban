@@ -9,30 +9,38 @@ import {
 } from "@tanstack/react-query";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import { VovkYieldType } from "vovk";
 
 export default function Page() {
   const [prompt, setPrompt] = useState("");
-  const [submittedPrompt, setSubmittedPrompt] = useState<string>('');
+  const [editMode, setEditMode] = useState(false);
+  const [data, setData] = useState<
+    VovkYieldType<typeof JsonRenderRPC.render>[]
+  >([]);
+  const [status, setStatus] = useState<"idle" | "fetching" | "error">("idle");
 
-  const { data, fetchStatus } = useQuery({
-    queryKey: JsonRenderRPC.render.queryKey([submittedPrompt]),
-    queryFn: streamedQuery({
-      streamFn: async () =>
-        await JsonRenderRPC.render({
-          body: {
-            prompt: submittedPrompt,
-          },
-          interpretAs: "application/jsonlines",
-        }),
-    }),
-    enabled: submittedPrompt !== '',
-  });
+  const isFetching = status === "fetching";
 
-  const isFetching = fetchStatus === "fetching";
-
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!prompt.trim()) return;
-    setSubmittedPrompt(prompt);
+    setStatus("fetching");
+    const stream = await JsonRenderRPC.render({
+      body: {
+        prompt,
+      },
+      interpretAs: "application/jsonlines",
+    });
+    try {
+      for await (const chunk of stream) {
+        setData((prev) => [...prev, chunk]);
+      }
+      setStatus("idle");
+    } catch (error) {
+      console.error("Error while streaming:", error);
+      setStatus("error");
+    }
   };
 
   return (
@@ -50,12 +58,23 @@ export default function Page() {
               }
             }}
           />
-          <Button onClick={handleSubmit} disabled={isFetching || !prompt.trim()}>
+          <Button
+            onClick={handleSubmit}
+            disabled={isFetching || !prompt.trim()}
+          >
             {isFetching ? "Generating..." : "Generate"}
           </Button>
         </div>
+        <div className="flex items-center gap-2">
+          <Switch
+            id="edit-mode"
+            checked={editMode}
+            onCheckedChange={setEditMode}
+          />
+          <Label htmlFor="edit-mode">Edit Mode</Label>
+        </div>
         <div className={isFetching ? "opacity-50" : ""}>
-          <componentRenderers.Renderer lines={data ?? []} />
+          <componentRenderers.Renderer lines={data} editMode={editMode} />
         </div>
       </div>
     </NoSSR>

@@ -26,8 +26,8 @@ Build a Project Management Dashboard with the following sections:
 
 Make sure everything is reactive — adding/removing tasks or users should immediately reflect in the stats and charts without a full page reload.
 
-
 ## TODO
+
 - Make general edits
 - Make edits to a specific component in the tree
 - Entity registry and voice control
@@ -37,10 +37,10 @@ Make sure everything is reactive — adding/removing tasks or users should immed
 - Loading/error states
 - Disabled state
 
->  I'd say loading/error + disabled + dropdown are the three that would actually close the gap. Everything else falls out from those plus visibility.
-
+> I'd say loading/error + disabled + dropdown are the three that would actually close the gap. Everything else falls out from those plus visibility.
 
 Example sniuppets:
+
 - Multi-step flows / tabs / navigation - CLAUDE said that
 
 Here's what I'd consider the complete set:
@@ -55,4 +55,4 @@ Navigation: Breadcrumb, Pagination, Stepper (wizard flows)
 Overlay: Modal, Drawer, Popover, ConfirmDialog
 That's roughly 45 components. For a CRM specifically I'd prioritize these as your launch set (gets you to 90%): Card, Tabs, Modal, Heading, Text, Badge, Input, Select, DatePicker, Checkbox, Button, DropdownMenu, Table, Stat, Icon, Tag, Alert, Skeleton, EmptyState, Pagination, ConfirmDialog, BarChart, LineChart, PieChart, FunnelChart.
 That's 25 components. The rest you add when users ask for them.
-*/
+\*/

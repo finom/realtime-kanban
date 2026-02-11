@@ -10,6 +10,7 @@ export const InputRenderer = createAIComponentRenderer({
     placeholder,
     disabled = false,
     onChange,
+    generatedId,
   }) => {
     return (
       <ShadcnInput
@@ -23,6 +24,7 @@ export const InputRenderer = createAIComponentRenderer({
             valueAsNumber: e.target.valueAsNumber || 0,
           })
         }
+        data-id={generatedId}
       />
     );
   },

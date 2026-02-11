@@ -11,6 +11,7 @@ export const ButtonRenderer = createAIComponentRenderer({
     size = "default",
     disabled = false,
     onClick,
+    generatedId,
   }) => {
     return (
       <ShadcnButton
@@ -18,6 +19,7 @@ export const ButtonRenderer = createAIComponentRenderer({
         size={size}
         disabled={disabled}
         onClick={(e) => onClick?.(pickClick(e))}
+        data-id={generatedId}
       >
         {children}
       </ShadcnButton>

@@ -15,6 +15,7 @@ export const PaginationRenderer = createAIComponentRenderer({
     totalPages,
     showFirstLast = true,
     onPageChange,
+    generatedId,
   }) => {
     const maxVisiblePages = 5;
     let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
@@ -29,7 +30,7 @@ export const PaginationRenderer = createAIComponentRenderer({
     }
 
     return (
-      <nav className="flex items-center gap-1" aria-label="Pagination">
+      <nav className="flex items-center gap-1" aria-label="Pagination" data-id={generatedId}>
         {showFirstLast && (
           <Button
             variant="outline"

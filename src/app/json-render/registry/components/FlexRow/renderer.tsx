@@ -9,8 +9,10 @@ export const FlexRowRenderer = createAIComponentRenderer({
     align = "center",
     justify = "start",
     wrap = false,
+    equalWidth = false,
     children,
     onClick,
+    generatedId,
   }) => {
     const gapClass = `gap-${gap}`;
     const alignMap: Record<string, string> = {
@@ -30,8 +32,9 @@ export const FlexRowRenderer = createAIComponentRenderer({
     };
     return (
       <div
-        className={`flex flex-row ${gapClass} ${alignMap[align]} ${justifyMap[justify]} ${wrap ? "flex-wrap" : ""}`}
+        className={`flex flex-row ${gapClass} ${alignMap[align]} ${justifyMap[justify]} ${wrap ? "flex-wrap" : ""} ${equalWidth ? "[&>*]:flex-1 [&>*]:min-w-0" : ""}`}
         onClick={(e) => onClick?.(pickClick(e))}
+        data-id={generatedId}
       >
         {children}
       </div>

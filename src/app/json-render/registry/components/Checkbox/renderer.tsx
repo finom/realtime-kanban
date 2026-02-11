@@ -4,12 +4,12 @@ import { CheckboxDef } from "./def";
 
 export const CheckboxRenderer = createAIComponentRenderer({
   def: CheckboxDef,
-  renderer: ({ checked = false, disabled = false, label, onChange }) => {
+  renderer: ({ checked = false, disabled = false, label, onChange, generatedId }) => {
     const id = label
       ? `checkbox-${label.replace(/\s/g, "-").toLowerCase()}`
       : undefined;
     return (
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2" data-id={generatedId}>
         <ShadcnCheckbox
           id={id}
           checked={checked}

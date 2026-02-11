@@ -4,7 +4,7 @@ import { StatDef } from "./def";
 
 export const StatRenderer = createAIComponentRenderer({
   def: StatDef,
-  renderer: ({ label, value, trend, trendValue, helpText }) => {
+  renderer: ({ label, value, trend, trendValue, helpText, generatedId }) => {
     const trendIcon =
       trend === "up" ? (
         <TrendingUp className="size-4 text-green-600" />
@@ -22,7 +22,7 @@ export const StatRenderer = createAIComponentRenderer({
           : "text-muted-foreground";
 
     return (
-      <div className="flex flex-col gap-1">
+      <div className="flex flex-col gap-1" data-id={generatedId}>
         <span className="text-sm font-medium text-muted-foreground">
           {label}
         </span>

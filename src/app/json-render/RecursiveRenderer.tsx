@@ -67,7 +67,7 @@ export const RecursiveRenderer = ({
   const Component = rendererEntry?.component;
   if (!Component)
     return (
-      <div className="text-red-500">Unknown component: {element.component}</div>
+      <div className="text-red-500" data-id={elementKey}>Unknown component: {element.component}</div>
     );
 
   const Placeholder = rendererEntry?.placeholder ?? DefaultPlaceholder;
@@ -230,6 +230,10 @@ export const ListRenderer = ({
     return () => {};
   }, [line.itemsSource, scopes]);
 
+  console.log(
+    `Rendering ListRenderer for ${elementKey} with itemsSource: ${line.itemsSource}`,
+  );
+
   const items =
     (evaluate<ValueExpr>(
       { expr: line.itemsSource },
@@ -267,7 +271,8 @@ export const ListRenderer = ({
         return newProxy;
       })();
 
-    // Always update the index in case items shifted
+    // Always update the item data and index in case items were edited or shifted
+    (itemProxy as any).item = item;
     (itemProxy as any).index = index;
 
     const itemScopes = {

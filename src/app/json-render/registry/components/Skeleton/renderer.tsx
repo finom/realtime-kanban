@@ -4,7 +4,7 @@ import { SkeletonDef } from "./def";
 
 export const SkeletonRenderer = createAIComponentRenderer({
   def: SkeletonDef,
-  renderer: ({ width = "100%", height = "1.25rem", rounded = "md" }) => {
+  renderer: ({ width = "100%", height = "1.25rem", rounded = "md", generatedId }) => {
     const radiusMap: Record<string, string> = {
       sm: "rounded-sm",
       md: "rounded-md",
@@ -15,6 +15,7 @@ export const SkeletonRenderer = createAIComponentRenderer({
       <ShadcnSkeleton
         className={radiusMap[rounded]}
         style={{ width, height }}
+        data-id={generatedId}
       />
     );
   },

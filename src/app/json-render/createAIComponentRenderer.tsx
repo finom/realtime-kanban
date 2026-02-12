@@ -32,7 +32,10 @@ export const createAIComponentRenderer = <
 }: {
   def: AIComponentDef & { propDefs: TProps; callbackDefs?: TCallbacks };
   renderer: (
-    props: { children?: ReactNode; generatedId: string } & CombinedSpec.InferOutput<TProps> &
+    props: {
+      children?: ReactNode;
+      generatedId: string;
+    } & CombinedSpec.InferOutput<TProps> &
       CallbacksToFunctions<TCallbacks>,
   ) => React.ReactElement;
   placeholder?: () => React.ReactElement;

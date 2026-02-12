@@ -5,6 +5,7 @@ import { ListRenderer, RecursiveRenderer } from "./RecursiveRenderer";
 import { uniqBy } from "lodash";
 import { buildElementsById } from "./utils";
 import { EditModeOverlay } from "./EditModeOverlay";
+import { memo } from "react";
 
 export const createAIComponentRenderers = <
   T extends Record<string, AIComponentRenderer>,
@@ -15,7 +16,7 @@ export const createAIComponentRenderers = <
 
   return {
     renderers,
-    Renderer: ({
+    Renderer: memo(({
       lines,
       editMode = false,
     }: {
@@ -55,9 +56,7 @@ export const createAIComponentRenderers = <
         );
       });
 
-      return (
-        <EditModeOverlay enabled={editMode}>{content}</EditModeOverlay>
-      );
-    },
+      return <EditModeOverlay enabled={editMode}>{content}</EditModeOverlay>;
+    }),
   };
 };

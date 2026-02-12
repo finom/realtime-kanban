@@ -13,6 +13,7 @@ export default class TaskController {
   @operation({
     summary: "Get all tasks",
     description: "Retrieves a list of all tasks.",
+    "x-errorToast": "Failed to retrieve tasks",
   })
   @get()
   @sessionGuard()
@@ -25,6 +26,7 @@ export default class TaskController {
     summary: "Find tasks by ID, title or description",
     description:
       "Retrieves tasks that match the provided ID, title, or description. Used to search the tasks when they need to be updated or deleted.",
+    "x-errorToast": "Failed to find tasks",
   })
   @get("search")
   @sessionGuard()
@@ -42,6 +44,7 @@ export default class TaskController {
   @operation({
     summary: "Get tasks assigned to a specific user",
     description: "Retrieves all tasks associated with a specific user ID.",
+    "x-errorToast": "Failed to retrieve user's tasks",
   })
   @get("by-user/{userId}")
   @sessionGuard()
@@ -56,6 +59,8 @@ export default class TaskController {
     summary: "Create a new task",
     description:
       "Creates a new task with the provided details, such as its title and description.",
+    "x-successToast": "Task created successfully",
+    "x-errorToast": "Failed to create task",
   })
   @post()
   @sessionGuard()
@@ -69,6 +74,8 @@ export default class TaskController {
     summary: "Update task",
     description:
       "Updates an existing task with the provided details, such as its title or description.",
+    "x-successToast": "Task updated successfully",
+    "x-errorToast": "Failed to update task",
   })
   @put("{id}")
   @sessionGuard()
@@ -83,6 +90,8 @@ export default class TaskController {
   @operation({
     summary: "Delete task",
     description: "Deletes a task by ID.",
+    "x-successToast": "Task deleted successfully",
+    "x-errorToast": "Failed to delete task",
   })
   @del("{id}")
   @sessionGuard()

@@ -13,18 +13,18 @@ export const DropdownMenuRenderer = createAIComponentRenderer({
   renderer: ({ triggerLabel, children, generatedId }) => {
     return (
       <span data-id={generatedId}>
-      <ShadcnDropdownMenu>
-        <DropdownMenuTrigger asChild>
-          {triggerLabel ? (
-            <Button variant="outline">{triggerLabel}</Button>
-          ) : (
-            <Button variant="ghost" size="icon">
-              <MoreHorizontal className="size-4" />
-            </Button>
-          )}
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">{children}</DropdownMenuContent>
-      </ShadcnDropdownMenu>
+        <ShadcnDropdownMenu>
+          <DropdownMenuTrigger asChild>
+            {triggerLabel ? (
+              <Button variant="outline">{triggerLabel}</Button>
+            ) : (
+              <Button variant="ghost" size="icon">
+                <MoreHorizontal className="size-4" />
+              </Button>
+            )}
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">{children}</DropdownMenuContent>
+        </ShadcnDropdownMenu>
       </span>
     );
   },

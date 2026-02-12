@@ -30,7 +30,11 @@ export const PaginationRenderer = createAIComponentRenderer({
     }
 
     return (
-      <nav className="flex items-center gap-1" aria-label="Pagination" data-id={generatedId}>
+      <nav
+        className="flex items-center gap-1"
+        aria-label="Pagination"
+        data-id={generatedId}
+      >
         {showFirstLast && (
           <Button
             variant="outline"

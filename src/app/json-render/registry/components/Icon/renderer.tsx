@@ -16,13 +16,17 @@ export const IconRenderer = createAIComponentRenderer({
       LucideIcons as unknown as Record<string, LucideIcon>
     )[name];
     if (!IconComponent) {
-      return <span className="text-muted-foreground text-xs" data-id={generatedId}>[{name}]</span>;
+      return (
+        <span className="text-muted-foreground text-xs" data-id={generatedId}>
+          [{name}]
+        </span>
+      );
     }
     return (
       <span data-id={generatedId}>
-      <IconComponent
-        className={`${sizeMap[size]} ${color ? `text-${color}` : ""}`}
-      />
+        <IconComponent
+          className={`${sizeMap[size]} ${color ? `text-${color}` : ""}`}
+        />
       </span>
     );
   },

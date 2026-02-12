@@ -6,7 +6,9 @@ export const BadgeRenderer = createAIComponentRenderer({
   def: BadgeDef,
   renderer: ({ children, variant = "default", generatedId }) => {
     return (
-      <ShadcnBadge variant={variant} data-id={generatedId}>{String(children ?? "")}</ShadcnBadge>
+      <ShadcnBadge variant={variant} data-id={generatedId}>
+        {String(children ?? "")}
+      </ShadcnBadge>
     );
   },
 });

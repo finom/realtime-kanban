@@ -1,4 +1,5 @@
 import { createFetcher, HttpStatus } from "vovk";
+import { toast } from "sonner";
 import useRegistry from "@/hooks/useRegistry";
 
 export const fetcher = createFetcher<{ bypassRegistry?: boolean }>({
@@ -21,9 +22,19 @@ export const fetcher = createFetcher<{ bypassRegistry?: boolean }>({
     state.parse(data); // parse regular JSON data
     return data;
   },
-  onError: (error) => {
+  onError: (error, _, { schema }) => {
     if (error.statusCode === HttpStatus.UNAUTHORIZED) {
       document.location.href = "/login";
+    } else {
+      const errorToast =
+        schema.operationObject?.["x-errorToast"] ?? "An unknown error occurred";
+      toast.error(errorToast);
+    }
+  },
+  onSuccess: (_, __, { schema }) => {
+    const successToast = schema.operationObject?.["x-successToast"];
+    if (successToast) {
+      toast.success(successToast);
     }
   },
 });

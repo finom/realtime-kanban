@@ -11,6 +11,10 @@ export const TextRenderer = createAIComponentRenderer({
       small: "text-sm font-medium leading-none",
       large: "text-lg font-semibold",
     };
-    return <Tag className={styles[variant]} data-id={generatedId}>{String(children ?? "")}</Tag>;
+    return (
+      <Tag className={styles[variant]} data-id={generatedId}>
+        {String(children ?? "")}
+      </Tag>
+    );
   },
 });

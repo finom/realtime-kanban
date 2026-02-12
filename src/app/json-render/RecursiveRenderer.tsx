@@ -67,7 +67,9 @@ export const RecursiveRenderer = ({
   const Component = rendererEntry?.component;
   if (!Component)
     return (
-      <div className="text-red-500" data-id={elementKey}>Unknown component: {element.component}</div>
+      <div className="text-red-500" data-id={elementKey}>
+        Unknown component: {element.component}
+      </div>
     );
 
   const Placeholder = rendererEntry?.placeholder ?? DefaultPlaceholder;

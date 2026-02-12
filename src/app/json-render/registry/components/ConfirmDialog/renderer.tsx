@@ -25,24 +25,24 @@ export const ConfirmDialogRenderer = createAIComponentRenderer({
   }) => {
     return (
       <span data-id={generatedId}>
-      <Dialog open={open} onOpenChange={(v) => !v && onCancel?.({})}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{title}</DialogTitle>
-            {description && (
-              <DialogDescription>{description}</DialogDescription>
-            )}
-          </DialogHeader>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => onCancel?.({})}>
-              {cancelLabel}
-            </Button>
-            <Button variant={variant} onClick={() => onConfirm?.({})}>
-              {confirmLabel}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+        <Dialog open={open} onOpenChange={(v) => !v && onCancel?.({})}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>{title}</DialogTitle>
+              {description && (
+                <DialogDescription>{description}</DialogDescription>
+              )}
+            </DialogHeader>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => onCancel?.({})}>
+                {cancelLabel}
+              </Button>
+              <Button variant={variant} onClick={() => onConfirm?.({})}>
+                {confirmLabel}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </span>
     );
   },

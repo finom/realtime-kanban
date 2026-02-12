@@ -8,7 +8,10 @@ export const TableRowRenderer = createAIComponentRenderer({
   def: TableRowDef,
   renderer: ({ children, onClick, generatedId }) => {
     return (
-      <ShadcnTableRow onClick={(e) => onClick?.(pickClick(e))} data-id={generatedId}>
+      <ShadcnTableRow
+        onClick={(e) => onClick?.(pickClick(e))}
+        data-id={generatedId}
+      >
         {children}
       </ShadcnTableRow>
     );

@@ -13,6 +13,7 @@ export default class UserController {
   @operation({
     summary: "Get all users",
     description: "Retrieves a list of all users.",
+    "x-errorToast": "Failed to retrieve users",
   })
   @get()
   @sessionGuard()
@@ -25,6 +26,7 @@ export default class UserController {
     summary: "Find users by ID, full name, or email",
     description:
       "Retrieves users that match the provided ID, full name, or email. Used to search the users when they need to be updated or deleted.",
+    "x-errorToast": "Failed to find users",
   })
   @get("search")
   @sessionGuard()
@@ -42,6 +44,8 @@ export default class UserController {
   @operation({
     summary: "Create user",
     description: "Creates a new user with the provided details.",
+    "x-successToast": "User created successfully",
+    "x-errorToast": "Failed to create user",
   })
   @post()
   @sessionGuard()
@@ -55,6 +59,8 @@ export default class UserController {
     summary: "Update user",
     description:
       "Updates an existing user with the provided details, such as their email or name.",
+    "x-successToast": "User updated successfully",
+    "x-errorToast": "Failed to update user",
   })
   @put("{id}")
   @sessionGuard()
@@ -69,6 +75,8 @@ export default class UserController {
   @operation({
     summary: "Delete user",
     description: "Deletes a user by ID.",
+    "x-successToast": "User deleted successfully",
+    "x-errorToast": "Failed to delete user",
   })
   @del("{id}")
   @sessionGuard()

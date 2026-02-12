@@ -1,10 +1,5 @@
 "use client";
-import React, {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -76,10 +71,7 @@ export const EditModeOverlay = ({
     (e: React.MouseEvent<HTMLDivElement>) => {
       if (!enabled || !containerRef.current) return;
       const relatedTarget = e.relatedTarget as HTMLElement | null;
-      if (
-        !relatedTarget ||
-        !containerRef.current.contains(relatedTarget)
-      ) {
+      if (!relatedTarget || !containerRef.current.contains(relatedTarget)) {
         clearHighlights(containerRef.current);
       }
     },

@@ -16,6 +16,10 @@ export const HeadingRenderer = createAIComponentRenderer({
       "5": "text-lg font-medium",
       "6": "text-base font-medium",
     };
-    return <Tag className={sizes[level]} data-id={generatedId}>{children}</Tag>;
+    return (
+      <Tag className={sizes[level]} data-id={generatedId}>
+        {children}
+      </Tag>
+    );
   },
 });

@@ -27,6 +27,7 @@ import { EmptyStateDef } from "./components/EmptyState/def";
 
 // Form
 import { InputDef } from "./components/Input/def";
+import { TextareaDef } from "./components/Textarea/def";
 import { NumberInputDef } from "./components/NumberInput/def";
 import { SelectDef } from "./components/Select/def";
 import { DatePickerDef } from "./components/DatePicker/def";
@@ -84,6 +85,7 @@ export const componentDefs = createAIComponentDefs({
   EmptyState: EmptyStateDef,
   // Form
   Input: InputDef,
+  Textarea: TextareaDef,
   NumberInput: NumberInputDef,
   Select: SelectDef,
   DatePicker: DatePickerDef,

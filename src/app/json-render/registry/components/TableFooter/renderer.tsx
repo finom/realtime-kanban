@@ -10,7 +10,9 @@ import { TableFooterDef } from "./def";
 export const TableFooterRenderer = createAIComponentRenderer({
   def: TableFooterDef,
   renderer: ({ children, generatedId }) => {
-    return <ShadcnTableFooter data-id={generatedId}>{children}</ShadcnTableFooter>;
+    return (
+      <ShadcnTableFooter data-id={generatedId}>{children}</ShadcnTableFooter>
+    );
   },
   placeholder: () => (
     <TableRow>

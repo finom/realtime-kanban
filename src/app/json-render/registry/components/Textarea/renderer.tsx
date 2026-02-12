@@ -1,36 +1,34 @@
 import { createAIComponentRenderer } from "../../../createAIComponentRenderer";
-import { Input as ShadcnInput } from "@/components/ui/input";
-import { InputDef } from "./def";
+import { Textarea as ShadcnTextarea } from "@/components/ui/textarea";
+import { TextareaDef } from "./def";
 
-export const InputRenderer = createAIComponentRenderer({
-  def: InputDef,
+export const TextareaRenderer = createAIComponentRenderer({
+  def: TextareaDef,
   renderer: ({
     value,
-    type = "text",
     placeholder,
     disabled = false,
+    rows = 3,
     onChange,
     onFocus,
     onBlur,
     generatedId,
   }) => {
     return (
-      <ShadcnInput
-        type={type}
-        value={value as string | number | readonly string[] | undefined}
+      <ShadcnTextarea
+        value={value as string | undefined}
         placeholder={placeholder}
         disabled={disabled}
+        rows={rows}
         onChange={(e) =>
           onChange?.({
             value: e.target.value,
-            valueAsNumber: e.target.valueAsNumber || 0,
           })
         }
         onFocus={() => onFocus?.({})}
         onBlur={(e) =>
           onBlur?.({
             value: e.target.value,
-            valueAsNumber: e.target.valueAsNumber || 0,
           })
         }
         data-id={generatedId}

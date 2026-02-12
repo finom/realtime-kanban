@@ -28,5 +28,14 @@ export const InputDef = createAIComponentDef({
         description: "The current value as a number (0 if NaN)",
       }),
     }),
+    onFocus: z.strictObject({}),
+    onBlur: z.strictObject({
+      value: z.string().meta({
+        description: "The current string value of the input on blur",
+      }),
+      valueAsNumber: z.number().meta({
+        description: "The current value as a number on blur (0 if NaN)",
+      }),
+    }),
   },
 });

@@ -41,7 +41,8 @@ for (const [moduleName, module] of Object.entries(modules)) {
 }
 
 export function getPartialFnPrompt() {
-  return `# JavaScript Expressions:
+  return `# JavaScript Expressions
+
 All \`expr\` values are JavaScript expressions evaluated with a provided context. Key syntax rules:
 - Expressions are standard JavaScript expressions (single expression, no statements).
 - No variable declarations (let, const, var), no assignments (=, +=), no loops, no if/else statements.

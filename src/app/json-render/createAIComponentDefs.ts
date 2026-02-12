@@ -6,11 +6,11 @@ export const createAIComponentDefs = <T extends Record<string, AIComponentDef>>(
 ) => {
   function getDefPartialPrompt() {
     return (
-      "# AVAILABLE COMPONENTS:\n" +
+      "# Available Components\n\n" +
       Object.keys(defs)
         .map((key) => key)
         .join(", ") +
-      "\n\n# COMPONENT DETAILS:\n" +
+      "\n\n# Component Details\n\n" +
       Object.entries(defs)
         .map(([name, { description, propDefs, callbackDefs }]) => {
           const propDefsJSONSchema = propDefs["~standard"].jsonSchema.input({
@@ -23,7 +23,7 @@ export const createAIComponentDefs = <T extends Record<string, AIComponentDef>>(
                 target: "draft-2020-12",
               });
               const cbDefTs = JSONSchemaToTs(cbDefJSONSchema);
-              return `  - ${cbName}: ${cbDefTs}`;
+              return `  - ${cbName}(evt: ${cbDefTs})`;
             })
             .join("\n");
           return `- ${name}: ${propDefTs} - ${description}; ${callbackSubPrompt ? `Event handlers:\n${callbackSubPrompt}` : ""}`;

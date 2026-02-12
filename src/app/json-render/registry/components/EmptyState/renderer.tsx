@@ -5,7 +5,13 @@ import { EmptyStateDef } from "./def";
 
 export const EmptyStateRenderer = createAIComponentRenderer({
   def: EmptyStateDef,
-  renderer: ({ title = "No data", description, children, onClick, generatedId }) => {
+  renderer: ({
+    title = "No data",
+    description,
+    children,
+    onClick,
+    generatedId,
+  }) => {
     return (
       <div
         className="flex flex-col items-center justify-center py-12 text-center"

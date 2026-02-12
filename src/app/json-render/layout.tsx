@@ -1,4 +1,5 @@
 "use client";
+import { Toaster } from "sonner";
 import { ConfirmModalProvider } from "./ConfirmModal";
 
 export default function JsonRenderLayout({
@@ -6,5 +7,10 @@ export default function JsonRenderLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <ConfirmModalProvider>{children}</ConfirmModalProvider>;
+  return (
+    <ConfirmModalProvider>
+      <Toaster position="top-center" richColors />
+      {children}
+    </ConfirmModalProvider>
+  );
 }

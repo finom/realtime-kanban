@@ -13,7 +13,10 @@ export const CardRenderer = createAIComponentRenderer({
   def: CardDef,
   renderer: ({ title, description, children, onClick, generatedId }) => {
     return (
-      <ShadcnCard onClick={(e) => onClick?.(pickClick(e))} data-id={generatedId}>
+      <ShadcnCard
+        onClick={(e) => onClick?.(pickClick(e))}
+        data-id={generatedId}
+      >
         {(title || description) && (
           <CardHeader>
             {title && <CardTitle>{title}</CardTitle>}

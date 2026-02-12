@@ -83,6 +83,7 @@
           "operationObject": {
             "summary": "Get all users",
             "description": "Retrieves a list of all users.",
+            "x-errorToast": "Failed to retrieve users",
             "x-tool": {
               "hidden": true
             }
@@ -180,7 +181,8 @@
           },
           "operationObject": {
             "summary": "Find users by ID, full name, or email",
-            "description": "Retrieves users that match the provided ID, full name, or email. Used to search the users when they need to be updated or deleted."
+            "description": "Retrieves users that match the provided ID, full name, or email. Used to search the users when they need to be updated or deleted.",
+            "x-errorToast": "Failed to find users"
           },
           "path": "search",
           "httpMethod": "GET"
@@ -293,7 +295,9 @@
           },
           "operationObject": {
             "summary": "Create user",
-            "description": "Creates a new user with the provided details."
+            "description": "Creates a new user with the provided details.",
+            "x-successToast": "User created successfully",
+            "x-errorToast": "Failed to create user"
           },
           "path": "",
           "httpMethod": "POST"
@@ -414,7 +418,9 @@
           },
           "operationObject": {
             "summary": "Update user",
-            "description": "Updates an existing user with the provided details, such as their email or name."
+            "description": "Updates an existing user with the provided details, such as their email or name.",
+            "x-successToast": "User updated successfully",
+            "x-errorToast": "Failed to update user"
           },
           "path": "{id}",
           "httpMethod": "PUT"
@@ -574,7 +580,9 @@
           },
           "operationObject": {
             "summary": "Delete user",
-            "description": "Deletes a user by ID."
+            "description": "Deletes a user by ID.",
+            "x-successToast": "User deleted successfully",
+            "x-errorToast": "Failed to delete user"
           },
           "path": "{id}",
           "httpMethod": "DELETE"
@@ -668,6 +676,7 @@
           "operationObject": {
             "summary": "Get all tasks",
             "description": "Retrieves a list of all tasks.",
+            "x-errorToast": "Failed to retrieve tasks",
             "x-tool": {
               "hidden": true
             }
@@ -773,7 +782,8 @@
           },
           "operationObject": {
             "summary": "Find tasks by ID, title or description",
-            "description": "Retrieves tasks that match the provided ID, title, or description. Used to search the tasks when they need to be updated or deleted."
+            "description": "Retrieves tasks that match the provided ID, title, or description. Used to search the tasks when they need to be updated or deleted.",
+            "x-errorToast": "Failed to find tasks"
           },
           "path": "search",
           "httpMethod": "GET"
@@ -871,7 +881,8 @@
           },
           "operationObject": {
             "summary": "Get tasks assigned to a specific user",
-            "description": "Retrieves all tasks associated with a specific user ID."
+            "description": "Retrieves all tasks associated with a specific user ID.",
+            "x-errorToast": "Failed to retrieve user's tasks"
           },
           "path": "by-user/{userId}",
           "httpMethod": "GET"
@@ -1000,7 +1011,9 @@
           },
           "operationObject": {
             "summary": "Create a new task",
-            "description": "Creates a new task with the provided details, such as its title and description."
+            "description": "Creates a new task with the provided details, such as its title and description.",
+            "x-successToast": "Task created successfully",
+            "x-errorToast": "Failed to create task"
           },
           "path": "",
           "httpMethod": "POST"
@@ -1136,7 +1149,9 @@
           },
           "operationObject": {
             "summary": "Update task",
-            "description": "Updates an existing task with the provided details, such as its title or description."
+            "description": "Updates an existing task with the provided details, such as its title or description.",
+            "x-successToast": "Task updated successfully",
+            "x-errorToast": "Failed to update task"
           },
           "path": "{id}",
           "httpMethod": "PUT"
@@ -1229,7 +1244,9 @@
           },
           "operationObject": {
             "summary": "Delete task",
-            "description": "Deletes a task by ID."
+            "description": "Deletes a task by ID.",
+            "x-successToast": "Task deleted successfully",
+            "x-errorToast": "Failed to delete task"
           },
           "path": "{id}",
           "httpMethod": "DELETE"
@@ -1496,6 +1513,9 @@
               "$schema": "https://json-schema.org/draft/2020-12/schema",
               "type": "object",
               "properties": {
+                "editElementId": {
+                  "type": "string"
+                },
                 "prompt": {
                   "type": "string"
                 }
@@ -1505,7 +1525,7 @@
               ]
             }
           },
-          "path": "stream",
+          "path": "ui",
           "httpMethod": "POST"
         }
       }

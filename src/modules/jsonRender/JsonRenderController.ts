@@ -1,7 +1,6 @@
 import { getPrompt } from "@/app/json-render/getPrompt";
 import { streamText } from "ai";
-import PROMPT from "../../app/json-render/PROMPT.json" assert { type: "json" };
-import { post, JSONLinesResponder, VovkRequest, procedure } from "vovk";
+import { post, JSONLinesResponder, procedure } from "vovk";
 import {
   ChunkComponentElement,
   ChunkComponentList,
@@ -9,14 +8,15 @@ import {
 import z from "zod";
 
 export default class JsonRenderController {
-  @post("/stream")
+  @post("ui")
   static render = procedure({
     body: z.object({
+      editElementId: z.string().optional(),
       prompt: z.string(),
     }),
     handle: async (req) => {
       const system = getPrompt();
-      const { prompt } = await req.json();
+      const { prompt, editElementId } = await req.json();
 
       // console.log("systemPrompt:", system);
 

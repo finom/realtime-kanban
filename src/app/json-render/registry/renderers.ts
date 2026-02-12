@@ -27,6 +27,7 @@ import { EmptyStateRenderer } from "./components/EmptyState/renderer";
 
 // Form
 import { InputRenderer } from "./components/Input/renderer";
+import { TextareaRenderer } from "./components/Textarea/renderer";
 import { NumberInputRenderer } from "./components/NumberInput/renderer";
 import { SelectRenderer } from "./components/Select/renderer";
 import { DatePickerRenderer } from "./components/DatePicker/renderer";
@@ -84,6 +85,7 @@ export const componentRenderers = createAIComponentRenderers({
   EmptyState: EmptyStateRenderer,
   // Form
   Input: InputRenderer,
+  Textarea: TextareaRenderer,
   NumberInput: NumberInputRenderer,
   Select: SelectRenderer,
   DatePicker: DatePickerRenderer,

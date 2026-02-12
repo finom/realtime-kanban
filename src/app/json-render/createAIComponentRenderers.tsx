@@ -19,9 +19,11 @@ export const createAIComponentRenderers = <
     Renderer: memo(({
       lines,
       editMode = false,
+      onEdit,
     }: {
       lines: ChunkComponent[];
       editMode?: boolean;
+      onEdit?: (elementId: string, editText: string) => void;
     }) => {
       const elementsById = buildElementsById(lines);
 
@@ -56,7 +58,11 @@ export const createAIComponentRenderers = <
         );
       });
 
-      return <EditModeOverlay enabled={editMode}>{content}</EditModeOverlay>;
+      return (
+        <EditModeOverlay enabled={editMode} onEdit={onEdit}>
+          {content}
+        </EditModeOverlay>
+      );
     }),
   };
 };

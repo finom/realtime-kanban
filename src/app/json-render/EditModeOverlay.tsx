@@ -43,9 +43,11 @@ interface PopoverState {
 export const EditModeOverlay = ({
   enabled,
   children,
+  onEdit,
 }: {
   enabled: boolean;
   children: React.ReactNode;
+  onEdit?: (elementId: string, editText: string) => void;
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [popover, setPopover] = useState<PopoverState | null>(null);
@@ -188,8 +190,11 @@ export const EditModeOverlay = ({
             <Button
               size="sm"
               className="w-full"
+              disabled={!editText.trim()}
               onClick={() => {
-                alert(popover.generatedId);
+                if (onEdit && editText.trim()) {
+                  onEdit(popover.generatedId, editText.trim());
+                }
                 setPopover(null);
               }}
             >

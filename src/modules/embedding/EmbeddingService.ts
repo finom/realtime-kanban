@@ -1,5 +1,4 @@
 import { embed } from "ai";
-import { openai } from "@ai-sdk/openai";
 import { capitalize, omit } from "lodash";
 import { Prisma } from "@prisma/client";
 import { EntityType } from "@schemas/index";
@@ -11,7 +10,7 @@ import DatabaseService from "../database/DatabaseService";
 export default class EmbeddingService {
   static async generateEmbedding(value: string): Promise<number[]> {
     const { embedding } = await embed({
-      model: openai.embeddingModel("text-embedding-3-small"),
+      model: 'openai/text-embedding-3-small',
       value,
     });
 

@@ -1507,6 +1507,43 @@
       "originalControllerName": "JsonRenderController",
       "prefix": "",
       "handlers": {
+        "clarify": {
+          "validation": {
+            "body": {
+              "$schema": "https://json-schema.org/draft/2020-12/schema",
+              "type": "object",
+              "properties": {
+                "existingLines": {
+                  "type": "array",
+                  "items": {}
+                },
+                "previousPrompt": {
+                  "type": "string"
+                },
+                "prompt": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "prompt"
+              ]
+            },
+            "output": {
+              "$schema": "https://json-schema.org/draft/2020-12/schema",
+              "type": "object",
+              "properties": {
+                "text": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "text"
+              ]
+            }
+          },
+          "path": "ui/clarify",
+          "httpMethod": "POST"
+        },
         "render": {
           "validation": {
             "body": {
@@ -1514,6 +1551,13 @@
               "type": "object",
               "properties": {
                 "editElementId": {
+                  "type": "string"
+                },
+                "existingLines": {
+                  "type": "array",
+                  "items": {}
+                },
+                "previousPrompt": {
                   "type": "string"
                 },
                 "prompt": {

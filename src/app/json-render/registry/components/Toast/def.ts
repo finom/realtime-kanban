@@ -1,0 +1,36 @@
+import z from "zod";
+import { createAIComponentDef } from "../../../createAIComponentDef";
+
+export const ToastDef = createAIComponentDef({
+  description:
+    "A toast notification banner for brief, auto-dismissable messages. Positioned at the edge of the viewport. Use Toast for success confirmations, error alerts, or informational messages that appear temporarily. Control visibility with the 'open' prop.",
+  propDefs: z.strictObject({
+    open: z.boolean().default(false).meta({
+      description: "Whether the toast is currently visible",
+    }),
+    title: z.string().meta({
+      description: "The toast message title",
+    }),
+    description: z.string().optional().meta({
+      description: "Optional longer description text",
+    }),
+    variant: z
+      .enum(["default", "success", "error", "warning"])
+      .default("default")
+      .meta({
+        description:
+          "Visual variant: default (neutral), success (green), error (red), warning (yellow)",
+      }),
+    position: z
+      .enum(["top-right", "top-left", "bottom-right", "bottom-left"])
+      .default("bottom-right")
+      .meta({
+        description: "Screen position for the toast notification",
+      }),
+  }),
+  callbackDefs: {
+    onClose: z.object({}).meta({
+      description: "Callback when the toast is dismissed",
+    }),
+  },
+});

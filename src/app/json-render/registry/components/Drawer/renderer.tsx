@@ -21,13 +21,13 @@ export const DrawerRenderer = createAIComponentRenderer({
   }) => {
     const sideClass =
       side === "left"
-        ? "left-0 rounded-r-lg rounded-l-none"
-        : "right-0 rounded-l-lg rounded-r-none";
+        ? "left-0 right-auto rounded-r-lg rounded-l-none"
+        : "right-0 left-auto rounded-l-lg rounded-r-none";
     return (
       <span data-id={generatedId}>
         <Dialog open={open} onOpenChange={(v) => onOpenChange?.({ open: v })}>
           <DialogContent
-            className={`fixed top-0 h-full max-h-full w-80 max-w-sm translate-x-0 ${sideClass} overflow-y-auto`}
+            className={`fixed top-0 h-full max-h-full w-80 max-w-sm sm:max-w-sm translate-x-0 translate-y-0 rounded-none ${sideClass} overflow-y-auto data-[state=open]:slide-in-from-right data-[state=closed]:slide-out-to-right data-[state=open]:zoom-in-100 data-[state=closed]:zoom-out-100`}
           >
             {(title || description) && (
               <DialogHeader>

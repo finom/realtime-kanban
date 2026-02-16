@@ -16,6 +16,7 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
+import { Loader2 } from "lucide-react";
 
 type ChunkLine = VovkYieldType<typeof JsonRenderRPC.render>;
 
@@ -317,6 +318,17 @@ export default function Page() {
             </span>
           )}
         </div>
+
+        {/* Generation Status Indicator */}
+        {(status === "generating" || status === "editing") && (
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Loader2 className="h-4 w-4 animate-spin" />
+            <span>
+              {status === "editing" ? "Editing" : "Generating"}... {data.length}{" "}
+              {data.length === 1 ? "component" : "components"} received
+            </span>
+          </div>
+        )}
 
         {/* Rendered UI */}
         <div className={isBusy ? "opacity-60 pointer-events-none" : ""}>

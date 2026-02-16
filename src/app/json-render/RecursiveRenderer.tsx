@@ -74,37 +74,32 @@ export const RecursiveRenderer = ({
 
   const Placeholder = rendererEntry?.placeholder ?? DefaultPlaceholder;
 
-  const hasUnloadedChildren = element.children?.some(
-    (childKey: string) => !elements[childKey],
-  );
-
   const children = element.children ? (
-    hasUnloadedChildren ? (
-      <Placeholder />
-    ) : (
-      element.children.map((childKey: string) => {
-        const childElement = elements[childKey];
-        if (childElement?.type === "list") {
-          return (
-            <ListRenderer
-              key={childKey}
-              elementKey={childKey}
-              elements={elements}
-              scopes={scopes}
-              line={childElement}
-            />
-          );
-        }
+    element.children.map((childKey: string) => {
+      const childElement = elements[childKey];
+      if (!childElement) {
+        return <Placeholder key={childKey} />;
+      }
+      if (childElement.type === "list") {
         return (
-          <RecursiveRenderer
+          <ListRenderer
             key={childKey}
             elementKey={childKey}
             elements={elements}
             scopes={scopes}
+            line={childElement}
           />
         );
-      })
-    )
+      }
+      return (
+        <RecursiveRenderer
+          key={childKey}
+          elementKey={childKey}
+          elements={elements}
+          scopes={scopes}
+        />
+      );
+    })
   ) : null;
 
   if (element.defaults && !hasBeenRenderedRef.current) {

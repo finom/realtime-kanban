@@ -36,7 +36,7 @@ export function getEntitiesFromData(
   return entities as Partial<Omit<Registry, "parse">>;
 }
 
-const useRegistry = create<Registry>((set, get) => ({
+const useRegistry = create<Registry>((set) => ({
   [EntityType.user]: {},
   [EntityType.task]: {},
   parse: (data) => {

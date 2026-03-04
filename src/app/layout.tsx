@@ -47,7 +47,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <RealTimeDemo />
+        {/* <RealTimeDemo /> */}
         <QueryProvider>{children}</QueryProvider>
       </body>
     </html>

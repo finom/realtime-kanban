@@ -1,4 +1,4 @@
-import { ChunkComponent } from "../types";
+import type { ChunkComponent } from "../types";
 
 export const listLines: ChunkComponent[] = [
   {

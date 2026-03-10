@@ -62,7 +62,7 @@
     "tailwind-merge": "^3.5.0",
     "use-stick-to-bottom": "^1.1.3",
     "uuid": "^13.0.0",
-    "vovk": "^3.0.0-beta.143",
+    "vovk": "^3.0.0-beta.148",
     "vovk-ajv": "^0.0.0-beta.24",
     "vovk-client": "^0.0.4-beta.25",
     "vovk-python": "^0.0.1-beta.14",

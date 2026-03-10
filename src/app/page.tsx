@@ -2,7 +2,6 @@ import { ExpandableChatDemo } from "@/components/ExpandableChatDemo";
 import UserList from "@/components/UserList";
 import UserController from "@/modules/user/UserController";
 import UserKanban from "@/components/UserKanban";
-import RealTimeDemo from "@/components/RealTimeDemo";
 import TaskController from "@/modules/task/TaskController";
 import HydrateRegistry from "@/components/HydrateRegistry";
 import { UserType } from "@schemas/models/User.schema";

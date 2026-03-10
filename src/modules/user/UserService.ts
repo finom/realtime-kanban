@@ -1,4 +1,4 @@
-import type { VovkBody, VovkParams } from "vovk";
+import type { VovkBody, VovkOutput, VovkParams } from "vovk";
 import type { UserType } from "@schemas/models/User.schema";
 import type { TaskType } from "@schemas/models/Task.schema";
 import type UserController from "./UserController";
@@ -8,7 +8,7 @@ import EmbeddingService from "../embedding/EmbeddingService";
 import TaskService from "../task/TaskService";
 
 export default class UserService {
-  static getUsers = () => DatabaseService.prisma.user.findMany();
+  static getUsers = () => DatabaseService.prisma.user.findMany() as Promise<UserType[]>;
 
   static findUsers = (search: string) =>
     EmbeddingService.vectorSearch<UserType>(EntityType.user, search);
@@ -27,7 +27,7 @@ export default class UserService {
       user.entityType,
       user.id as UserType["id"],
     );
-    return user;
+    return user as UserType;
   };
 
   static updateUser = async (
@@ -41,7 +41,7 @@ export default class UserService {
 
     await EmbeddingService.generateEntityEmbedding(user.entityType, id);
 
-    return user;
+    return user as UserType;
   };
 
   static deleteUser = async (
@@ -69,6 +69,6 @@ export default class UserService {
         where: { id },
         select: { id: true, entityType: true },
       }),
-    );
+    ) as VovkOutput<typeof UserController.deleteUser>;
   };
 }

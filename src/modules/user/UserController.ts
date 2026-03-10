@@ -18,8 +18,7 @@ export default class UserController {
   @sessionGuard()
   static getUsers = procedure({
     output: UserSchema.array(),
-    handle: UserService.getUsers,
-  });
+  }).handle(UserService.getUsers);
 
   @operation({
     summary: "Find users by ID, full name, or email",
@@ -36,8 +35,7 @@ export default class UserController {
       }),
     }),
     output: UserSchema.array(),
-    handle: ({ vovk }) => UserService.findUsers(vovk.query().search),
-  });
+  }).handle(async ({ vovk }) => UserService.findUsers(vovk.query().search));
 
   @operation({
     summary: "Create user",
@@ -48,8 +46,7 @@ export default class UserController {
   static createUser = procedure({
     body: UserSchema.omit(BASE_FIELDS),
     output: UserSchema,
-    handle: async ({ vovk }) => UserService.createUser(await vovk.body()),
-  });
+  }).handle(async ({ vovk }) => UserService.createUser(await vovk.body()));
 
   @operation({
     summary: "Update user",
@@ -62,9 +59,9 @@ export default class UserController {
     body: UserSchema.omit(BASE_FIELDS).partial(),
     params: UserSchema.pick({ id: true }),
     output: UserSchema,
-    handle: async ({ vovk }) =>
-      UserService.updateUser(vovk.params().id, await vovk.body()),
-  });
+  }).handle(async ({ vovk }) =>
+    UserService.updateUser(vovk.params().id, await vovk.body()),
+  );
 
   @operation({
     summary: "Delete user",
@@ -80,6 +77,5 @@ export default class UserController {
         .extend({ __isDeleted: z.literal(true) })
         .array(),
     }),
-    handle: async ({ vovk }) => UserService.deleteUser(vovk.params().id),
-  });
+  }).handle(async ({ vovk }) => UserService.deleteUser(vovk.params().id));
 }

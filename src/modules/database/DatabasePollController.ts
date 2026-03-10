@@ -26,14 +26,13 @@ export default class DatabasePollController {
       UserSchema,
       TaskSchema,
     ]),
-    async handle(req) {
-      const responder = new JSONLinesResponder<
-        VovkIteration<typeof DatabasePollController.poll>
-      >(req, ({ readableStream, headers }) => new Response(readableStream, { headers }));
+  }).handle(async (req) => {
+    const responder = new JSONLinesResponder<
+      VovkIteration<typeof DatabasePollController.poll>
+    >(req, ({ readableStream, headers }) => new Response(readableStream, { headers }));
 
-      void DatabasePollService.poll(responder);
+    void DatabasePollService.poll(responder);
 
-      return responder;
-    },
+    return responder;
   });
 }

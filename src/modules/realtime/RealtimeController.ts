@@ -12,7 +12,8 @@ export default class RealtimeController {
     }),
     body: z.object({ sdp: z.string() }),
     output: z.object({ sdp: z.string() }),
-    async handle({ vovk }) {
+    
+  }).handle(async ({ vovk }) => {
       const voice = vovk.query().voice;
       const { sdp: sdpOffer } = await vovk.body();
       const sessionConfig = JSON.stringify({
@@ -42,6 +43,5 @@ export default class RealtimeController {
           "Failed to generate token. " + String(error),
         );
       }
-    },
-  });
+    })
 }

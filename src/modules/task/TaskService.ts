@@ -1,4 +1,4 @@
-import type { VovkBody, VovkParams } from "vovk";
+import type { VovkBody, VovkOutput, VovkParams } from "vovk";
 import type { TaskType } from "@schemas/models/Task.schema";
 import type { UserType } from "@schemas/models/User.schema";
 import type TaskController from "./TaskController";
@@ -7,7 +7,7 @@ import DatabaseService from "../database/DatabaseService";
 import EmbeddingService from "../embedding/EmbeddingService";
 
 export default class TaskService {
-  static getTasks = () => DatabaseService.prisma.task.findMany();
+  static getTasks = () => DatabaseService.prisma.task.findMany() as Promise<TaskType[]>;
 
   static findTasks = (search: string) =>
     EmbeddingService.vectorSearch<TaskType>(EntityType.task, search);
@@ -15,7 +15,7 @@ export default class TaskService {
   static getTasksByUserId = (userId: UserType["id"]) =>
     DatabaseService.prisma.task.findMany({
       where: { userId },
-    });
+    }) as Promise<TaskType[]>;
 
   static createTask = async (
     data: VovkBody<typeof TaskController.createTask>,
@@ -27,7 +27,7 @@ export default class TaskService {
       task.id as TaskType["id"],
     );
 
-    return task;
+    return task as TaskType;
   };
 
   static updateTask = async (
@@ -41,7 +41,7 @@ export default class TaskService {
 
     await EmbeddingService.generateEntityEmbedding(task.entityType, id);
 
-    return task;
+    return task as TaskType;
   };
 
   static deleteTask = (
@@ -50,5 +50,8 @@ export default class TaskService {
     DatabaseService.prisma.task.delete({
       where: { id },
       select: { id: true, entityType: true },
-    });
+    // TODO: __isDeleted incompatibility
+    }) as unknown as Promise<VovkOutput<typeof TaskController.deleteTask>>;
 }
+
+

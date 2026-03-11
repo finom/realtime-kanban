@@ -24,6 +24,9 @@ A proof of concept app, demonstrating **Realtime UI**.
 
 The project and its idea explained in the series of articles at [Vovk.ts documentation](https://vovk.dev/realtime-ui):
 
+<video src="https://vovk.dev/video/kanban_polling.mp4" type="video/mp4" className='mt-4' controls autoPlay loop />
+
+
 ## More info
 
 - [Overview](https://vovk.dev/realtime-ui/overview)

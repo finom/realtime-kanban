@@ -122,4 +122,7 @@
   body {
     @apply bg-background text-foreground;
   }
+  .is-user a, .is-user button {
+    color: inherit !important;
+  }
 }

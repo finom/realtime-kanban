@@ -35,7 +35,7 @@ export default class UserController {
       }),
     }),
     output: UserSchema.array(),
-  }).handle(async ({ vovk }) => UserService.findUsers(vovk.query().search));
+  }).handle(({ vovk }) => UserService.findUsers(vovk.query().search));
 
   @operation({
     summary: "Create user",

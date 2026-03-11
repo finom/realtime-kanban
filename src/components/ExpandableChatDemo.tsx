@@ -92,16 +92,17 @@ export function ExpandableChatDemo() {
                   icon={<MessageSquare className="size-12" />}
                   title="No messages yet"
                   description="Start a conversation to see messages here"
+                  
                 />
               ) : (
                 messages.map((message) => (
-                  <Message from={message.role} key={message.id}>
+                  <Message from={message.role} key={message.id} >
                     <MessageContent>
                       {message.parts.map((part, i) => {
                         switch (part.type) {
                           case "text":
                             return (
-                              <Response key={`${message.id}-${i}`}>
+                              <Response key={`${message.id}-${i}`} >
                                 {part.text}
                               </Response>
                             );

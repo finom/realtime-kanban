@@ -43,6 +43,7 @@ const authorizedHandler = (req: Request) => {
       { status: 401 },
     );
   }
+
   return handler(req);
 };
 

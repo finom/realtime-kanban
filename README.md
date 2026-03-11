@@ -24,7 +24,11 @@ A proof of concept app, demonstrating **Realtime UI**.
 
 The project and its idea explained in the series of articles at [Vovk.ts documentation](https://vovk.dev/realtime-ui):
 
-<video src="https://vovk.dev/video/kanban_polling.mp4" type="video/mp4" className='mt-4' controls autoPlay loop />
+<picture>
+  <source width="100%" media="(prefers-color-scheme: dark)" srcset="https://vovk.dev/screenshots/kanban-dark.png">
+  <source width="100%" media="(prefers-color-scheme: light)" srcset="https://vovk.dev/screenshots/kanban-light.png">
+  <img width="100%" alt="vovk" src="https://vovk.dev/screenshots/kanban-light.png">
+</picture>
 
 
 ## More info

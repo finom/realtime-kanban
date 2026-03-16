@@ -1,6 +1,12 @@
-import { Button } from "@/components/ui/button";
-import { ErrorMessage } from "@hookform/error-message";
-import { pick } from "lodash";
+import { ErrorMessage } from '@hookform/error-message';
+import type { UserType } from '@schemas/models/User.schema';
+import { pick } from 'lodash';
+import { Loader2, Trash2 } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { UserRPC } from 'vovk-client';
+import { useShallow } from 'zustand/shallow';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogClose,
@@ -10,27 +16,21 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { useForm } from "react-hook-form";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import useRegistry from "@/hooks/useRegistry";
-import { UserRPC } from "vovk-client";
-import { useEffect, useState } from "react";
-import { Loader2, Trash2 } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { useShallow } from "zustand/shallow";
-import { UserType } from "@schemas/models/User.schema";
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import useRegistry from '@/hooks/useRegistry';
+import { cn } from '@/lib/utils';
 
 interface Props {
-  userId: UserType["id"] | null;
+  userId: UserType['id'] | null;
   children?: React.ReactNode;
 }
 
 const UserDialog = ({ userId, children }: Props) => {
   const user = useRegistry(
     useShallow((state) =>
-      userId ? pick(state.user[userId], ["email", "fullName"]) : null,
+      userId ? pick(state.user[userId], ['email', 'fullName']) : null,
     ),
   );
   const {
@@ -72,13 +72,13 @@ const UserDialog = ({ userId, children }: Props) => {
               setIsLoading(false);
             },
             (e) => {
-              console.error("Form submission error:", e);
+              console.error('Form submission error:', e);
               setIsLoading(false);
             },
           )}
         >
           <DialogHeader>
-            <DialogTitle>{user ? "Edit" : "Create"} User</DialogTitle>
+            <DialogTitle>{user ? 'Edit' : 'Create'} User</DialogTitle>
             <DialogDescription hidden>
               Make changes to the profile here. Click save when you&apos;re
               done.
@@ -90,7 +90,7 @@ const UserDialog = ({ userId, children }: Props) => {
               <Input
                 id="name-1"
                 defaultValue={user?.fullName}
-                {...register("fullName")}
+                {...register('fullName')}
               />
               <ErrorMessage errors={errors} name="fullName" />
             </div>
@@ -99,7 +99,7 @@ const UserDialog = ({ userId, children }: Props) => {
               <Input
                 id="email-1"
                 defaultValue={user?.email}
-                {...register("email")}
+                {...register('email')}
               />
               <ErrorMessage errors={errors} name="email" />
             </div>
@@ -117,7 +117,7 @@ const UserDialog = ({ userId, children }: Props) => {
                     params: { id: userId },
                   })
                     .catch((error) => {
-                      console.error("Error deleting user:", error);
+                      console.error('Error deleting user:', error);
                     })
                     .then(() => setOpen(false));
                 }}
@@ -131,12 +131,12 @@ const UserDialog = ({ userId, children }: Props) => {
             <Button
               type="submit"
               className={cn(
-                isLoading && "overflow-hidden",
-                "flex items-center relative",
+                isLoading && 'overflow-hidden',
+                'flex items-center relative',
               )}
             >
               {isLoading && <Loader2 className="absolute z-10 animate-spin" />}
-              <span className={cn(isLoading && "opacity-0")}>Save changes</span>
+              <span className={cn(isLoading && 'opacity-0')}>Save changes</span>
             </Button>
           </DialogFooter>
         </form>

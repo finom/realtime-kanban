@@ -1,26 +1,26 @@
-import "server-only";
-import { JWTPayload, SignJWT, jwtVerify } from "jose";
-import { cookies } from "next/headers";
+import 'server-only';
+import { type JWTPayload, jwtVerify, SignJWT } from 'jose';
+import { cookies } from 'next/headers';
 
-const secretKey = process.env.SESSION_SECRET || "CHANGE_ME_TO_A_RANDOM_SECRET";
+const secretKey = process.env.SESSION_SECRET || 'CHANGE_ME_TO_A_RANDOM_SECRET';
 const encodedKey = new TextEncoder().encode(secretKey);
 
 export async function encrypt(payload: JWTPayload) {
   return new SignJWT(payload)
-    .setProtectedHeader({ alg: "HS256" })
+    .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
-    .setExpirationTime("7d")
+    .setExpirationTime('7d')
     .sign(encodedKey);
 }
 
-export async function decrypt(session = "") {
+export async function decrypt(session = '') {
   try {
     const { payload } = await jwtVerify(session, encodedKey, {
-      algorithms: ["HS256"],
+      algorithms: ['HS256'],
     });
     return payload;
   } catch {
-    console.log("Failed to verify session");
+    console.log('Failed to verify session');
   }
 }
 
@@ -29,11 +29,11 @@ export async function createSession(userId: string) {
   const session = await encrypt({ userId, expiresAt });
   const cookieStore = await cookies();
 
-  cookieStore.set("session", session, {
+  cookieStore.set('session', session, {
     httpOnly: true,
     secure: true,
     expires: expiresAt,
-    sameSite: "lax",
-    path: "/",
+    sameSite: 'lax',
+    path: '/',
   });
 }

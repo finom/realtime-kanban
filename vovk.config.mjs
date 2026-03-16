@@ -1,6 +1,6 @@
 // @ts-check
 // import _ from "lodash";
-import "dotenv/config";
+import 'dotenv/config';
 
 // const { camelCase, startCase } = _;
 
@@ -8,8 +8,8 @@ import "dotenv/config";
 const config = {
   outputConfig: {
     imports: {
-      validateOnClient: "vovk-ajv",
-      fetcher: "./src/lib/fetcher.ts",
+      validateOnClient: 'vovk-ajv',
+      fetcher: './src/lib/fetcher.ts',
     },
     segments: {
       /* github: {
@@ -35,19 +35,19 @@ const config = {
       telegram: {
         openAPIMixin: {
           source: {
-            url: "https://raw.githubusercontent.com/sys-001/telegram-bot-api-versions/refs/heads/main/files/openapi/yaml/v183.yaml",
-            fallback: ".openapi-cache/telegram.yaml",
+            url: 'https://raw.githubusercontent.com/sys-001/telegram-bot-api-versions/refs/heads/main/files/openapi/yaml/v183.yaml',
+            fallback: '.openapi-cache/telegram.yaml',
           },
-          getModuleName: "TelegramAPI",
-          getMethodName: ({ path }) => path.replace(/^\//, ""),
-          errorMessageKey: "description",
+          getModuleName: 'TelegramAPI',
+          getMethodName: ({ path }) => path.replace(/^\//, ''),
+          errorMessageKey: 'description',
         },
       },
     },
   },
   moduleTemplates: {
-    service: "vovk-cli/module-templates/Service.ts.ejs",
-    controller: "vovk-zod/module-templates/Controller.ts.ejs",
+    service: 'vovk-cli/module-templates/Service.ts.ejs',
+    controller: 'vovk-zod/module-templates/Controller.ts.ejs',
   },
 };
 

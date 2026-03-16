@@ -1,18 +1,19 @@
-import type { VovkBody, VovkOutput, VovkParams } from "vovk";
-import type { TaskType } from "@schemas/models/Task.schema";
-import type { UserType } from "@schemas/models/User.schema";
-import type TaskController from "./TaskController";
-import { EntityType } from "@prisma/client";
-import DatabaseService from "../database/DatabaseService";
-import EmbeddingService from "../embedding/EmbeddingService";
+import { EntityType } from '@prisma/client';
+import type { TaskType } from '@schemas/models/Task.schema';
+import type { UserType } from '@schemas/models/User.schema';
+import type { VovkBody, VovkOutput, VovkParams } from 'vovk';
+import DatabaseService from '../database/DatabaseService';
+import EmbeddingService from '../embedding/EmbeddingService';
+import type TaskController from './TaskController';
 
 export default class TaskService {
-  static getTasks = () => DatabaseService.prisma.task.findMany() as Promise<TaskType[]>;
+  static getTasks = () =>
+    DatabaseService.prisma.task.findMany() as Promise<TaskType[]>;
 
   static findTasks = (search: string) =>
     EmbeddingService.vectorSearch<TaskType>(EntityType.task, search);
 
-  static getTasksByUserId = (userId: UserType["id"]) =>
+  static getTasksByUserId = (userId: UserType['id']) =>
     DatabaseService.prisma.task.findMany({
       where: { userId },
     }) as Promise<TaskType[]>;
@@ -24,14 +25,14 @@ export default class TaskService {
 
     await EmbeddingService.generateEntityEmbedding(
       task.entityType,
-      task.id as TaskType["id"],
+      task.id as TaskType['id'],
     );
 
     return task as TaskType;
   };
 
   static updateTask = async (
-    id: VovkParams<typeof TaskController.updateTask>["id"],
+    id: VovkParams<typeof TaskController.updateTask>['id'],
     data: VovkBody<typeof TaskController.updateTask>,
   ) => {
     const task = await DatabaseService.prisma.task.update({
@@ -45,13 +46,11 @@ export default class TaskService {
   };
 
   static deleteTask = (
-    id: VovkParams<typeof TaskController.deleteTask>["id"],
+    id: VovkParams<typeof TaskController.deleteTask>['id'],
   ) =>
     DatabaseService.prisma.task.delete({
       where: { id },
       select: { id: true, entityType: true },
-    // TODO: __isDeleted incompatibility
+      // TODO: __isDeleted incompatibility
     }) as unknown as Promise<VovkOutput<typeof TaskController.deleteTask>>;
 }
-
-

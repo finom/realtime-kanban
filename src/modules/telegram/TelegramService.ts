@@ -1,21 +1,21 @@
-import { NextRequest } from "next/server";
-import OpenAI from "openai";
-import { TelegramAPI as TelegramRawAPI } from "vovk-client";
-import { createClient } from "redis";
-import { openai as vercelOpenAI } from "@ai-sdk/openai";
+import { openai as vercelOpenAI } from '@ai-sdk/openai';
 import {
   generateText,
+  type JSONSchema7,
   jsonSchema,
-  ModelMessage,
+  type ModelMessage,
   Output,
   stepCountIs,
   tool,
-  type JSONSchema7,
-} from "ai";
-import { deriveTools } from "vovk";
-import { z } from "zod";
-import UserController from "../user/UserController";
-import TaskController from "../task/TaskController";
+} from 'ai';
+import type { NextRequest } from 'next/server';
+import OpenAI from 'openai';
+import { createClient } from 'redis';
+import { deriveTools } from 'vovk';
+import { TelegramAPI as TelegramRawAPI } from 'vovk-client';
+import { z } from 'zod';
+import TaskController from '../task/TaskController';
+import UserController from '../user/UserController';
 
 const TelegramAPI = TelegramRawAPI.withDefaults({
   apiRoot: `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}`,
@@ -26,7 +26,7 @@ const redis = createClient({
 });
 
 // Ensure Redis connection
-redis.on("error", (err) => console.error("Redis Client Error", err));
+redis.on('error', (err) => console.error('Redis Client Error', err));
 redis.connect().catch(console.error);
 
 // Initialize OpenAI (only for voice transcription)
@@ -37,7 +37,7 @@ const MAX_HISTORY_LENGTH = 50;
 const HISTORY_TTL = 60 * 60 * 24 * 7; // 7 days in seconds
 
 interface ChatMessage {
-  role: "user" | "assistant";
+  role: 'user' | 'assistant';
   content: string;
   timestamp: number;
 }
@@ -67,9 +67,9 @@ export default class TelegramService {
   private static async markUpdateProcessed(updateId: number): Promise<void> {
     const key = `tg_update:${updateId}`;
     // Store with 24 hour expiry to prevent memory bloat
-    await redis.set(key, "1", {
+    await redis.set(key, '1', {
       expiration: {
-        type: "EX",
+        type: 'EX',
         value: 60 * 60 * 24, // 24 hours
       },
     });
@@ -82,7 +82,7 @@ export default class TelegramService {
 
   // Get chat history from Redis
   private static async getChatHistory(chatId: number): Promise<ChatMessage[]> {
-    const key = this.getChatHistoryKey(chatId);
+    const key = TelegramService.getChatHistoryKey(chatId);
     const history = await redis.get(key);
     return history ? JSON.parse(history) : [];
   }
@@ -92,14 +92,14 @@ export default class TelegramService {
     chatId: number,
     history: ChatMessage[],
   ): Promise<void> {
-    const key = this.getChatHistoryKey(chatId);
+    const key = TelegramService.getChatHistoryKey(chatId);
 
     // Keep only the last MAX_HISTORY_LENGTH messages
     const trimmedHistory = history.slice(-MAX_HISTORY_LENGTH);
 
     await redis.set(key, JSON.stringify(trimmedHistory), {
       expiration: {
-        type: "EX",
+        type: 'EX',
         value: HISTORY_TTL, // Set TTL to 7 days
       },
     });
@@ -108,16 +108,16 @@ export default class TelegramService {
   // Add message to chat history
   private static async addToHistory(
     chatId: number,
-    role: "user" | "assistant",
+    role: 'user' | 'assistant',
     content: string,
   ): Promise<void> {
-    const history = await this.getChatHistory(chatId);
+    const history = await TelegramService.getChatHistory(chatId);
     history.push({
       role,
       content,
       timestamp: Date.now(),
     });
-    await this.saveChatHistory(chatId, history);
+    await TelegramService.saveChatHistory(chatId, history);
   }
 
   // Convert chat history to Vercel AI SDK format
@@ -146,7 +146,7 @@ export default class TelegramService {
   // Send message to user
   private static async sendMessage(
     chatId: number,
-    text: string,
+    _text: string,
     messages: ModelMessage[],
   ): Promise<void> {
     const {
@@ -154,27 +154,27 @@ export default class TelegramService {
     } = await generateText({
       output: Output.object({
         schema: z.object({
-          type: z.enum(["text", "voice"]),
+          type: z.enum(['text', 'voice']),
           processedText: z.string(),
         }),
       }),
-      model: vercelOpenAI("gpt-5"),
+      model: vercelOpenAI('gpt-5'),
       messages: [
         ...messages,
         {
-          role: "system",
+          role: 'system',
           content:
             'Determine the type of response: "text" or "voice" depending on the user request (if user sent voice message, it should be "voice"). The "processedText" should be the content to send: if it\'s a text message, format it properly for Telegram parse_mode HTML and include it here, if it\'s a voice message, include the text that will be converted to speech. Never include user IDs in the voice response.',
         },
       ],
     });
 
-    console.log("{ type, processedText }:", { type, processedText });
+    console.log('{ type, processedText }:', { type, processedText });
 
-    if (type === "voice") {
-      await this.sendVoiceMessage(chatId, processedText);
+    if (type === 'voice') {
+      await TelegramService.sendVoiceMessage(chatId, processedText);
     } else {
-      await this.sendTextMessage(chatId, processedText);
+      await TelegramService.sendTextMessage(chatId, processedText);
     }
   }
 
@@ -187,7 +187,7 @@ export default class TelegramService {
       body: {
         chat_id: chatId,
         text: text,
-        parse_mode: "html",
+        parse_mode: 'html',
       },
     });
   }
@@ -211,21 +211,21 @@ export default class TelegramService {
     try {
       // Generate speech from text using OpenAI TTS
       const speechResponse = await openai.audio.speech.create({
-        model: "tts-1",
-        voice: "alloy", // You can change this to: alloy, echo, fable, onyx, nova, shimmer
+        model: 'tts-1',
+        voice: 'alloy', // You can change this to: alloy, echo, fable, onyx, nova, shimmer
         input: text,
-        response_format: "opus", // Telegram supports opus format well
+        response_format: 'opus', // Telegram supports opus format well
       });
 
       // Convert the response to a Buffer
       const voiceBuffer = Buffer.from(await speechResponse.arrayBuffer());
 
       const formData = new FormData();
-      formData.append("chat_id", String(chatId));
+      formData.append('chat_id', String(chatId));
       formData.append(
-        "voice",
-        new Blob([voiceBuffer], { type: "audio/ogg" }),
-        "voice.ogg",
+        'voice',
+        new Blob([voiceBuffer], { type: 'audio/ogg' }),
+        'voice.ogg',
       );
 
       // Send the voice message
@@ -233,9 +233,9 @@ export default class TelegramService {
         body: formData,
       });
     } catch (error) {
-      console.error("Error generating voice message:", error);
+      console.error('Error generating voice message:', error);
       // Fallback to text message if voice generation fails
-      await this.sendTextMessage(chatId, text);
+      await TelegramService.sendTextMessage(chatId, text);
     }
   }
 
@@ -246,10 +246,10 @@ export default class TelegramService {
     systemPrompt: string,
   ): Promise<{ botResponse: string; messages: ModelMessage[] }> {
     // Get chat history
-    const history = await this.getChatHistory(chatId);
+    const history = await TelegramService.getChatHistory(chatId);
     const messages = [
-      ...this.formatHistoryForVercelAI(history),
-      { role: "user", content: userMessage } as const,
+      ...TelegramService.formatHistoryForVercelAI(history),
+      { role: 'user', content: userMessage } as const,
     ];
     const { tools } = deriveTools({
       modules: {
@@ -258,12 +258,12 @@ export default class TelegramService {
         // GithubIssuesAPI: [GithubIssuesAPI, githubOptions],
       },
       onExecute: (data, { name }) => console.log(`${name} executed`, data),
-      onError: (e) => console.error("Error", e),
+      onError: (e) => console.error('Error', e),
     });
 
     // Generate a response using Vercel AI SDK
     const { text } = await generateText({
-      model: vercelOpenAI("gpt-5"),
+      model: vercelOpenAI('gpt-5'),
       system: systemPrompt,
       messages,
       stopWhen: stepCountIs(16),
@@ -284,12 +284,12 @@ export default class TelegramService {
     const botResponse = text || "I couldn't generate a response.";
 
     // Add user message to history
-    await this.addToHistory(chatId, "user", userMessage);
+    await TelegramService.addToHistory(chatId, 'user', userMessage);
     // Add assistant response to history
-    await this.addToHistory(chatId, "assistant", botResponse);
+    await TelegramService.addToHistory(chatId, 'assistant', botResponse);
 
     messages.push({
-      role: "assistant",
+      role: 'assistant',
       content: botResponse,
     });
 
@@ -302,13 +302,13 @@ export default class TelegramService {
     userMessage: string,
     systemPrompt: string,
   ): Promise<void> {
-    const { botResponse, messages } = await this.generateAIResponse(
+    const { botResponse, messages } = await TelegramService.generateAIResponse(
       chatId,
       userMessage,
       systemPrompt,
     );
 
-    await this.sendMessage(chatId, botResponse, messages);
+    await TelegramService.sendMessage(chatId, botResponse, messages);
   }
 
   // Handle special commands
@@ -316,16 +316,16 @@ export default class TelegramService {
     chatId: number,
     command: string,
   ): Promise<boolean> {
-    if (command === "/clear" || command === "/start") {
-      const key = this.getChatHistoryKey(chatId);
+    if (command === '/clear' || command === '/start') {
+      const key = TelegramService.getChatHistoryKey(chatId);
       await redis.del(key);
 
       const responseText =
-        command === "/clear"
-          ? "Chat history cleared! 🧹"
+        command === '/clear'
+          ? 'Chat history cleared! 🧹'
           : "Hello! I'm your AI assistant. Send me a message or voice note to get started! 👋";
 
-      await this.sendTextMessage(chatId, responseText);
+      await TelegramService.sendTextMessage(chatId, responseText);
       return true;
     }
     return false;
@@ -333,10 +333,10 @@ export default class TelegramService {
 
   static startChatActionIndicator(
     chatId: number,
-    action: "typing" | "record_voice",
+    action: 'typing' | 'record_voice',
   ): void {
     let i = 0;
-    this.indicatorInterval = setInterval(() => {
+    TelegramService.indicatorInterval = setInterval(() => {
       void TelegramAPI.sendChatAction({
         body: {
           chat_id: chatId,
@@ -345,9 +345,9 @@ export default class TelegramService {
       });
 
       // Force stop after 10 indicators (50 seconds)
-      if (++i >= 10 && this.indicatorInterval) {
-        clearInterval(this.indicatorInterval);
-        this.indicatorInterval = undefined;
+      if (++i >= 10 && TelegramService.indicatorInterval) {
+        clearInterval(TelegramService.indicatorInterval);
+        TelegramService.indicatorInterval = undefined;
       }
     }, 5000);
   }
@@ -358,30 +358,36 @@ export default class TelegramService {
     fileId: string,
   ): Promise<void> {
     try {
-      this.startChatActionIndicator(chatId, "record_voice");
+      TelegramService.startChatActionIndicator(chatId, 'record_voice');
 
       // Get file info from Telegram
       const { result: fileInfo } = await TelegramAPI.getFile({
         body: { file_id: fileId },
       });
 
+      if (!fileInfo.file_path) {
+        throw new Error('File path not found in Telegram response');
+      }
+
       // Download the voice file
-      const voiceBuffer = await this.downloadTelegramFile(fileInfo.file_path!);
+      const voiceBuffer = await TelegramService.downloadTelegramFile(
+        fileInfo.file_path,
+      );
 
       // Create a File object for OpenAI
-      const voiceFile = new File([voiceBuffer], "voice.ogg", {
-        type: "audio/ogg",
+      const voiceFile = new File([voiceBuffer], 'voice.ogg', {
+        type: 'audio/ogg',
       });
 
       // Transcribe the voice message using Whisper (still using OpenAI for this)
       const transcription = await openai.audio.transcriptions.create({
         file: voiceFile,
-        model: "whisper-1",
+        model: 'whisper-1',
       });
 
       // Check if transcription is empty
       if (!transcription.text?.trim()) {
-        await this.sendTextMessage(
+        await TelegramService.sendTextMessage(
           chatId,
           "I couldn't understand the voice message. Please try again.",
         );
@@ -389,17 +395,17 @@ export default class TelegramService {
       }
 
       // Process the transcribed message
-      await this.processUserMessage(
+      await TelegramService.processUserMessage(
         chatId,
         `🎤 Voice message: "${transcription.text}"`,
         // Simplified system prompt with the same normalization intent
         "You are a helpful assistant in a Telegram chat. The user sent a voice message. Use chat history for context. Prefer voice replies unless the user asks for text. Before acting, normalize spoken artifacts commonly found in transcripts: (1) Emails: interpret 'john gmail com', 'john gmail dot com', 'john at gmail com' as emails; map 'at'→'@', 'dot/period'→'.', 'dash/hyphen'→'-', 'underscore'→'_', remove spaces around '@' and '.', collapse multiple dots, ensure user@domain.tld. If the pattern '<local> <provider> com' occurs without 'at' or 'dot' (e.g., 'valera gmail com'), treat it as '<local>@<provider>.com' (NOT '<local>.<provider>.com'). Common providers: gmail, yahoo, outlook, protonmail, icloud, yandex, mail, hotmail, live. (2) Join split identifiers (emails/usernames) if obviously intended. (3) Only convert number words inside identifiers when clearly part of the identifier/email. Produce canonical, actionable forms for tools (e.g., create user with email user@domain.com). If uncertain, ask a brief clarification.",
       );
     } catch (voiceError) {
-      console.error("Voice processing error:", voiceError);
-      await this.sendTextMessage(
+      console.error('Voice processing error:', voiceError);
+      await TelegramService.sendTextMessage(
         chatId,
-        "Sorry, I had trouble processing your voice message. Please try again or send a text message instead.",
+        'Sorry, I had trouble processing your voice message. Please try again or send a text message instead.',
       );
     }
   }
@@ -410,13 +416,13 @@ export default class TelegramService {
     if (isCommand) {
       return;
     }
-    this.startChatActionIndicator(chatId, "typing");
+    this.startChatActionIndicator(chatId, 'typing');
 
     // Process regular text message
     await this.processUserMessage(
       chatId,
       userMessage,
-      "You are a helpful assistant in a Telegram chat. You have access to the conversation history to maintain context. By default, you respond with text, but if the user requests a voice response, you can generate a voice message.",
+      'You are a helpful assistant in a Telegram chat. You have access to the conversation history to maintain context. By default, you respond with text, but if the user requests a voice response, you can generate a voice message.',
     );
   };
 
@@ -430,18 +436,21 @@ export default class TelegramService {
       }
 
       if (update.message?.text) {
-        await this.processTextMessage(chatId, update.message.text);
+        await TelegramService.processTextMessage(chatId, update.message.text);
       } else if (update.message?.voice) {
-        await this.processVoiceMessage(chatId, update.message.voice.file_id);
-      } else {
-        console.error("Received unsupported message type");
-        await this.sendTextMessage(
+        await TelegramService.processVoiceMessage(
           chatId,
-          "Sorry, I can only process text and voice messages at the moment.",
+          update.message.voice.file_id,
+        );
+      } else {
+        console.error('Received unsupported message type');
+        await TelegramService.sendTextMessage(
+          chatId,
+          'Sorry, I can only process text and voice messages at the moment.',
         );
       }
     } catch (error) {
-      console.error("Error processing update:", error);
+      console.error('Error processing update:', error);
     }
   }
 
@@ -454,20 +463,20 @@ export default class TelegramService {
     }
 
     // Check if this update was already processed
-    const alreadyProcessed = await this.isUpdateProcessed(updateId);
+    const alreadyProcessed = await TelegramService.isUpdateProcessed(updateId);
     if (alreadyProcessed) {
       console.log(`Update ${updateId} already processed, skipping`);
       return { success: true };
     }
 
-    await this.processUpdate(update);
+    await TelegramService.processUpdate(update);
 
-    if (this.indicatorInterval) {
-      clearInterval(this.indicatorInterval);
-      this.indicatorInterval = undefined;
+    if (TelegramService.indicatorInterval) {
+      clearInterval(TelegramService.indicatorInterval);
+      TelegramService.indicatorInterval = undefined;
     }
 
-    await this.markUpdateProcessed(updateId);
+    await TelegramService.markUpdateProcessed(updateId);
 
     return { success: true };
   }

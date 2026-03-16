@@ -1,20 +1,19 @@
-import confetti from "canvas-confetti";
-import { animate as framerAnimate } from "framer-motion";
-import { useRouter } from "next/navigation";
+import confetti from 'canvas-confetti';
+import { animate as framerAnimate } from 'framer-motion';
 
 const partyMode = () => {
   try {
     const duration = 5 * 1000;
     const colors = [
-      "#a786ff",
-      "#fd8bbc",
-      "#eca184",
-      "#f8deb1",
-      "#3b82f6",
-      "#14b8a6",
-      "#f97316",
-      "#10b981",
-      "#facc15",
+      '#a786ff',
+      '#fd8bbc',
+      '#eca184',
+      '#f8deb1',
+      '#3b82f6',
+      '#14b8a6',
+      '#f97316',
+      '#10b981',
+      '#facc15',
     ];
 
     const confettiConfig = {
@@ -37,7 +36,7 @@ const partyMode = () => {
       const now = Date.now();
       const end = now + duration;
 
-      const elements = document.querySelectorAll("div, p, button, h1, h2, h3");
+      const elements = document.querySelectorAll('div, p, button, h1, h2, h3');
       elements.forEach((element) => {
         framerAnimate(
           element,
@@ -48,7 +47,7 @@ const partyMode = () => {
           {
             duration: 0.5,
             repeat: 10,
-            ease: "easeInOut",
+            ease: 'easeInOut',
           },
         );
       });
@@ -60,12 +59,12 @@ const partyMode = () => {
         requestAnimationFrame(frame);
       };
 
-      const mainElement = document.querySelector("main");
+      const mainElement = document.querySelector('main');
       if (mainElement) {
         mainElement.classList.remove(
-          "bg-gradient-to-b",
-          "from-gray-50",
-          "to-white",
+          'bg-gradient-to-b',
+          'from-gray-50',
+          'to-white',
         );
         const originalBg = mainElement.style.backgroundColor;
 
@@ -101,11 +100,11 @@ const partyMode = () => {
     };
 
     animate();
-    return { success: true, message: "Party mode activated 🎉" };
+    return { success: true, message: 'Party mode activated 🎉' };
   } catch (error) {
     return {
       success: false,
-      message: "Failed to activate party mode: " + error,
+      message: `Failed to activate party mode: ${error}`,
     };
   }
 };

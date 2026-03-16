@@ -1,8 +1,8 @@
-import { createMcpHandler } from "mcp-handler";
-import { deriveTools, ToModelOutput } from "vovk";
-import z from "zod";
-import UserController from "@/modules/user/UserController";
-import TaskController from "@/modules/task/TaskController";
+import { createMcpHandler } from 'mcp-handler';
+import { deriveTools, ToModelOutput } from 'vovk';
+import type z from 'zod';
+import TaskController from '@/modules/task/TaskController';
+import UserController from '@/modules/user/UserController';
 
 const { tools } = deriveTools({
   modules: {
@@ -23,7 +23,7 @@ const handler = createMcpHandler(
           title,
           description,
           inputSchema: inputSchemas as Partial<
-            Record<"body" | "query" | "params", z.ZodTypeAny>
+            Record<'body' | 'query' | 'params', z.ZodTypeAny>
           >,
         },
         execute,
@@ -31,15 +31,15 @@ const handler = createMcpHandler(
     });
   },
   {},
-  { basePath: "/api" },
+  { basePath: '/api' },
 );
 
 const authorizedHandler = (req: Request) => {
   const { MCP_ACCESS_KEY } = process.env;
-  const accessKey = new URL(req.url).searchParams.get("mcp_access_key");
+  const accessKey = new URL(req.url).searchParams.get('mcp_access_key');
   if (MCP_ACCESS_KEY && accessKey !== MCP_ACCESS_KEY) {
     return new Response(
-      "Unable to authorize the MCP request: mcp_access_key query parameter is invalid",
+      'Unable to authorize the MCP request: mcp_access_key query parameter is invalid',
       { status: 401 },
     );
   }

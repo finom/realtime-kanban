@@ -1,9 +1,9 @@
-import { initSegment } from "vovk";
-import UserController from "../../../modules/user/UserController";
-import TaskController from "../../../modules/task/TaskController";
-import RealtimeController from "../../../modules/realtime/RealtimeController";
-import DatabasePollController from "../../../modules/database/DatabasePollController";
-import AiSdkController from "../../../modules/ai/AiSdkController";
+import { initSegment } from 'vovk';
+import AiSdkController from '../../../modules/ai/AiSdkController';
+import DatabasePollController from '../../../modules/database/DatabasePollController';
+import RealtimeController from '../../../modules/realtime/RealtimeController';
+import TaskController from '../../../modules/task/TaskController';
+import UserController from '../../../modules/user/UserController';
 
 const controllers = {
   UserRPC: UserController,

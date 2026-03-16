@@ -4,11 +4,11 @@ const getCurrentTime = () => {
     time: now.toLocaleTimeString(),
     timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     message:
-      "Announce to user: The current time is " +
+      'Announce to user: The current time is ' +
       now.toLocaleTimeString() +
-      " in " +
+      ' in ' +
       Intl.DateTimeFormat().resolvedOptions().timeZone +
-      " timezone.",
+      ' timezone.',
   };
 };
 

@@ -1,15 +1,15 @@
-import { ExpandableChatDemo } from "@/components/ExpandableChatDemo";
-import UserList from "@/components/UserList";
-import UserController from "@/modules/user/UserController";
-import UserKanban from "@/components/UserKanban";
-import TaskController from "@/modules/task/TaskController";
-import HydrateRegistry from "@/components/HydrateRegistry";
-import { UserType } from "@schemas/models/User.schema";
-import { TaskType } from "@schemas/models/Task.schema";
-import { verifySession } from "@/lib/dal";
-import AppHeader from "@/components/AppHeader";
+import type { TaskType } from '@schemas/models/Task.schema';
+import type { UserType } from '@schemas/models/User.schema';
+import AppHeader from '@/components/AppHeader';
+import { ExpandableChatDemo } from '@/components/ExpandableChatDemo';
+import HydrateRegistry from '@/components/HydrateRegistry';
+import UserKanban from '@/components/UserKanban';
+import UserList from '@/components/UserList';
+import { verifySession } from '@/lib/dal';
+import TaskController from '@/modules/task/TaskController';
+import UserController from '@/modules/user/UserController';
 
-export const runtime = "nodejs";
+export const runtime = 'nodejs';
 
 export const revalidate = 0;
 

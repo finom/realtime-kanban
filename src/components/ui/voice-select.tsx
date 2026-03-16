@@ -1,15 +1,15 @@
+import { Label } from '@/components/ui/label';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
+} from '@/components/ui/select';
 
 interface VoiceSelectorProps {
-  value: "ash" | "ballad" | "coral" | "sage" | "verse";
-  onValueChange: (value: "ash" | "ballad" | "coral" | "sage" | "verse") => void;
+  value: 'ash' | 'ballad' | 'coral' | 'sage' | 'verse';
+  onValueChange: (value: 'ash' | 'ballad' | 'coral' | 'sage' | 'verse') => void;
 }
 
 export function VoiceSelector({ value, onValueChange }: VoiceSelectorProps) {
@@ -20,7 +20,7 @@ export function VoiceSelector({ value, onValueChange }: VoiceSelectorProps) {
       </Label>
       <Select value={value} onValueChange={onValueChange}>
         <SelectTrigger className="w-full">
-          <SelectValue placeholder={"Select a voice"} />
+          <SelectValue placeholder={'Select a voice'} />
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="ash">Ash</SelectItem>

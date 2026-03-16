@@ -1,17 +1,17 @@
-import { embed } from "ai";
-import { openai } from "@ai-sdk/openai";
-import { capitalize, omit } from "lodash";
-import { Prisma } from "@prisma/client";
-import { EntityType } from "@schemas/index";
-import { UserType } from "@schemas/models/User.schema";
-import { TaskType } from "@schemas/models/Task.schema";
-import { BASE_KEYS } from "@/constants";
-import DatabaseService from "../database/DatabaseService";
+import { openai } from '@ai-sdk/openai';
+import { Prisma } from '@prisma/client';
+import type { EntityType } from '@schemas/index';
+import type { TaskType } from '@schemas/models/Task.schema';
+import type { UserType } from '@schemas/models/User.schema';
+import { embed } from 'ai';
+import { capitalize, omit } from 'lodash';
+import { BASE_KEYS } from '@/constants';
+import DatabaseService from '../database/DatabaseService';
 
 export default class EmbeddingService {
   static async generateEmbedding(value: string): Promise<number[]> {
     const { embedding } = await embed({
-      model: openai.embeddingModel("text-embedding-3-small"),
+      model: openai.embeddingModel('text-embedding-3-small'),
       value,
     });
 
@@ -20,10 +20,10 @@ export default class EmbeddingService {
 
   static generateEntityEmbedding = async (
     entityType: EntityType,
-    entityId: UserType["id"] | TaskType["id"],
+    entityId: UserType['id'] | TaskType['id'],
   ) => {
     const entity = await DatabaseService.prisma[
-      entityType as "user"
+      entityType as 'user'
     ].findUnique({
       where: { id: entityId },
     });
@@ -32,8 +32,8 @@ export default class EmbeddingService {
 
     const embedding = await this.generateEmbedding(
       Object.values(omit(entity, BASE_KEYS))
-        .filter((v) => typeof v === "string")
-        .join(" ")
+        .filter((v) => typeof v === 'string')
+        .join(' ')
         .trim()
         .toLowerCase(),
     );
@@ -44,7 +44,7 @@ export default class EmbeddingService {
     SET embedding = $1::vector
     WHERE id = $2
     `,
-      `[${embedding.join(",")}]`,
+      `[${embedding.join(',')}]`,
       entityId,
     );
 
@@ -57,26 +57,26 @@ export default class EmbeddingService {
     limit: number = 10,
     similarityThreshold: number = 0.4,
   ) {
-    const queryEmbedding = await this.generateEmbedding(
+    const queryEmbedding = await EmbeddingService.generateEmbedding(
       query.trim().toLowerCase(),
     );
     const capitalizedEntityType = capitalize(entityType);
 
     // find similar vectors and return entity IDs
     const vectorResults = await DatabaseService.prisma.$queryRaw<
-      { id: String; similarity: number }[]
+      { id: string; similarity: number }[]
     >`
     SELECT
       id,
-      1 - (embedding <=> ${`[${queryEmbedding.join(",")}]`}::vector) as similarity
+      1 - (embedding <=> ${`[${queryEmbedding.join(',')}]`}::vector) as similarity
     FROM ${Prisma.raw(`"${capitalizedEntityType}"`)}
     WHERE embedding IS NOT NULL
-      AND 1 - (embedding <=> ${`[${queryEmbedding.join(",")}]`}::vector) > ${similarityThreshold}
-    ORDER BY embedding <=> ${`[${queryEmbedding.join(",")}]`}::vector
+      AND 1 - (embedding <=> ${`[${queryEmbedding.join(',')}]`}::vector) > ${similarityThreshold}
+    ORDER BY embedding <=> ${`[${queryEmbedding.join(',')}]`}::vector
     LIMIT ${limit}
   `;
 
-    return DatabaseService.prisma[entityType as "user"].findMany({
+    return DatabaseService.prisma[entityType as 'user'].findMany({
       where: {
         id: {
           in: vectorResults.map((r) => r.id as string),

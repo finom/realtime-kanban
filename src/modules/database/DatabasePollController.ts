@@ -1,17 +1,17 @@
-import { EntityType } from "@prisma/client";
+import { EntityType } from '@prisma/client';
+import { TaskSchema, UserSchema } from '@schemas/index';
 import {
-  procedure,
   get,
   JSONLinesResponder,
   prefix,
+  procedure,
   type VovkIteration,
-} from "vovk";
-import { z } from "zod";
-import { TaskSchema, UserSchema } from "@schemas/index";
-import { sessionGuard } from "@/decorators/sessionGuard";
-import DatabasePollService from "./DatabasePollService";
+} from 'vovk';
+import { z } from 'zod';
+import { sessionGuard } from '@/decorators/sessionGuard';
+import DatabasePollService from './DatabasePollService';
 
-@prefix("poll")
+@prefix('poll')
 export default class DatabasePollController {
   @get()
   @sessionGuard()
@@ -29,7 +29,11 @@ export default class DatabasePollController {
   }).handle(async (req) => {
     const responder = new JSONLinesResponder<
       VovkIteration<typeof DatabasePollController.poll>
-    >(req, ({ readableStream, headers }) => new Response(readableStream, { headers }));
+    >(
+      req,
+      ({ readableStream, headers }) =>
+        new Response(readableStream, { headers }),
+    );
 
     void DatabasePollService.poll(responder);
 

@@ -1,14 +1,14 @@
-"use client";
-import { useState, useRef, useCallback, useEffect } from "react";
-import { VovkTool } from "vovk";
-import { RealtimeRPC } from "vovk-client";
+'use client';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import type { VovkTool } from 'vovk';
+import { RealtimeRPC } from 'vovk-client';
 
 /**
  * Hook to manage a real-time session with OpenAI's Realtime endpoints.
  * @example const { isActive, isTalking, handleStartStopClick } = useWebRTCAudioSession(voice, tools);
  */
 export default function useWebRTCAudioSession(
-  voice: "ash" | "ballad" | "coral" | "sage" | "verse",
+  voice: 'ash' | 'ballad' | 'coral' | 'sage' | 'verse',
   tools: VovkTool[],
 ) {
   const audioElement = useRef<HTMLAudioElement | null>(null);
@@ -28,10 +28,11 @@ export default function useWebRTCAudioSession(
     const pc = new RTCPeerConnection();
 
     // Set up to play remote audio from the model
-    audioElement.current = document.createElement("audio");
+    audioElement.current = document.createElement('audio');
     audioElement.current.autoplay = true;
     pc.ontrack = (e) => {
-      audioElement.current!.srcObject = e.streams[0];
+      if (!audioElement.current) return;
+      audioElement.current.srcObject = e.streams[0];
       // Simple audio activity monitor
       try {
         const audioCtx = new AudioContext();
@@ -67,7 +68,7 @@ export default function useWebRTCAudioSession(
     pc.addTrack(ms.getTracks()[0]);
 
     // Set up data channel for sending and receiving events
-    const dc = pc.createDataChannel("oai-events");
+    const dc = pc.createDataChannel('oai-events');
     dcRef.current = dc;
 
     // Start the session using the Session Description Protocol (SDP)
@@ -75,19 +76,19 @@ export default function useWebRTCAudioSession(
     await pc.setLocalDescription(offer);
 
     const { sdp } = await RealtimeRPC.session({
-      body: { sdp: offer.sdp! },
+      body: { sdp: offer.sdp ?? '' },
       query: { voice },
     });
 
     await pc.setRemoteDescription({
-      type: "answer",
+      type: 'answer',
       sdp,
     });
     dc.onopen = () => {
       const sessionUpdate = {
-        type: "session.update",
+        type: 'session.update',
         session: {
-          type: "realtime",
+          type: 'realtime',
           tools: tools.map(({ name, description, parameters, type }) => ({
             name,
             description,
@@ -101,7 +102,7 @@ export default function useWebRTCAudioSession(
     dc.onmessage = async (event) => {
       const msg = JSON.parse(event.data);
       // Handle function call completions
-      if (msg.type === "response.function_call_arguments.done") {
+      if (msg.type === 'response.function_call_arguments.done') {
         const execute = tools.find((tool) => tool.name === msg.name)?.execute;
         if (execute) {
           const args = JSON.parse(msg.arguments);
@@ -111,9 +112,9 @@ export default function useWebRTCAudioSession(
 
           // Respond with function output
           const response = {
-            type: "conversation.item.create",
+            type: 'conversation.item.create',
             item: {
-              type: "function_call_output",
+              type: 'function_call_output',
               call_id: msg.call_id,
               output: JSON.stringify(result),
             },
@@ -122,7 +123,7 @@ export default function useWebRTCAudioSession(
 
           if (!result?.__preventResponseCreate) {
             const responseCreate = {
-              type: "response.create",
+              type: 'response.create',
             };
             dcRef.current?.send(JSON.stringify(responseCreate));
           }
@@ -130,14 +131,16 @@ export default function useWebRTCAudioSession(
       }
     };
     setIsActive(true);
-  }, []);
+  }, [tools, voice]);
 
   const stopSession = useCallback(() => {
     // Close data channel and peer connection
     dcRef.current?.close();
     dcRef.current = null;
     // Stop microphone tracks
-    mcRef.current?.getTracks().forEach((track) => track.stop());
+    mcRef.current?.getTracks().forEach((track) => {
+      track.stop();
+    });
     mcRef.current = null;
     // Close remote audio context
     remoteAudioContextRef.current?.close();
@@ -168,7 +171,7 @@ export default function useWebRTCAudioSession(
   // Cleanup on unmount
   useEffect(() => {
     return () => stopSession();
-  }, []);
+  }, [stopSession]);
 
   return {
     startSession,

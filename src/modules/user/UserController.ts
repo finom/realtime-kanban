@@ -1,18 +1,18 @@
-import { procedure, prefix, get, put, post, del, operation } from "vovk";
-import { z } from "zod";
-import { TaskSchema, UserSchema } from "@schemas/index";
-import { sessionGuard } from "@/decorators/sessionGuard";
-import { BASE_FIELDS } from "@/constants";
-import UserService from "./UserService";
+import { TaskSchema, UserSchema } from '@schemas/index';
+import { del, get, operation, post, prefix, procedure, put } from 'vovk';
+import { z } from 'zod';
+import { BASE_FIELDS } from '@/constants';
+import { sessionGuard } from '@/decorators/sessionGuard';
+import UserService from './UserService';
 
-@prefix("users")
+@prefix('users')
 export default class UserController {
   @operation.tool({
     hidden: true,
   })
   @operation({
-    summary: "Get all users",
-    description: "Retrieves a list of all users.",
+    summary: 'Get all users',
+    description: 'Retrieves a list of all users.',
   })
   @get()
   @sessionGuard()
@@ -21,25 +21,25 @@ export default class UserController {
   }).handle(UserService.getUsers);
 
   @operation({
-    summary: "Find users by ID, full name, or email",
+    summary: 'Find users by ID, full name, or email',
     description:
-      "Retrieves users that match the provided ID, full name, or email. Used to search the users when they need to be updated or deleted.",
+      'Retrieves users that match the provided ID, full name, or email. Used to search the users when they need to be updated or deleted.',
   })
-  @get("search")
+  @get('search')
   @sessionGuard()
   static findUsers = procedure({
     query: z.object({
       search: z.string().meta({
-        description: "Search term for users",
-        examples: ["john.doe", "Jane"],
+        description: 'Search term for users',
+        examples: ['john.doe', 'Jane'],
       }),
     }),
     output: UserSchema.array(),
   }).handle(({ vovk }) => UserService.findUsers(vovk.query().search));
 
   @operation({
-    summary: "Create user",
-    description: "Creates a new user with the provided details.",
+    summary: 'Create user',
+    description: 'Creates a new user with the provided details.',
   })
   @post()
   @sessionGuard()
@@ -49,11 +49,11 @@ export default class UserController {
   }).handle(async ({ vovk }) => UserService.createUser(await vovk.body()));
 
   @operation({
-    summary: "Update user",
+    summary: 'Update user',
     description:
-      "Updates an existing user with the provided details, such as their email or name.",
+      'Updates an existing user with the provided details, such as their email or name.',
   })
-  @put("{id}")
+  @put('{id}')
   @sessionGuard()
   static updateUser = procedure({
     body: UserSchema.omit(BASE_FIELDS).partial(),
@@ -64,10 +64,10 @@ export default class UserController {
   );
 
   @operation({
-    summary: "Delete user",
-    description: "Deletes a user by ID.",
+    summary: 'Delete user',
+    description: 'Deletes a user by ID.',
   })
-  @del("{id}")
+  @del('{id}')
   @sessionGuard()
   static deleteUser = procedure({
     params: UserSchema.pick({ id: true }),

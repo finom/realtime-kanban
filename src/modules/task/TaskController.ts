@@ -1,18 +1,18 @@
-import { procedure, prefix, get, put, post, del, operation } from "vovk";
-import { z } from "zod";
-import { BASE_FIELDS } from "@/constants";
-import { TaskSchema, UserSchema } from "@schemas/index";
-import { sessionGuard } from "@/decorators/sessionGuard";
-import TaskService from "./TaskService";
+import { TaskSchema, UserSchema } from '@schemas/index';
+import { del, get, operation, post, prefix, procedure, put } from 'vovk';
+import { z } from 'zod';
+import { BASE_FIELDS } from '@/constants';
+import { sessionGuard } from '@/decorators/sessionGuard';
+import TaskService from './TaskService';
 
-@prefix("tasks")
+@prefix('tasks')
 export default class TaskController {
   @operation.tool({
     hidden: true,
   })
   @operation({
-    summary: "Get all tasks",
-    description: "Retrieves a list of all tasks.",
+    summary: 'Get all tasks',
+    description: 'Retrieves a list of all tasks.',
   })
   @get()
   @sessionGuard()
@@ -21,27 +21,27 @@ export default class TaskController {
   }).handle(TaskService.getTasks);
 
   @operation({
-    summary: "Find tasks by ID, title or description",
+    summary: 'Find tasks by ID, title or description',
     description:
-      "Retrieves tasks that match the provided ID, title, or description. Used to search the tasks when they need to be updated or deleted.",
+      'Retrieves tasks that match the provided ID, title, or description. Used to search the tasks when they need to be updated or deleted.',
   })
-  @get("search")
+  @get('search')
   @sessionGuard()
   static findTasks = procedure({
     query: z.object({
       search: z.string().meta({
-        description: "Search term for tasks",
-        examples: ["bug", "feature"],
+        description: 'Search term for tasks',
+        examples: ['bug', 'feature'],
       }),
     }),
     output: TaskSchema.array(),
   }).handle(async ({ vovk }) => TaskService.findTasks(vovk.query().search));
 
   @operation({
-    summary: "Get tasks assigned to a specific user",
-    description: "Retrieves all tasks associated with a specific user ID.",
+    summary: 'Get tasks assigned to a specific user',
+    description: 'Retrieves all tasks associated with a specific user ID.',
   })
-  @get("by-user/{userId}")
+  @get('by-user/{userId}')
   @sessionGuard()
   static getTasksByUserId = procedure({
     params: z.object({ userId: UserSchema.shape.id }),
@@ -51,9 +51,9 @@ export default class TaskController {
   );
 
   @operation({
-    summary: "Create a new task",
+    summary: 'Create a new task',
     description:
-      "Creates a new task with the provided details, such as its title and description.",
+      'Creates a new task with the provided details, such as its title and description.',
   })
   @post()
   @sessionGuard()
@@ -63,11 +63,11 @@ export default class TaskController {
   }).handle(async ({ vovk }) => TaskService.createTask(await vovk.body()));
 
   @operation({
-    summary: "Update task",
+    summary: 'Update task',
     description:
-      "Updates an existing task with the provided details, such as its title or description.",
+      'Updates an existing task with the provided details, such as its title or description.',
   })
-  @put("{id}")
+  @put('{id}')
   @sessionGuard()
   static updateTask = procedure({
     body: TaskSchema.omit(BASE_FIELDS).partial(),
@@ -78,10 +78,10 @@ export default class TaskController {
   );
 
   @operation({
-    summary: "Delete task",
-    description: "Deletes a task by ID.",
+    summary: 'Delete task',
+    description: 'Deletes a task by ID.',
   })
-  @del("{id}")
+  @del('{id}')
   @sessionGuard()
   static deleteTask = procedure({
     params: TaskSchema.pick({ id: true }),

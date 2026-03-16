@@ -1,5 +1,5 @@
-import { PhoneCallIcon, MicIcon, AudioLines, MoveUpRight } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion } from 'framer-motion';
+import { AudioLines, MicIcon, MoveUpRight, PhoneCallIcon } from 'lucide-react';
 
 const Floaty = ({
   isActive,
@@ -51,12 +51,13 @@ const Floaty = ({
             />
           </>
         )}
-        <div
+        <button
+          type="button"
           className="relative flex items-center justify-center w-16 h-16 rounded-full shadow-xl cursor-pointer z-10 bg-foreground"
           onClick={handleClick}
         >
           {getIcon()}
-        </div>
+        </button>
       </div>
     </div>
   );

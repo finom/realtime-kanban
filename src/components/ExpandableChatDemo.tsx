@@ -1,55 +1,53 @@
-"use client";
+'use client';
+import { useChat } from '@ai-sdk/react';
+import { DefaultChatTransport, type ToolUIPart } from 'ai';
 import {
   Bot,
   CornerDownLeft,
-  MoveDownRight,
   MessageSquare,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useChat } from "@ai-sdk/react";
-import { ChatInput } from "@/components/ui/chat-input";
-import {
-  ExpandableChat,
-  ExpandableChatHeader,
-  ExpandableChatBody,
-  ExpandableChatFooter,
-} from "@/components/ui/expandable-chat";
-import { useEffect, useRef, useState } from "react";
-import useRegistry from "@/hooks/useRegistry";
-import { DefaultChatTransport, ToolUIPart } from "ai";
-import {
-  Reasoning,
-  ReasoningContent,
-  ReasoningTrigger,
-} from "@/components/ai-elements/reasoning";
-import {
-  Tool,
-  ToolContent,
-  ToolHeader,
-  ToolOutput,
-  ToolInput,
-} from "@/components/ai-elements/tool";
-import { Message, MessageContent } from "@/components/ai-elements/message";
+  MoveDownRight,
+} from 'lucide-react';
+import { useState } from 'react';
+import { AiSdkRPC } from 'vovk-client';
+import { CodeBlock } from '@/components/ai-elements/code-block';
 import {
   Conversation,
   ConversationContent,
   ConversationEmptyState,
-} from "@/components/ai-elements/conversation";
-
-import { Response } from "@/components/ai-elements/response";
-import { CodeBlock } from "@/components/ai-elements/code-block";
-import { AiSdkRPC } from "vovk-client";
-import useParseSDKToolCallOutputs from "@/hooks/useParseSDKToolCallOutputs";
+} from '@/components/ai-elements/conversation';
+import { Message, MessageContent } from '@/components/ai-elements/message';
+import {
+  Reasoning,
+  ReasoningContent,
+  ReasoningTrigger,
+} from '@/components/ai-elements/reasoning';
+import { Response } from '@/components/ai-elements/response';
+import {
+  Tool,
+  ToolContent,
+  ToolHeader,
+  ToolInput,
+  ToolOutput,
+} from '@/components/ai-elements/tool';
+import { Button } from '@/components/ui/button';
+import { ChatInput } from '@/components/ui/chat-input';
+import {
+  ExpandableChat,
+  ExpandableChatBody,
+  ExpandableChatFooter,
+  ExpandableChatHeader,
+} from '@/components/ui/expandable-chat';
+import useParseSDKToolCallOutputs from '@/hooks/useParseSDKToolCallOutputs';
 
 export function ExpandableChatDemo() {
-  const [input, setInput] = useState("");
+  const [input, setInput] = useState('');
 
   const { messages, sendMessage, status } = useChat({
     transport: new DefaultChatTransport({
       api: AiSdkRPC.functionCalling.getURL(), // or "/api/ai-sdk/function-calling",
     }),
     onToolCall: (toolCall) => {
-      console.log("Tool call initiated:", toolCall);
+      console.log('Tool call initiated:', toolCall);
     },
   });
 
@@ -57,7 +55,7 @@ export function ExpandableChatDemo() {
     e.preventDefault();
     if (input.trim()) {
       sendMessage({ text: input });
-      setInput("");
+      setInput('');
     }
   };
 
@@ -85,34 +83,33 @@ export function ExpandableChatDemo() {
           </p>
         </ExpandableChatHeader>
         <ExpandableChatBody>
-          <Conversation className="relative w-full" style={{ height: "500px" }}>
+          <Conversation className="relative w-full" style={{ height: '500px' }}>
             <ConversationContent>
               {messages.length === 0 ? (
                 <ConversationEmptyState
                   icon={<MessageSquare className="size-12" />}
                   title="No messages yet"
                   description="Start a conversation to see messages here"
-                  
                 />
               ) : (
                 messages.map((message) => (
-                  <Message from={message.role} key={message.id} >
+                  <Message from={message.role} key={message.id}>
                     <MessageContent>
                       {message.parts.map((part, i) => {
                         switch (part.type) {
-                          case "text":
+                          case 'text':
                             return (
-                              <Response key={`${message.id}-${i}`} >
+                              <Response key={`${message.id}-${i}`}>
                                 {part.text}
                               </Response>
                             );
-                          case "reasoning":
+                          case 'reasoning':
                             return (
                               <Reasoning
                                 key={`${message.id}-${i}`}
                                 className="w-full"
                                 isStreaming={
-                                  status === "streaming" &&
+                                  status === 'streaming' &&
                                   i === message.parts.length - 1 &&
                                   message.id === messages.at(-1)?.id
                                 }
@@ -122,7 +119,7 @@ export function ExpandableChatDemo() {
                               </Reasoning>
                             );
                           default:
-                            if (part.type.startsWith("tool-")) {
+                            if (part.type.startsWith('tool-')) {
                               const toolPart = part as ToolUIPart;
                               return (
                                 <Tool
@@ -152,6 +149,7 @@ export function ExpandableChatDemo() {
                                 </Tool>
                               );
                             }
+                            return null;
                         }
                       })}
                     </MessageContent>
@@ -170,7 +168,7 @@ export function ExpandableChatDemo() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => {
-                if (e.key === "Enter" && !e.shiftKey && input.trim()) {
+                if (e.key === 'Enter' && !e.shiftKey && input.trim()) {
                   e.preventDefault();
                   handleSubmit(e);
                 }

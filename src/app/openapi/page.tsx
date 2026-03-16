@@ -1,6 +1,6 @@
-import { ApiReferenceReact } from "@scalar/api-reference-react";
-import "@scalar/api-reference-react/style.css";
-import { OpenApiRPC } from "vovk-client";
+import { ApiReferenceReact } from '@scalar/api-reference-react';
+import '@scalar/api-reference-react/style.css';
+import { OpenApiRPC } from 'vovk-client';
 
 async function App() {
   return (
@@ -10,12 +10,12 @@ async function App() {
         hideModels: true,
         servers: [
           {
-            url: "http://localhost:3000",
-            description: "Localhost",
+            url: 'http://localhost:3000',
+            description: 'Localhost',
           },
           {
-            url: "https://kanban.vovk.dev",
-            description: "Production",
+            url: 'https://kanban.vovk.dev',
+            description: 'Production',
           },
         ],
       }}

@@ -1,11 +1,12 @@
-"use client";
-import { Switch } from "./ui/switch";
-import { Label } from "./ui/label";
-import Link from "next/link";
-import useDatabasePolling from "@/hooks/useDatabasePolling";
+'use client';
+import Link from 'next/link';
+import useDatabasePolling from '@/hooks/useDatabasePolling';
+import { Label } from './ui/label';
+import { Switch } from './ui/switch';
 
 const AppHeader = () => {
-  const [isPollingEnabled, setIsPollingEnabled, pollingHasError] = useDatabasePolling(false);
+  const [isPollingEnabled, setIsPollingEnabled, pollingHasError] =
+    useDatabasePolling(false);
 
   return (
     <header className="space-y-4 w-full bg-background/50 backdrop-blur-sm border-b border-border/50 sticky top-0 z-50">
@@ -36,6 +37,7 @@ const AppHeader = () => {
                 height="1.1em"
                 className="inline"
               >
+                <title>OpenAPI Spec</title>
                 <path d="M7 17L17 7"></path>
                 <path d="M7 7h10v10"></path>
               </svg>
@@ -48,7 +50,12 @@ const AppHeader = () => {
             checked={isPollingEnabled}
             onCheckedChange={setIsPollingEnabled}
           />
-          <Label htmlFor="poll-mode" className={pollingHasError ? "text-red-500" : ""}>Database Polling</Label>
+          <Label
+            htmlFor="poll-mode"
+            className={pollingHasError ? 'text-red-500' : ''}
+          >
+            Database Polling
+          </Label>
         </div>
       </div>
     </header>

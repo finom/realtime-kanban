@@ -1,6 +1,9 @@
-"use client";
-import { login } from "@/app/actions/auth";
-import { useActionState } from "react";
+'use client';
+import { AlertCircle } from 'lucide-react';
+import { useActionState } from 'react';
+import { login } from '@/app/actions/auth';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
@@ -8,12 +11,9 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertCircle } from "lucide-react";
+} from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 export default function LoginForm() {
   const [state, action, pending] = useActionState(login, undefined);
@@ -25,7 +25,7 @@ export default function LoginForm() {
           <CardTitle>Log In</CardTitle>
           <CardDescription>
             Please enter the password to access the demo. You can request one by
-            emailing me your story at{" "}
+            emailing me your story at{' '}
             <a
               className="text-blue-600 hover:text-blue-800 underline underline-offset-4"
               href="mailto:andrii@gubanov.eu"
@@ -56,7 +56,7 @@ export default function LoginForm() {
           </CardContent>
           <CardFooter>
             <Button type="submit" className="w-full mt-4" disabled={pending}>
-              {pending ? "Checking..." : "Log In"}
+              {pending ? 'Checking...' : 'Log In'}
             </Button>
           </CardFooter>
         </form>

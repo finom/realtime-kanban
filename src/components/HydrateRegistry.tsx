@@ -1,8 +1,8 @@
-"use client";
-import { useEffect, useRef, type ReactNode } from "react";
-import useRegistry from "@/hooks/useRegistry";
-import type { UserType } from "@schemas/models/User.schema";
-import type { TaskType } from "@schemas/models/Task.schema";
+'use client';
+import type { TaskType } from '@schemas/models/Task.schema';
+import type { UserType } from '@schemas/models/User.schema';
+import { useEffect, useRef } from 'react';
+import useRegistry from '@/hooks/useRegistry';
 
 export default function HydrateRegistry({
   users,

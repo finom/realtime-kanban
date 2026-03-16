@@ -1,16 +1,16 @@
-import { EntityType } from "@prisma/client";
-import mitt from "mitt";
-import { createClient } from "redis";
+import type { EntityType } from '@prisma/client';
+import mitt from 'mitt';
+import { createClient } from 'redis';
 
 export type DBChange = {
   id: string;
   entityType: EntityType;
   date: string;
-  type: "create" | "update" | "delete";
+  type: 'create' | 'update' | 'delete';
 };
 
 export default class DatabaseEventsService {
-  public static readonly DB_KEY = "db_updates";
+  public static readonly DB_KEY = 'db_updates';
 
   private static readonly INTERVAL = 1_000;
   private static lastTimestamp = Date.now();
@@ -25,10 +25,10 @@ export default class DatabaseEventsService {
 
   // ensure Redis is connected
   private static async connect() {
-    if (!this.redisClient.isOpen) {
-      await this.redisClient.connect();
-      this.redisClient.on("error", (err) => {
-        console.error("Redis Client Error", err);
+    if (!DatabaseEventsService.redisClient.isOpen) {
+      await DatabaseEventsService.redisClient.connect();
+      DatabaseEventsService.redisClient.on('error', (err) => {
+        console.error('Redis Client Error', err);
       });
     }
   }
@@ -37,7 +37,7 @@ export default class DatabaseEventsService {
   public static async createChanges(changes: DBChange[]) {
     if (changes.length === 0) return;
 
-    await this.connect();
+    await DatabaseEventsService.connect();
 
     // build array of { score, value } objects
     const entries = changes.map(({ id, entityType, type, date }) => ({
@@ -46,32 +46,38 @@ export default class DatabaseEventsService {
     }));
 
     // one multi(): batch ZADD + EXPIRE
-    await this.redisClient
+    await DatabaseEventsService.redisClient
       .multi()
-      .zAdd(this.DB_KEY, entries)
-      .expire(this.DB_KEY, (this.INTERVAL * 60) / 1000)
+      .zAdd(DatabaseEventsService.DB_KEY, entries)
+      .expire(
+        DatabaseEventsService.DB_KEY,
+        (DatabaseEventsService.INTERVAL * 60) / 1000,
+      )
       .exec();
   }
 
   public static beginEmitting() {
     setInterval(async () => {
-      await this.connect();
+      await DatabaseEventsService.connect();
 
       const now = Date.now();
 
       // get everything with score ∈ (lastTimestamp, now]
-      const raw = await this.redisClient.zRangeByScore(
-        this.DB_KEY,
-        this.lastTimestamp + 1,
+      const raw = await DatabaseEventsService.redisClient.zRangeByScore(
+        DatabaseEventsService.DB_KEY,
+        DatabaseEventsService.lastTimestamp + 1,
         now,
       );
 
-      this.lastTimestamp = now;
+      DatabaseEventsService.lastTimestamp = now;
 
       if (raw.length > 0) {
         const updates = raw.map((s) => JSON.parse(s) as DBChange);
-        this.emitter.emit(this.DB_KEY, updates);
+        DatabaseEventsService.emitter.emit(
+          DatabaseEventsService.DB_KEY,
+          updates,
+        );
       }
-    }, this.INTERVAL);
+    }, DatabaseEventsService.INTERVAL);
   }
 }

@@ -1,6 +1,13 @@
-import { Button } from "@/components/ui/button";
-import { ErrorMessage } from "@hookform/error-message";
-import { pick } from "lodash";
+import { ErrorMessage } from '@hookform/error-message';
+import { TaskStatus } from '@prisma/client';
+import type { TaskType } from '@schemas/models/Task.schema';
+import { pick } from 'lodash';
+import { Loader2 } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { TaskRPC } from 'vovk-client';
+import { useShallow } from 'zustand/shallow';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogClose,
@@ -10,16 +17,11 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { useForm, Controller } from "react-hook-form";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import useRegistry from "@/hooks/useRegistry";
-import { TaskRPC } from "vovk-client";
-import { useEffect, useState } from "react";
-import { Loader2 } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { useShallow } from "zustand/shallow";
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import useRegistry from '@/hooks/useRegistry';
+import { cn } from '@/lib/utils';
 import {
   Select,
   SelectContent,
@@ -28,13 +30,11 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "./ui/select";
-import { TaskStatus } from "@prisma/client";
-import { Textarea } from "./ui/textarea";
-import { TaskType } from "@schemas/models/Task.schema";
+} from './ui/select';
+import { Textarea } from './ui/textarea';
 
 interface Props {
-  taskId: TaskType["id"] | null;
+  taskId: TaskType['id'] | null;
   children: React.ReactNode;
 }
 
@@ -42,7 +42,7 @@ const TaskDialog = ({ taskId, children }: Props) => {
   const task = useRegistry(
     useShallow((state) =>
       taskId
-        ? pick(state.task[taskId], ["title", "description", "status", "userId"])
+        ? pick(state.task[taskId], ['title', 'description', 'status', 'userId'])
         : null,
     ),
   );
@@ -76,7 +76,7 @@ const TaskDialog = ({ taskId, children }: Props) => {
       </DialogTrigger>
       <DialogContent
         className="sm:max-w-[425px]"
-        container={typeof document !== "undefined" ? document?.body : undefined}
+        container={typeof document !== 'undefined' ? document?.body : undefined}
       >
         <form
           onSubmit={handleSubmit(
@@ -97,13 +97,13 @@ const TaskDialog = ({ taskId, children }: Props) => {
               setIsLoading(false);
             },
             (e) => {
-              console.error("Form submission error:", e);
+              console.error('Form submission error:', e);
               setIsLoading(false);
             },
           )}
         >
           <DialogHeader>
-            <DialogTitle>{task ? "Edit" : "Create"} Task</DialogTitle>
+            <DialogTitle>{task ? 'Edit' : 'Create'} Task</DialogTitle>
             <DialogDescription hidden>
               Make changes to the profile here. Click save when you&apos;re
               done.
@@ -116,7 +116,7 @@ const TaskDialog = ({ taskId, children }: Props) => {
                 id="title-1"
                 defaultValue={task?.title}
                 onPointerDown={(e) => e.stopPropagation()}
-                {...register("title")}
+                {...register('title')}
               />
               <ErrorMessage errors={errors} name="title" />
             </div>
@@ -126,7 +126,7 @@ const TaskDialog = ({ taskId, children }: Props) => {
                 id="description-1"
                 defaultValue={task?.description}
                 onPointerDown={(e) => e.stopPropagation()}
-                {...register("description")}
+                {...register('description')}
               />
               <ErrorMessage errors={errors} name="description" />
             </div>
@@ -138,12 +138,12 @@ const TaskDialog = ({ taskId, children }: Props) => {
                 render={({ field }) => (
                   <Select
                     onValueChange={field.onChange}
-                    value={field.value ?? ""}
+                    value={field.value ?? ''}
                   >
                     <SelectTrigger className="w-full">
                       <SelectValue placeholder="Select a status" />
                     </SelectTrigger>
-                    <SelectContent {...register("status")}>
+                    <SelectContent {...register('status')}>
                       <SelectGroup>
                         <SelectLabel>Statuses</SelectLabel>
                         <SelectItem value={TaskStatus.TODO}>To Do</SelectItem>
@@ -169,7 +169,7 @@ const TaskDialog = ({ taskId, children }: Props) => {
                 render={({ field }) => (
                   <Select
                     onValueChange={field.onChange}
-                    value={field.value ?? ""}
+                    value={field.value ?? ''}
                   >
                     <SelectTrigger className="w-full">
                       <SelectValue placeholder="Select a user" />
@@ -199,12 +199,12 @@ const TaskDialog = ({ taskId, children }: Props) => {
             <Button
               type="submit"
               className={cn(
-                isLoading && "overflow-hidden",
-                "flex items-center relative",
+                isLoading && 'overflow-hidden',
+                'flex items-center relative',
               )}
             >
               {isLoading && <Loader2 className="absolute z-10 animate-spin" />}
-              <span className={cn(isLoading && "opacity-0")}>Save changes</span>
+              <span className={cn(isLoading && 'opacity-0')}>Save changes</span>
             </Button>
           </DialogFooter>
         </form>

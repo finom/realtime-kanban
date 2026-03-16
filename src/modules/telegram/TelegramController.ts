@@ -1,8 +1,8 @@
-import { post, prefix } from "vovk";
-import TelegramService from "./TelegramService";
+import { post, prefix } from 'vovk';
+import TelegramService from './TelegramService';
 
-@prefix("telegram")
+@prefix('telegram')
 export default class TelegramController {
-  @post("bot")
+  @post('bot')
   static handle = TelegramService.handle.bind(TelegramService);
 }

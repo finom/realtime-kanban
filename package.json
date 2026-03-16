@@ -8,7 +8,7 @@
     "build": "next build",
     "prebuild": "prisma migrate deploy",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "biome check",
     "generate": "npx prisma generate && npx vovk generate",
     "postinstall": "patch-package && npm run generate"
   },
@@ -72,15 +72,13 @@
     "zustand": "^5.0.12"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3",
+    "@biomejs/biome": "^2.4.7",
     "@next/bundle-analyzer": "^16.1.6",
     "@tailwindcss/postcss": "^4",
     "@types/lodash": "^4.17.24",
     "@types/node": "^25",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "eslint": "^10",
-    "eslint-config-next": "16.1.6",
     "patch-package": "^8.0.1",
     "prisma": "7.5.0",
     "prisma-zod-generator": "^2.1.4",

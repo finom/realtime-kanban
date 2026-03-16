@@ -1,6 +1,6 @@
-import useRegistry from "@/hooks/useRegistry";
-import { ToolUIPart, UIMessage } from "ai";
-import { useEffect, useRef } from "react";
+import type { ToolUIPart, UIMessage } from 'ai';
+import { useEffect, useRef } from 'react';
+import useRegistry from '@/hooks/useRegistry';
 
 export default function useParseSDKToolCallOutputs(messages: UIMessage[]) {
   const parsedToolCallIdsSetRef = useRef<Set<string>>(new Set());
@@ -9,18 +9,18 @@ export default function useParseSDKToolCallOutputs(messages: UIMessage[]) {
     const partsToParse = messages.flatMap((msg) =>
       msg.parts.filter((part) => {
         return (
-          msg.role === "assistant" &&
-          part.type.startsWith("tool-") &&
-          (part as ToolUIPart).state === "output-available" &&
-          "toolCallId" in part &&
+          msg.role === 'assistant' &&
+          part.type.startsWith('tool-') &&
+          (part as ToolUIPart).state === 'output-available' &&
+          'toolCallId' in part &&
           !parsedToolCallIdsSetRef.current.has(part.toolCallId)
         );
       }),
     ) as ToolUIPart[];
 
-    partsToParse.forEach((part) =>
-      parsedToolCallIdsSetRef.current.add(part.toolCallId),
-    );
+    partsToParse.forEach((part) => {
+      parsedToolCallIdsSetRef.current.add(part.toolCallId);
+    });
 
     if (partsToParse.length) {
       useRegistry.getState().parse(partsToParse.map((part) => part.output));

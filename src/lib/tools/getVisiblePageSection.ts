@@ -6,12 +6,12 @@ const getVisiblePageSection = () => {
     // Check if an element or its ancestors are hidden from accessibility tree
     function isAccessibilityHidden(element: Element | null): boolean {
       while (element) {
-        if (element.getAttribute("aria-hidden") === "true") return true;
-        if (element.hasAttribute("hidden")) return true;
-        const role = element.getAttribute("role");
-        if (role === "presentation" || role === "none") return true;
+        if (element.getAttribute('aria-hidden') === 'true') return true;
+        if (element.hasAttribute('hidden')) return true;
+        const role = element.getAttribute('role');
+        if (role === 'presentation' || role === 'none') return true;
         const style = window.getComputedStyle(element);
-        if (style.display === "none" || style.visibility === "hidden")
+        if (style.display === 'none' || style.visibility === 'hidden')
           return true;
         element = element.parentElement;
       }
@@ -20,45 +20,45 @@ const getVisiblePageSection = () => {
 
     // Get accessible name from aria-label or aria-labelledby
     function getAccessibleName(element: Element): string {
-      const ariaLabel = element.getAttribute("aria-label");
+      const ariaLabel = element.getAttribute('aria-label');
       if (ariaLabel) return ariaLabel;
 
-      const labelledBy = element.getAttribute("aria-labelledby");
+      const labelledBy = element.getAttribute('aria-labelledby');
       if (labelledBy) {
         return labelledBy
           .split(/\s+/)
-          .map((id) => document.getElementById(id)?.textContent?.trim() || "")
+          .map((id) => document.getElementById(id)?.textContent?.trim() || '')
           .filter(Boolean)
-          .join(" ");
+          .join(' ');
       }
 
       // For images, use alt text
-      if (element.tagName === "IMG") {
-        const alt = element.getAttribute("alt");
+      if (element.tagName === 'IMG') {
+        const alt = element.getAttribute('alt');
         if (alt) return alt;
       }
 
-      return "";
+      return '';
     }
 
     // Get aria-describedby text
     function getDescription(element: Element): string {
-      const describedBy = element.getAttribute("aria-describedby");
+      const describedBy = element.getAttribute('aria-describedby');
       if (describedBy) {
         return describedBy
           .split(/\s+/)
-          .map((id) => document.getElementById(id)?.textContent?.trim() || "")
+          .map((id) => document.getElementById(id)?.textContent?.trim() || '')
           .filter(Boolean)
-          .join(" ");
+          .join(' ');
       }
-      return "";
+      return '';
     }
 
     const visibleTexts: string[] = [];
     const processedElements = new Set<Element>();
 
     // First, collect accessible names and descriptions from elements
-    const allElements = document.body.querySelectorAll("*");
+    const allElements = document.body.querySelectorAll('*');
     for (const element of allElements) {
       if (isAccessibilityHidden(element)) continue;
 
@@ -97,8 +97,10 @@ const getVisiblePageSection = () => {
       },
     );
 
-    let node;
-    while ((node = walker.nextNode())) {
+    let node: Node | null;
+    while (true) {
+      node = walker.nextNode();
+      if (!node) break;
       const range = document.createRange();
       range.selectNode(node);
       const rect = range.getBoundingClientRect();
@@ -116,7 +118,7 @@ const getVisiblePageSection = () => {
       }
     }
 
-    return visibleTexts.join(" ").replace(/\s+/g, " ").trim();
+    return visibleTexts.join(' ').replace(/\s+/g, ' ').trim();
   }
 
   return getVisibleText();

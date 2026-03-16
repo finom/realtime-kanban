@@ -1,14 +1,15 @@
-import type { VovkBody, VovkOutput, VovkParams } from "vovk";
-import type { UserType } from "@schemas/models/User.schema";
-import type { TaskType } from "@schemas/models/Task.schema";
-import type UserController from "./UserController";
-import { EntityType } from "@prisma/client";
-import DatabaseService from "../database/DatabaseService";
-import EmbeddingService from "../embedding/EmbeddingService";
-import TaskService from "../task/TaskService";
+import { EntityType } from '@prisma/client';
+import type { TaskType } from '@schemas/models/Task.schema';
+import type { UserType } from '@schemas/models/User.schema';
+import type { VovkBody, VovkOutput, VovkParams } from 'vovk';
+import DatabaseService from '../database/DatabaseService';
+import EmbeddingService from '../embedding/EmbeddingService';
+import TaskService from '../task/TaskService';
+import type UserController from './UserController';
 
 export default class UserService {
-  static getUsers = () => DatabaseService.prisma.user.findMany() as Promise<UserType[]>;
+  static getUsers = () =>
+    DatabaseService.prisma.user.findMany() as Promise<UserType[]>;
 
   static findUsers = (search: string) =>
     EmbeddingService.vectorSearch<UserType>(EntityType.user, search);
@@ -25,13 +26,13 @@ export default class UserService {
 
     await EmbeddingService.generateEntityEmbedding(
       user.entityType,
-      user.id as UserType["id"],
+      user.id as UserType['id'],
     );
     return user as UserType;
   };
 
   static updateUser = async (
-    id: VovkParams<typeof UserController.updateUser>["id"],
+    id: VovkParams<typeof UserController.updateUser>['id'],
     data: VovkBody<typeof UserController.updateUser>,
   ) => {
     const user = await DatabaseService.prisma.user.update({
@@ -45,7 +46,7 @@ export default class UserService {
   };
 
   static deleteUser = async (
-    id: VovkParams<typeof UserController.updateUser>["id"],
+    id: VovkParams<typeof UserController.updateUser>['id'],
   ) => {
     // Even though we have `ON DELETE CASCADE`, we need to delete tasks explicitly to trigger DB events
     const tasksToDelete = await DatabaseService.prisma.task.findMany({
@@ -61,7 +62,7 @@ export default class UserService {
       {
         tasks: await Promise.all(
           tasksToDelete.map((t) =>
-            TaskService.deleteTask(t.id as TaskType["id"]),
+            TaskService.deleteTask(t.id as TaskType['id']),
           ),
         ),
       },

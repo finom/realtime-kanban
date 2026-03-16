@@ -1,12 +1,14 @@
-import type DatabasePollController from "./DatabasePollController";
-import { JSONLinesResponder, type VovkIteration } from "vovk";
-import { forEach, groupBy } from "lodash";
-import DatabaseEventsService, { type DBChange } from "./DatabaseEventsService";
-import DatabaseService from "./DatabaseService";
+import { forEach, groupBy } from 'lodash';
+import type { JSONLinesResponder, VovkIteration } from 'vovk';
+import DatabaseEventsService, { type DBChange } from './DatabaseEventsService';
+import type DatabasePollController from './DatabasePollController';
+import DatabaseService from './DatabaseService';
 
 export default class PollService {
   static poll(
-    responder: JSONLinesResponder<VovkIteration<typeof DatabasePollController.poll>>,
+    responder: JSONLinesResponder<
+      VovkIteration<typeof DatabasePollController.poll>
+    >,
   ) {
     setTimeout(() => responder.close(), 30_000);
 
@@ -17,9 +19,9 @@ export default class PollService {
     DatabaseEventsService.emitter.on(
       DatabaseEventsService.DB_KEY,
       (changes) => {
-        const deleted = changes.filter((change) => change.type === "delete");
+        const deleted = changes.filter((change) => change.type === 'delete');
         const createdOrUpdated = changes.filter(
-          (change) => change.type === "create" || change.type === "update",
+          (change) => change.type === 'create' || change.type === 'update',
         );
 
         for (const deletedEntity of deleted) {
@@ -30,7 +32,7 @@ export default class PollService {
           });
         }
         // group by entityType and date, so the date is maximum date for the given entity: { entityType: string, date: string }[]
-        forEach(groupBy(createdOrUpdated, "entityType"), (changes) => {
+        forEach(groupBy(createdOrUpdated, 'entityType'), (changes) => {
           const maxDateItem = changes.reduce(
             (max, change) => {
               const changeDate = new Date(change.date);
@@ -42,7 +44,7 @@ export default class PollService {
           );
 
           if (new Date(maxDateItem.date).getTime() > asOldAs.getTime()) {
-            void DatabaseService.prisma[maxDateItem.entityType as "user"]
+            void DatabaseService.prisma[maxDateItem.entityType as 'user']
               .findMany({
                 where: {
                   updatedAt: {

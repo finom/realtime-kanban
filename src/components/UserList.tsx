@@ -1,14 +1,14 @@
-"use client";
-import { useShallow } from "zustand/shallow";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import UserDialog from "./UserDialog";
-import useRegistry, { getEntitiesFromData } from "@/hooks/useRegistry";
-import { Button } from "./ui/button";
-import { Pencil, Plus } from "lucide-react";
-import { UserRPC } from "vovk-client";
-import { useQuery } from "@tanstack/react-query";
-import { UserType } from "@schemas/models/User.schema";
-import { isEmpty } from "lodash";
+'use client';
+import type { UserType } from '@schemas/models/User.schema';
+import { useQuery } from '@tanstack/react-query';
+import { isEmpty } from 'lodash';
+import { Pencil, Plus } from 'lucide-react';
+import { UserRPC } from 'vovk-client';
+import { useShallow } from 'zustand/shallow';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import useRegistry, { getEntitiesFromData } from '@/hooks/useRegistry';
+import UserDialog from './UserDialog';
+import { Button } from './ui/button';
 
 interface Props {
   initialData: UserType[];
@@ -67,7 +67,7 @@ const UserList = ({ initialData }: Props) => {
             </UserDialog>
 
             <span className="text-sm font-medium text-foreground flex flex-col">
-              {user.fullName}{" "}
+              {user.fullName}{' '}
               <span className="text-xs text-muted-foreground">
                 {user.email}
               </span>

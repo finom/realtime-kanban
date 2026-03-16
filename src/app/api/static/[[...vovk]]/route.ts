@@ -1,20 +1,20 @@
-import { initSegment, controllersToStaticParams, get, operation } from "vovk";
-import { openapi } from "vovk-client/openapi";
+import { controllersToStaticParams, get, initSegment, operation } from 'vovk';
+import { openapi } from 'vovk-client/openapi';
 
 class OpenApiController {
   @operation({
-    summary: "OpenAPI spec",
-    description: "Get the OpenAPI spec for the app API",
+    summary: 'OpenAPI spec',
+    description: 'Get the OpenAPI spec for the app API',
   })
-  @get("openapi.json")
+  @get('openapi.json')
   static getSpec = () => openapi;
 
   @operation({
-    summary: "Hello World",
-    description: "Get a hello world message",
+    summary: 'Hello World',
+    description: 'Get a hello world message',
   })
-  @get("hello.json")
-  static helloWorld = () => ({ message: "Hello, World!" });
+  @get('hello.json')
+  static helloWorld = () => ({ message: 'Hello, World!' });
 }
 
 const controllers = {
@@ -26,7 +26,7 @@ export function generateStaticParams() {
   return controllersToStaticParams(controllers);
 }
 export const { GET } = initSegment({
-  segmentName: "static",
+  segmentName: 'static',
   emitSchema: true,
   controllers,
 });

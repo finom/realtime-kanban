@@ -1,42 +1,44 @@
-import { EntityType } from "@prisma/client";
-import { create } from "zustand";
-import fastDeepEqual from "fast-deep-equal";
-import type { UserType } from "@schemas/models/User.schema";
-import type { TaskType } from "@schemas/models/Task.schema";
-import type { BaseEntity } from "../types";
+import { EntityType } from '@prisma/client';
+import type { TaskType } from '@schemas/models/Task.schema';
+import type { UserType } from '@schemas/models/User.schema';
+import fastDeepEqual from 'fast-deep-equal';
+import { create } from 'zustand';
+import type { BaseEntity } from '../types';
 
 interface Registry {
-  [EntityType.user]: Record<UserType["id"], UserType>;
-  [EntityType.task]: Record<TaskType["id"], TaskType>;
+  [EntityType.user]: Record<UserType['id'], UserType>;
+  [EntityType.task]: Record<TaskType['id'], TaskType>;
   parse: (data: unknown) => void;
 }
 
 export function getEntitiesFromData(
   data: unknown,
   entities: Partial<{
-    [key in EntityType]: Record<BaseEntity["id"], BaseEntity>;
+    [key in EntityType]: Record<BaseEntity['id'], BaseEntity>;
   }> = {},
   depth = 0,
 ) {
-  if (depth > 10) return entities as Partial<Omit<Registry, "parse">>;
+  if (depth > 10) return entities as Partial<Omit<Registry, 'parse'>>;
 
   if (Array.isArray(data)) {
-    data.forEach((item) => getEntitiesFromData(item, entities, depth + 1));
-  } else if (typeof data === "object" && data !== null) {
-    Object.values(data).forEach((value) =>
-      getEntitiesFromData(value, entities, depth + 1),
-    );
-    if ("entityType" in data && "id" in data) {
+    data.forEach((item) => {
+      getEntitiesFromData(item, entities, depth + 1);
+    });
+  } else if (typeof data === 'object' && data !== null) {
+    Object.values(data).forEach((value) => {
+      getEntitiesFromData(value, entities, depth + 1);
+    });
+    if ('entityType' in data && 'id' in data) {
       const entityType = data.entityType as EntityType;
       const id = (data as BaseEntity).id;
       entities[entityType] ??= {};
       entities[entityType][id] = data as BaseEntity;
     }
   }
-  return entities as Partial<Omit<Registry, "parse">>;
+  return entities as Partial<Omit<Registry, 'parse'>>;
 }
 
-const useRegistry = create<Registry>((set, get) => ({
+const useRegistry = create<Registry>((set) => ({
   [EntityType.user]: {},
   [EntityType.task]: {},
   parse: (data) => {
@@ -57,7 +59,7 @@ const useRegistry = create<Registry>((set, get) => ({
                 value,
                 configurable: true,
                 writable: false,
-                enumerable: !("__isDeleted" in entity),
+                enumerable: !('__isDeleted' in entity),
               } satisfies PropertyDescriptor)
             : descriptors[entity.id];
           areDescriptorsChanged ||= isCurrentChanged;

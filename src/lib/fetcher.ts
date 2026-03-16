@@ -1,5 +1,5 @@
-import { createFetcher, HttpStatus } from "vovk";
-import useRegistry from "@/hooks/useRegistry";
+import { createFetcher, HttpStatus } from 'vovk';
+import useRegistry from '@/hooks/useRegistry';
 
 export const fetcher = createFetcher<{ bypassRegistry?: boolean }>({
   transformResponse: async (data, { bypassRegistry }) => {
@@ -9,10 +9,10 @@ export const fetcher = createFetcher<{ bypassRegistry?: boolean }>({
     const state = useRegistry.getState();
     if (
       data &&
-      typeof data === "object" &&
+      typeof data === 'object' &&
       Symbol.asyncIterator in data &&
-      "onIterate" in data &&
-      typeof data.onIterate === "function"
+      'onIterate' in data &&
+      typeof data.onIterate === 'function'
     ) {
       data.onIterate(state.parse); // handle each item in the async iterable
       return data;
@@ -23,7 +23,7 @@ export const fetcher = createFetcher<{ bypassRegistry?: boolean }>({
   },
   onError: (error) => {
     if (error.statusCode === HttpStatus.UNAUTHORIZED) {
-      document.location.href = "/login";
+      document.location.href = '/login';
     }
   },
 });

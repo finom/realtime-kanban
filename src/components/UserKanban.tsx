@@ -1,35 +1,35 @@
-"use client";
-import { Card } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+'use client';
 import {
   DndContext,
-  rectIntersection,
-  useDraggable,
-  useDroppable,
-  MouseSensor,
-  TouchSensor,
-  useSensor,
-  useSensors,
   type DragEndEvent,
   type DragStartEvent,
-} from "@dnd-kit/core";
-import type { ReactNode } from "react";
-import { useMemo, useId, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
-import { Pencil, Plus, Trash2 } from "lucide-react";
-import { TaskRPC } from "vovk-client";
-import useRegistry, { getEntitiesFromData } from "@/hooks/useRegistry";
-import { useShallow } from "zustand/shallow";
-import { TaskStatus } from "@prisma/client";
-import { useQuery } from "@tanstack/react-query";
-import { TaskType } from "@schemas/models/Task.schema";
-import { isEmpty, pick } from "lodash";
-import TaskDialog from "./TaskDialog";
+  MouseSensor,
+  rectIntersection,
+  TouchSensor,
+  useDraggable,
+  useDroppable,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import { TaskStatus } from '@prisma/client';
+import type { TaskType } from '@schemas/models/Task.schema';
+import { useQuery } from '@tanstack/react-query';
+import { AnimatePresence, motion } from 'framer-motion';
+import { isEmpty, pick } from 'lodash';
+import { Pencil, Plus, Trash2 } from 'lucide-react';
+import type { ReactNode } from 'react';
+import { useId, useMemo, useState } from 'react';
+import { TaskRPC } from 'vovk-client';
+import { useShallow } from 'zustand/shallow';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import useRegistry, { getEntitiesFromData } from '@/hooks/useRegistry';
+import TaskDialog from './TaskDialog';
 
 // Utils function
 function cn(...classes: (string | undefined | null | boolean)[]): string {
-  return classes.filter(Boolean).join(" ");
+  return classes.filter(Boolean).join(' ');
 }
 
 export type Status = {
@@ -45,7 +45,7 @@ export type User = {
 };
 
 export type KanbanBoardProps = {
-  id: Status["id"];
+  id: Status['id'];
   children: ReactNode;
   className?: string;
 };
@@ -56,8 +56,8 @@ export const KanbanBoard = ({ id, children, className }: KanbanBoardProps) => {
   return (
     <div
       className={cn(
-        "flex h-full min-h-40 flex-1 flex-col gap-2 rounded-md border bg-secondary p-2 text-xs shadow-sm outline transition-all",
-        isOver ? "outline-primary" : "outline-transparent",
+        'flex h-full min-h-40 flex-1 flex-col gap-2 rounded-md border bg-secondary p-2 text-xs shadow-sm outline transition-all',
+        isOver ? 'outline-primary' : 'outline-transparent',
         className,
       )}
       ref={setNodeRef}
@@ -88,7 +88,7 @@ export const KanbanCard = ({
     });
   const assignee = useRegistry(
     useShallow((state) =>
-      pick(state.user[task.userId], ["email", "fullName", "imageUrl"]),
+      pick(state.user[task.userId], ['email', 'fullName', 'imageUrl']),
     ),
   );
   return (
@@ -108,18 +108,18 @@ export const KanbanCard = ({
             exit: { opacity: 0 }, // minimal exit when really removed (e.g. delete)
             transition: { duration: 0 },
           })}
-      className={cn(isDragging && "z-50")}
+      className={cn(isDragging && 'z-50')}
     >
       <Card
         className={cn(
-          "rounded-md p-3 shadow-sm",
-          isDragging && "cursor-grabbing",
+          'rounded-md p-3 shadow-sm',
+          isDragging && 'cursor-grabbing',
           className,
         )}
         style={{
           transform: transform
             ? `translateX(${transform.x}px) translateY(${transform.y}px)`
-            : "none",
+            : 'none',
         }}
         ref={setNodeRef}
       >
@@ -160,7 +160,7 @@ export const KanbanCard = ({
                     TaskRPC.deleteTask({
                       params: { id: task.id },
                     }).catch((error) => {
-                      console.error("Error deleting task:", error);
+                      console.error('Error deleting task:', error);
                     });
                   }}
                 >
@@ -191,24 +191,24 @@ export type KanbanCardsProps = {
 };
 
 export const KanbanCards = ({ children, className }: KanbanCardsProps) => (
-  <div className={cn("flex flex-1 flex-col gap-2", className)}>
+  <div className={cn('flex flex-1 flex-col gap-2', className)}>
     <AnimatePresence>{children}</AnimatePresence>
   </div>
 );
 
 export const KanbanHeader = ({ status }: { status: TaskStatus }) => {
   const statusConfig = {
-    [TaskStatus.TODO]: { name: "To Do", color: "#6B7280" },
+    [TaskStatus.TODO]: { name: 'To Do', color: '#6B7280' },
     [TaskStatus.IN_PROGRESS]: {
-      name: "In Progress",
-      color: "#F59E0B",
+      name: 'In Progress',
+      color: '#F59E0B',
     },
-    [TaskStatus.IN_REVIEW]: { name: "Review", color: "#8B5CF6" },
-    [TaskStatus.DONE]: { name: "Done", color: "#10B981" },
+    [TaskStatus.IN_REVIEW]: { name: 'Review', color: '#8B5CF6' },
+    [TaskStatus.DONE]: { name: 'Done', color: '#10B981' },
   };
 
   return (
-    <div className={cn("flex shrink-0 items-center gap-2")}>
+    <div className={cn('flex shrink-0 items-center gap-2')}>
       <div
         className="h-2 w-2 rounded-full"
         style={{ backgroundColor: statusConfig[status].color }}
@@ -259,7 +259,7 @@ export const KanbanProvider = ({
       onDragEnd={onDragEnd}
       id={id}
     >
-      <div className={cn("flex w-full gap-4", className)}>{children}</div>
+      <div className={cn('flex w-full gap-4', className)}>{children}</div>
     </DndContext>
   );
 };
@@ -310,7 +310,7 @@ const UserKanban = ({ initialData }: Props) => {
       setDraggingTaskId(null);
       return;
     }
-    const taskId = active.id as TaskType["id"];
+    const taskId = active.id as TaskType['id'];
     const task = tasks.find((t) => t.id === taskId);
     if (!task || task.status === targetStatus) {
       // no status change
@@ -336,7 +336,7 @@ const UserKanban = ({ initialData }: Props) => {
         });
       })
       .catch((error) => {
-        console.error("Error updating task:", error);
+        console.error('Error updating task:', error);
         // revert optimistic change
         setOptimisticStatus((prev) => ({ ...prev, [taskId]: previousStatus }));
         // cleanup revert after short delay to let registry resync
@@ -374,7 +374,7 @@ const UserKanban = ({ initialData }: Props) => {
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
-      <div className={cn("w-full space-y-6")}>
+      <div className={cn('w-full space-y-6')}>
         <div className="space-y-4">
           <h2 className="text-lg font-semibold text-foreground">Task Board</h2>
           <div className="flex gap-2 mb-4">

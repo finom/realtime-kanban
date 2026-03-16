@@ -24,8 +24,8 @@ const Floaty = ({
     <div className="fixed top-5 right-5 z-100">
       <div>
         <MoveUpRight className="absolute text-red-600 scale-150 -left-6 top-14" />
-        <div className="absolute text-red-600 -left-20 top-20 rotate-45 text-lg text-semibold">
-          Voice Here
+        <div className="absolute text-red-600 -left-18 top-20 rotate-45 text-lg text-semibold">
+          Voice AI
         </div>
       </div>
       <div className="relative flex items-center justify-center w-16 h-16">

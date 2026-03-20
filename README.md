@@ -9,6 +9,8 @@
   <br>
   <strong>Back-end Framework for Next.js App Router</strong>
   <br />
+  <em>One codebase → type-safe clients, OpenAPI, and AI tools</em>
+  <br />
   <a href="https://vovk.dev/">Documentation</a>
   &nbsp;&nbsp;
   <a href="https://vovk.dev/quick-install">Quick Start</a>
@@ -30,7 +32,6 @@ The project and its idea explained in the series of articles at [Vovk.ts documen
   <img width="100%" alt="vovk" src="https://vovk.dev/screenshots/kanban-light.png">
 </picture>
 
-
 ## See it in action
 
 ### AI agent managing the board via MCP
@@ -50,7 +51,6 @@ Multiple users edit the same board simultaneously — changes propagate in real 
 A built-in [text chat interface](https://vovk.dev/realtime-ui/text-ai) lets users manage cards through natural language, powered by OpenAI function calling.
 
 <img src="/.repo-assets/kanban_text_chat.gif" alt="Chat-driven board updates with function calling" className='mt-4' />
-
 
 ## More info
 

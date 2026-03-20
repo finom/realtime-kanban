@@ -1,18 +1,18 @@
-import { motion } from 'framer-motion';
-import React from 'react';
+import { motion } from "framer-motion";
+import React from "react";
 
 const loadingContainer = {
-  width: '2rem',
-  height: '2rem',
-  display: 'flex',
-  justifyContent: 'space-around',
+  width: "2rem",
+  height: "2rem",
+  display: "flex",
+  justifyContent: "space-around",
 };
 
 const loadingCircle = {
-  display: 'block',
-  width: '0.4rem',
-  height: '0.4rem',
-  borderRadius: '0.25rem',
+  display: "block",
+  width: "0.4rem",
+  height: "0.4rem",
+  borderRadius: "0.25rem",
 };
 
 const loadingContainerVariants = {
@@ -30,17 +30,17 @@ const loadingContainerVariants = {
 
 const loadingCircleVariants = {
   start: {
-    y: '50%',
+    y: "50%",
   },
   end: {
-    y: '150%',
+    y: "150%",
   },
 };
 
 const loadingCircleTransition = {
   duration: 0.5,
   yoyo: Infinity,
-  ease: 'easeInOut',
+  ease: "easeInOut",
 };
 
 interface ThreeDotsWaveProps {
@@ -48,7 +48,7 @@ interface ThreeDotsWaveProps {
 }
 
 export default function ThreeDotsWave({
-  colorVariable = '--card',
+  colorVariable = "--card",
 }: ThreeDotsWaveProps) {
   return (
     <motion.div

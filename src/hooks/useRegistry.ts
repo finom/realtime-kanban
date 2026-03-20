@@ -18,7 +18,8 @@ export function getEntitiesFromData(
   }> = {},
   depth = 0,
 ) {
-  if (depth > 10) return entities as Partial<Omit<Registry, 'parse'>>;
+  const MAX_DEPTH = 10;
+  if (depth > MAX_DEPTH) return entities as Partial<Omit<Registry, 'parse'>>;
 
   if (Array.isArray(data)) {
     data.forEach((item) => {

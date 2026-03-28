@@ -1,8 +1,9 @@
 import type { ToolUIPart, UIMessage } from 'ai';
 import { useEffect, useRef } from 'react';
-import useRegistry from '@/hooks/useRegistry';
+import { useRegistryStore } from '@/hooks/useRegistry';
 
 export default function useParseSDKToolCallOutputs(messages: UIMessage[]) {
+  const store = useRegistryStore();
   const parsedToolCallIdsSetRef = useRef<Set<string>>(new Set());
 
   useEffect(() => {
@@ -23,7 +24,7 @@ export default function useParseSDKToolCallOutputs(messages: UIMessage[]) {
     });
 
     if (partsToParse.length) {
-      useRegistry.getState().parse(partsToParse.map((part) => part.output));
+      store.getState().parse(partsToParse.map((part) => part.output));
     }
-  }, [messages]);
+  }, [messages, store]);
 }

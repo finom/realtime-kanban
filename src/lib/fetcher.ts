@@ -1,29 +1,28 @@
 import { createFetcher, HttpStatus } from 'vovk';
-import useRegistry from '@/hooks/useRegistry';
 
-export const fetcher = createFetcher<{ bypassRegistry?: boolean }>({
-  transformResponse: async (data, { bypassRegistry }) => {
-    if (bypassRegistry) {
-      return data;
-    }
-    const state = useRegistry.getState();
-    if (
-      data &&
-      typeof data === 'object' &&
-      Symbol.asyncIterator in data &&
-      'onIterate' in data &&
-      typeof data.onIterate === 'function'
-    ) {
-      data.onIterate(state.parse); // handle each item in the async iterable
-      return data;
-    }
+type OnSuccessHandler = (
+  data: unknown,
+  options: { bypassRegistry?: boolean },
+) => void | Promise<void>;
 
-    state.parse(data); // parse regular JSON data
-    return data;
+// TODO: Replace with built-in fetcher.onSuccess once supported by Vovk
+const onSuccessHandlers: OnSuccessHandler[] = [];
+
+const _fetcher = createFetcher<{ bypassRegistry?: boolean }>({
+  onSuccess: async (data, options) => {
+    for (const handler of onSuccessHandlers) {
+      handler(data, options);
+    }
   },
   onError: (error) => {
     if (error.statusCode === HttpStatus.UNAUTHORIZED) {
       document.location.href = '/login';
     }
+  },
+});
+
+export const fetcher = Object.assign(_fetcher, {
+  onSuccess: (handler: OnSuccessHandler) => {
+    onSuccessHandlers.push(handler);
   },
 });

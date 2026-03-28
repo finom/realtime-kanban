@@ -28,29 +28,39 @@
                     "type": "string",
                     "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
                     "description": "Timestamp when the user was created",
-                    "examples": ["2023-01-01T00:00:00.000Z"]
+                    "examples": [
+                      "2023-01-01T00:00:00.000Z"
+                    ]
                   },
                   "updatedAt": {
                     "type": "string",
                     "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
                     "description": "Timestamp when the user was last updated",
-                    "examples": ["2023-01-01T00:00:00.000Z"]
+                    "examples": [
+                      "2023-01-01T00:00:00.000Z"
+                    ]
                   },
                   "fullName": {
                     "type": "string",
-                    "examples": ["John Doe"],
+                    "examples": [
+                      "John Doe"
+                    ],
                     "description": "Full name of the user"
                   },
                   "email": {
                     "type": "string",
-                    "examples": ["john.doe@example.com"],
+                    "examples": [
+                      "john.doe@example.com"
+                    ],
                     "description": "Email address of the user"
                   },
                   "imageUrl": {
                     "anyOf": [
                       {
                         "type": "string",
-                        "examples": ["https://example.com/image.jpg"],
+                        "examples": [
+                          "https://example.com/image.jpg"
+                        ],
                         "description": "Profile image URL of the user"
                       },
                       {
@@ -89,10 +99,15 @@
                 "search": {
                   "type": "string",
                   "description": "Search term for users",
-                  "examples": ["john.doe", "Jane"]
+                  "examples": [
+                    "john.doe",
+                    "Jane"
+                  ]
                 }
               },
-              "required": ["search"]
+              "required": [
+                "search"
+              ]
             },
             "output": {
               "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -111,29 +126,39 @@
                     "type": "string",
                     "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
                     "description": "Timestamp when the user was created",
-                    "examples": ["2023-01-01T00:00:00.000Z"]
+                    "examples": [
+                      "2023-01-01T00:00:00.000Z"
+                    ]
                   },
                   "updatedAt": {
                     "type": "string",
                     "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
                     "description": "Timestamp when the user was last updated",
-                    "examples": ["2023-01-01T00:00:00.000Z"]
+                    "examples": [
+                      "2023-01-01T00:00:00.000Z"
+                    ]
                   },
                   "fullName": {
                     "type": "string",
-                    "examples": ["John Doe"],
+                    "examples": [
+                      "John Doe"
+                    ],
                     "description": "Full name of the user"
                   },
                   "email": {
                     "type": "string",
-                    "examples": ["john.doe@example.com"],
+                    "examples": [
+                      "john.doe@example.com"
+                    ],
                     "description": "Email address of the user"
                   },
                   "imageUrl": {
                     "anyOf": [
                       {
                         "type": "string",
-                        "examples": ["https://example.com/image.jpg"],
+                        "examples": [
+                          "https://example.com/image.jpg"
+                        ],
                         "description": "Profile image URL of the user"
                       },
                       {
@@ -168,19 +193,25 @@
               "properties": {
                 "fullName": {
                   "type": "string",
-                  "examples": ["John Doe"],
+                  "examples": [
+                    "John Doe"
+                  ],
                   "description": "Full name of the user"
                 },
                 "email": {
                   "type": "string",
-                  "examples": ["john.doe@example.com"],
+                  "examples": [
+                    "john.doe@example.com"
+                  ],
                   "description": "Email address of the user"
                 },
                 "imageUrl": {
                   "anyOf": [
                     {
                       "type": "string",
-                      "examples": ["https://example.com/image.jpg"],
+                      "examples": [
+                        "https://example.com/image.jpg"
+                      ],
                       "description": "Profile image URL of the user"
                     },
                     {
@@ -189,7 +220,10 @@
                   ]
                 }
               },
-              "required": ["fullName", "email"]
+              "required": [
+                "fullName",
+                "email"
+              ]
             },
             "output": {
               "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -206,29 +240,39 @@
                   "type": "string",
                   "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
                   "description": "Timestamp when the user was created",
-                  "examples": ["2023-01-01T00:00:00.000Z"]
+                  "examples": [
+                    "2023-01-01T00:00:00.000Z"
+                  ]
                 },
                 "updatedAt": {
                   "type": "string",
                   "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
                   "description": "Timestamp when the user was last updated",
-                  "examples": ["2023-01-01T00:00:00.000Z"]
+                  "examples": [
+                    "2023-01-01T00:00:00.000Z"
+                  ]
                 },
                 "fullName": {
                   "type": "string",
-                  "examples": ["John Doe"],
+                  "examples": [
+                    "John Doe"
+                  ],
                   "description": "Full name of the user"
                 },
                 "email": {
                   "type": "string",
-                  "examples": ["john.doe@example.com"],
+                  "examples": [
+                    "john.doe@example.com"
+                  ],
                   "description": "Email address of the user"
                 },
                 "imageUrl": {
                   "anyOf": [
                     {
                       "type": "string",
-                      "examples": ["https://example.com/image.jpg"],
+                      "examples": [
+                        "https://example.com/image.jpg"
+                      ],
                       "description": "Profile image URL of the user"
                     },
                     {
@@ -262,19 +306,25 @@
               "properties": {
                 "fullName": {
                   "type": "string",
-                  "examples": ["John Doe"],
+                  "examples": [
+                    "John Doe"
+                  ],
                   "description": "Full name of the user"
                 },
                 "email": {
                   "type": "string",
-                  "examples": ["john.doe@example.com"],
+                  "examples": [
+                    "john.doe@example.com"
+                  ],
                   "description": "Email address of the user"
                 },
                 "imageUrl": {
                   "anyOf": [
                     {
                       "type": "string",
-                      "examples": ["https://example.com/image.jpg"],
+                      "examples": [
+                        "https://example.com/image.jpg"
+                      ],
                       "description": "Profile image URL of the user"
                     },
                     {
@@ -292,7 +342,9 @@
                   "type": "string"
                 }
               },
-              "required": ["id"]
+              "required": [
+                "id"
+              ]
             },
             "output": {
               "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -309,29 +361,39 @@
                   "type": "string",
                   "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
                   "description": "Timestamp when the user was created",
-                  "examples": ["2023-01-01T00:00:00.000Z"]
+                  "examples": [
+                    "2023-01-01T00:00:00.000Z"
+                  ]
                 },
                 "updatedAt": {
                   "type": "string",
                   "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
                   "description": "Timestamp when the user was last updated",
-                  "examples": ["2023-01-01T00:00:00.000Z"]
+                  "examples": [
+                    "2023-01-01T00:00:00.000Z"
+                  ]
                 },
                 "fullName": {
                   "type": "string",
-                  "examples": ["John Doe"],
+                  "examples": [
+                    "John Doe"
+                  ],
                   "description": "Full name of the user"
                 },
                 "email": {
                   "type": "string",
-                  "examples": ["john.doe@example.com"],
+                  "examples": [
+                    "john.doe@example.com"
+                  ],
                   "description": "Email address of the user"
                 },
                 "imageUrl": {
                   "anyOf": [
                     {
                       "type": "string",
-                      "examples": ["https://example.com/image.jpg"],
+                      "examples": [
+                        "https://example.com/image.jpg"
+                      ],
                       "description": "Profile image URL of the user"
                     },
                     {
@@ -367,7 +429,9 @@
                   "type": "string"
                 }
               },
-              "required": ["id"]
+              "required": [
+                "id"
+              ]
             },
             "output": {
               "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -384,29 +448,39 @@
                   "type": "string",
                   "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
                   "description": "Timestamp when the user was created",
-                  "examples": ["2023-01-01T00:00:00.000Z"]
+                  "examples": [
+                    "2023-01-01T00:00:00.000Z"
+                  ]
                 },
                 "updatedAt": {
                   "type": "string",
                   "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
                   "description": "Timestamp when the user was last updated",
-                  "examples": ["2023-01-01T00:00:00.000Z"]
+                  "examples": [
+                    "2023-01-01T00:00:00.000Z"
+                  ]
                 },
                 "fullName": {
                   "type": "string",
-                  "examples": ["John Doe"],
+                  "examples": [
+                    "John Doe"
+                  ],
                   "description": "Full name of the user"
                 },
                 "email": {
                   "type": "string",
-                  "examples": ["john.doe@example.com"],
+                  "examples": [
+                    "john.doe@example.com"
+                  ],
                   "description": "Email address of the user"
                 },
                 "imageUrl": {
                   "anyOf": [
                     {
                       "type": "string",
-                      "examples": ["https://example.com/image.jpg"],
+                      "examples": [
+                        "https://example.com/image.jpg"
+                      ],
                       "description": "Profile image URL of the user"
                     },
                     {
@@ -434,34 +508,51 @@
                         "type": "string",
                         "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
                         "description": "Timestamp when the task was created",
-                        "examples": ["2023-01-01T00:00:00.000Z"]
+                        "examples": [
+                          "2023-01-01T00:00:00.000Z"
+                        ]
                       },
                       "updatedAt": {
                         "type": "string",
                         "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
                         "description": "Timestamp when the task was last updated",
-                        "examples": ["2023-01-01T00:00:00.000Z"]
+                        "examples": [
+                          "2023-01-01T00:00:00.000Z"
+                        ]
                       },
                       "title": {
                         "type": "string",
-                        "examples": ["Implement authentication"],
+                        "examples": [
+                          "Implement authentication"
+                        ],
                         "description": "Title of the task"
                       },
                       "description": {
                         "type": "string",
-                        "examples": ["Implement user authentication using JWT"],
+                        "examples": [
+                          "Implement user authentication using JWT"
+                        ],
                         "description": "Description of the task"
                       },
                       "status": {
                         "default": "TODO",
                         "type": "string",
-                        "enum": ["TODO", "IN_PROGRESS", "IN_REVIEW", "DONE"],
-                        "examples": ["TODO"],
+                        "enum": [
+                          "TODO",
+                          "IN_PROGRESS",
+                          "IN_REVIEW",
+                          "DONE"
+                        ],
+                        "examples": [
+                          "TODO"
+                        ],
                         "description": "Status of the task"
                       },
                       "userId": {
                         "type": "string",
-                        "examples": ["a3bb189e-8bf9-3888-9912-ace4e6543002"],
+                        "examples": [
+                          "a3bb189e-8bf9-3888-9912-ace4e6543002"
+                        ],
                         "description": "ID of the user who owns the task"
                       },
                       "__isDeleted": {
@@ -469,11 +560,16 @@
                         "const": true
                       }
                     },
-                    "required": ["__isDeleted"]
+                    "required": [
+                      "__isDeleted"
+                    ]
                   }
                 }
               },
-              "required": ["__isDeleted", "tasks"]
+              "required": [
+                "__isDeleted",
+                "tasks"
+              ]
             }
           },
           "operationObject": {
@@ -509,34 +605,51 @@
                     "type": "string",
                     "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
                     "description": "Timestamp when the task was created",
-                    "examples": ["2023-01-01T00:00:00.000Z"]
+                    "examples": [
+                      "2023-01-01T00:00:00.000Z"
+                    ]
                   },
                   "updatedAt": {
                     "type": "string",
                     "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
                     "description": "Timestamp when the task was last updated",
-                    "examples": ["2023-01-01T00:00:00.000Z"]
+                    "examples": [
+                      "2023-01-01T00:00:00.000Z"
+                    ]
                   },
                   "title": {
                     "type": "string",
-                    "examples": ["Implement authentication"],
+                    "examples": [
+                      "Implement authentication"
+                    ],
                     "description": "Title of the task"
                   },
                   "description": {
                     "type": "string",
-                    "examples": ["Implement user authentication using JWT"],
+                    "examples": [
+                      "Implement user authentication using JWT"
+                    ],
                     "description": "Description of the task"
                   },
                   "status": {
                     "default": "TODO",
                     "type": "string",
-                    "enum": ["TODO", "IN_PROGRESS", "IN_REVIEW", "DONE"],
-                    "examples": ["TODO"],
+                    "enum": [
+                      "TODO",
+                      "IN_PROGRESS",
+                      "IN_REVIEW",
+                      "DONE"
+                    ],
+                    "examples": [
+                      "TODO"
+                    ],
                     "description": "Status of the task"
                   },
                   "userId": {
                     "type": "string",
-                    "examples": ["a3bb189e-8bf9-3888-9912-ace4e6543002"],
+                    "examples": [
+                      "a3bb189e-8bf9-3888-9912-ace4e6543002"
+                    ],
                     "description": "ID of the user who owns the task"
                   }
                 },
@@ -571,10 +684,15 @@
                 "search": {
                   "type": "string",
                   "description": "Search term for tasks",
-                  "examples": ["bug", "feature"]
+                  "examples": [
+                    "bug",
+                    "feature"
+                  ]
                 }
               },
-              "required": ["search"]
+              "required": [
+                "search"
+              ]
             },
             "output": {
               "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -593,34 +711,51 @@
                     "type": "string",
                     "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
                     "description": "Timestamp when the task was created",
-                    "examples": ["2023-01-01T00:00:00.000Z"]
+                    "examples": [
+                      "2023-01-01T00:00:00.000Z"
+                    ]
                   },
                   "updatedAt": {
                     "type": "string",
                     "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
                     "description": "Timestamp when the task was last updated",
-                    "examples": ["2023-01-01T00:00:00.000Z"]
+                    "examples": [
+                      "2023-01-01T00:00:00.000Z"
+                    ]
                   },
                   "title": {
                     "type": "string",
-                    "examples": ["Implement authentication"],
+                    "examples": [
+                      "Implement authentication"
+                    ],
                     "description": "Title of the task"
                   },
                   "description": {
                     "type": "string",
-                    "examples": ["Implement user authentication using JWT"],
+                    "examples": [
+                      "Implement user authentication using JWT"
+                    ],
                     "description": "Description of the task"
                   },
                   "status": {
                     "default": "TODO",
                     "type": "string",
-                    "enum": ["TODO", "IN_PROGRESS", "IN_REVIEW", "DONE"],
-                    "examples": ["TODO"],
+                    "enum": [
+                      "TODO",
+                      "IN_PROGRESS",
+                      "IN_REVIEW",
+                      "DONE"
+                    ],
+                    "examples": [
+                      "TODO"
+                    ],
                     "description": "Status of the task"
                   },
                   "userId": {
                     "type": "string",
-                    "examples": ["a3bb189e-8bf9-3888-9912-ace4e6543002"],
+                    "examples": [
+                      "a3bb189e-8bf9-3888-9912-ace4e6543002"
+                    ],
                     "description": "ID of the user who owns the task"
                   }
                 },
@@ -653,7 +788,9 @@
                   "type": "string"
                 }
               },
-              "required": ["userId"]
+              "required": [
+                "userId"
+              ]
             },
             "output": {
               "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -672,34 +809,51 @@
                     "type": "string",
                     "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
                     "description": "Timestamp when the task was created",
-                    "examples": ["2023-01-01T00:00:00.000Z"]
+                    "examples": [
+                      "2023-01-01T00:00:00.000Z"
+                    ]
                   },
                   "updatedAt": {
                     "type": "string",
                     "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
                     "description": "Timestamp when the task was last updated",
-                    "examples": ["2023-01-01T00:00:00.000Z"]
+                    "examples": [
+                      "2023-01-01T00:00:00.000Z"
+                    ]
                   },
                   "title": {
                     "type": "string",
-                    "examples": ["Implement authentication"],
+                    "examples": [
+                      "Implement authentication"
+                    ],
                     "description": "Title of the task"
                   },
                   "description": {
                     "type": "string",
-                    "examples": ["Implement user authentication using JWT"],
+                    "examples": [
+                      "Implement user authentication using JWT"
+                    ],
                     "description": "Description of the task"
                   },
                   "status": {
                     "default": "TODO",
                     "type": "string",
-                    "enum": ["TODO", "IN_PROGRESS", "IN_REVIEW", "DONE"],
-                    "examples": ["TODO"],
+                    "enum": [
+                      "TODO",
+                      "IN_PROGRESS",
+                      "IN_REVIEW",
+                      "DONE"
+                    ],
+                    "examples": [
+                      "TODO"
+                    ],
                     "description": "Status of the task"
                   },
                   "userId": {
                     "type": "string",
-                    "examples": ["a3bb189e-8bf9-3888-9912-ace4e6543002"],
+                    "examples": [
+                      "a3bb189e-8bf9-3888-9912-ace4e6543002"
+                    ],
                     "description": "ID of the user who owns the task"
                   }
                 },
@@ -730,28 +884,45 @@
               "properties": {
                 "title": {
                   "type": "string",
-                  "examples": ["Implement authentication"],
+                  "examples": [
+                    "Implement authentication"
+                  ],
                   "description": "Title of the task"
                 },
                 "description": {
                   "type": "string",
-                  "examples": ["Implement user authentication using JWT"],
+                  "examples": [
+                    "Implement user authentication using JWT"
+                  ],
                   "description": "Description of the task"
                 },
                 "status": {
                   "default": "TODO",
                   "type": "string",
-                  "enum": ["TODO", "IN_PROGRESS", "IN_REVIEW", "DONE"],
-                  "examples": ["TODO"],
+                  "enum": [
+                    "TODO",
+                    "IN_PROGRESS",
+                    "IN_REVIEW",
+                    "DONE"
+                  ],
+                  "examples": [
+                    "TODO"
+                  ],
                   "description": "Status of the task"
                 },
                 "userId": {
                   "type": "string",
-                  "examples": ["a3bb189e-8bf9-3888-9912-ace4e6543002"],
+                  "examples": [
+                    "a3bb189e-8bf9-3888-9912-ace4e6543002"
+                  ],
                   "description": "ID of the user who owns the task"
                 }
               },
-              "required": ["title", "description", "userId"]
+              "required": [
+                "title",
+                "description",
+                "userId"
+              ]
             },
             "output": {
               "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -768,34 +939,51 @@
                   "type": "string",
                   "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
                   "description": "Timestamp when the task was created",
-                  "examples": ["2023-01-01T00:00:00.000Z"]
+                  "examples": [
+                    "2023-01-01T00:00:00.000Z"
+                  ]
                 },
                 "updatedAt": {
                   "type": "string",
                   "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
                   "description": "Timestamp when the task was last updated",
-                  "examples": ["2023-01-01T00:00:00.000Z"]
+                  "examples": [
+                    "2023-01-01T00:00:00.000Z"
+                  ]
                 },
                 "title": {
                   "type": "string",
-                  "examples": ["Implement authentication"],
+                  "examples": [
+                    "Implement authentication"
+                  ],
                   "description": "Title of the task"
                 },
                 "description": {
                   "type": "string",
-                  "examples": ["Implement user authentication using JWT"],
+                  "examples": [
+                    "Implement user authentication using JWT"
+                  ],
                   "description": "Description of the task"
                 },
                 "status": {
                   "default": "TODO",
                   "type": "string",
-                  "enum": ["TODO", "IN_PROGRESS", "IN_REVIEW", "DONE"],
-                  "examples": ["TODO"],
+                  "enum": [
+                    "TODO",
+                    "IN_PROGRESS",
+                    "IN_REVIEW",
+                    "DONE"
+                  ],
+                  "examples": [
+                    "TODO"
+                  ],
                   "description": "Status of the task"
                 },
                 "userId": {
                   "type": "string",
-                  "examples": ["a3bb189e-8bf9-3888-9912-ace4e6543002"],
+                  "examples": [
+                    "a3bb189e-8bf9-3888-9912-ace4e6543002"
+                  ],
                   "description": "ID of the user who owns the task"
                 }
               },
@@ -825,24 +1013,37 @@
               "properties": {
                 "title": {
                   "type": "string",
-                  "examples": ["Implement authentication"],
+                  "examples": [
+                    "Implement authentication"
+                  ],
                   "description": "Title of the task"
                 },
                 "description": {
                   "type": "string",
-                  "examples": ["Implement user authentication using JWT"],
+                  "examples": [
+                    "Implement user authentication using JWT"
+                  ],
                   "description": "Description of the task"
                 },
                 "status": {
                   "default": "TODO",
                   "type": "string",
-                  "enum": ["TODO", "IN_PROGRESS", "IN_REVIEW", "DONE"],
-                  "examples": ["TODO"],
+                  "enum": [
+                    "TODO",
+                    "IN_PROGRESS",
+                    "IN_REVIEW",
+                    "DONE"
+                  ],
+                  "examples": [
+                    "TODO"
+                  ],
                   "description": "Status of the task"
                 },
                 "userId": {
                   "type": "string",
-                  "examples": ["a3bb189e-8bf9-3888-9912-ace4e6543002"],
+                  "examples": [
+                    "a3bb189e-8bf9-3888-9912-ace4e6543002"
+                  ],
                   "description": "ID of the user who owns the task"
                 }
               }
@@ -855,7 +1056,9 @@
                   "type": "string"
                 }
               },
-              "required": ["id"]
+              "required": [
+                "id"
+              ]
             },
             "output": {
               "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -872,34 +1075,51 @@
                   "type": "string",
                   "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
                   "description": "Timestamp when the task was created",
-                  "examples": ["2023-01-01T00:00:00.000Z"]
+                  "examples": [
+                    "2023-01-01T00:00:00.000Z"
+                  ]
                 },
                 "updatedAt": {
                   "type": "string",
                   "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
                   "description": "Timestamp when the task was last updated",
-                  "examples": ["2023-01-01T00:00:00.000Z"]
+                  "examples": [
+                    "2023-01-01T00:00:00.000Z"
+                  ]
                 },
                 "title": {
                   "type": "string",
-                  "examples": ["Implement authentication"],
+                  "examples": [
+                    "Implement authentication"
+                  ],
                   "description": "Title of the task"
                 },
                 "description": {
                   "type": "string",
-                  "examples": ["Implement user authentication using JWT"],
+                  "examples": [
+                    "Implement user authentication using JWT"
+                  ],
                   "description": "Description of the task"
                 },
                 "status": {
                   "default": "TODO",
                   "type": "string",
-                  "enum": ["TODO", "IN_PROGRESS", "IN_REVIEW", "DONE"],
-                  "examples": ["TODO"],
+                  "enum": [
+                    "TODO",
+                    "IN_PROGRESS",
+                    "IN_REVIEW",
+                    "DONE"
+                  ],
+                  "examples": [
+                    "TODO"
+                  ],
                   "description": "Status of the task"
                 },
                 "userId": {
                   "type": "string",
-                  "examples": ["a3bb189e-8bf9-3888-9912-ace4e6543002"],
+                  "examples": [
+                    "a3bb189e-8bf9-3888-9912-ace4e6543002"
+                  ],
                   "description": "ID of the user who owns the task"
                 }
               },
@@ -931,7 +1151,9 @@
                   "type": "string"
                 }
               },
-              "required": ["id"]
+              "required": [
+                "id"
+              ]
             },
             "output": {
               "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -948,34 +1170,51 @@
                   "type": "string",
                   "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
                   "description": "Timestamp when the task was created",
-                  "examples": ["2023-01-01T00:00:00.000Z"]
+                  "examples": [
+                    "2023-01-01T00:00:00.000Z"
+                  ]
                 },
                 "updatedAt": {
                   "type": "string",
                   "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
                   "description": "Timestamp when the task was last updated",
-                  "examples": ["2023-01-01T00:00:00.000Z"]
+                  "examples": [
+                    "2023-01-01T00:00:00.000Z"
+                  ]
                 },
                 "title": {
                   "type": "string",
-                  "examples": ["Implement authentication"],
+                  "examples": [
+                    "Implement authentication"
+                  ],
                   "description": "Title of the task"
                 },
                 "description": {
                   "type": "string",
-                  "examples": ["Implement user authentication using JWT"],
+                  "examples": [
+                    "Implement user authentication using JWT"
+                  ],
                   "description": "Description of the task"
                 },
                 "status": {
                   "default": "TODO",
                   "type": "string",
-                  "enum": ["TODO", "IN_PROGRESS", "IN_REVIEW", "DONE"],
-                  "examples": ["TODO"],
+                  "enum": [
+                    "TODO",
+                    "IN_PROGRESS",
+                    "IN_REVIEW",
+                    "DONE"
+                  ],
+                  "examples": [
+                    "TODO"
+                  ],
                   "description": "Status of the task"
                 },
                 "userId": {
                   "type": "string",
-                  "examples": ["a3bb189e-8bf9-3888-9912-ace4e6543002"],
+                  "examples": [
+                    "a3bb189e-8bf9-3888-9912-ace4e6543002"
+                  ],
                   "description": "ID of the user who owns the task"
                 },
                 "__isDeleted": {
@@ -983,7 +1222,9 @@
                   "const": true
                 }
               },
-              "required": ["__isDeleted"]
+              "required": [
+                "__isDeleted"
+              ]
             }
           },
           "operationObject": {
@@ -1010,7 +1251,9 @@
                   "type": "string"
                 }
               },
-              "required": ["sdp"]
+              "required": [
+                "sdp"
+              ]
             },
             "query": {
               "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -1018,10 +1261,18 @@
               "properties": {
                 "voice": {
                   "type": "string",
-                  "enum": ["ash", "ballad", "coral", "sage", "verse"]
+                  "enum": [
+                    "ash",
+                    "ballad",
+                    "coral",
+                    "sage",
+                    "verse"
+                  ]
                 }
               },
-              "required": ["voice"]
+              "required": [
+                "voice"
+              ]
             },
             "output": {
               "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -1031,7 +1282,9 @@
                   "type": "string"
                 }
               },
-              "required": ["sdp"]
+              "required": [
+                "sdp"
+              ]
             }
           },
           "path": "session",
@@ -1059,13 +1312,19 @@
                     },
                     "entityType": {
                       "type": "string",
-                      "enum": ["user", "task"]
+                      "enum": [
+                        "user",
+                        "task"
+                      ]
                     },
                     "__isDeleted": {
                       "type": "boolean"
                     }
                   },
-                  "required": ["id", "entityType"]
+                  "required": [
+                    "id",
+                    "entityType"
+                  ]
                 },
                 {
                   "type": "object",
@@ -1081,29 +1340,39 @@
                       "type": "string",
                       "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
                       "description": "Timestamp when the user was created",
-                      "examples": ["2023-01-01T00:00:00.000Z"]
+                      "examples": [
+                        "2023-01-01T00:00:00.000Z"
+                      ]
                     },
                     "updatedAt": {
                       "type": "string",
                       "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
                       "description": "Timestamp when the user was last updated",
-                      "examples": ["2023-01-01T00:00:00.000Z"]
+                      "examples": [
+                        "2023-01-01T00:00:00.000Z"
+                      ]
                     },
                     "fullName": {
                       "type": "string",
-                      "examples": ["John Doe"],
+                      "examples": [
+                        "John Doe"
+                      ],
                       "description": "Full name of the user"
                     },
                     "email": {
                       "type": "string",
-                      "examples": ["john.doe@example.com"],
+                      "examples": [
+                        "john.doe@example.com"
+                      ],
                       "description": "Email address of the user"
                     },
                     "imageUrl": {
                       "anyOf": [
                         {
                           "type": "string",
-                          "examples": ["https://example.com/image.jpg"],
+                          "examples": [
+                            "https://example.com/image.jpg"
+                          ],
                           "description": "Profile image URL of the user"
                         },
                         {
@@ -1135,34 +1404,51 @@
                       "type": "string",
                       "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
                       "description": "Timestamp when the task was created",
-                      "examples": ["2023-01-01T00:00:00.000Z"]
+                      "examples": [
+                        "2023-01-01T00:00:00.000Z"
+                      ]
                     },
                     "updatedAt": {
                       "type": "string",
                       "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
                       "description": "Timestamp when the task was last updated",
-                      "examples": ["2023-01-01T00:00:00.000Z"]
+                      "examples": [
+                        "2023-01-01T00:00:00.000Z"
+                      ]
                     },
                     "title": {
                       "type": "string",
-                      "examples": ["Implement authentication"],
+                      "examples": [
+                        "Implement authentication"
+                      ],
                       "description": "Title of the task"
                     },
                     "description": {
                       "type": "string",
-                      "examples": ["Implement user authentication using JWT"],
+                      "examples": [
+                        "Implement user authentication using JWT"
+                      ],
                       "description": "Description of the task"
                     },
                     "status": {
                       "default": "TODO",
                       "type": "string",
-                      "enum": ["TODO", "IN_PROGRESS", "IN_REVIEW", "DONE"],
-                      "examples": ["TODO"],
+                      "enum": [
+                        "TODO",
+                        "IN_PROGRESS",
+                        "IN_REVIEW",
+                        "DONE"
+                      ],
+                      "examples": [
+                        "TODO"
+                      ],
                       "description": "Status of the task"
                     },
                     "userId": {
                       "type": "string",
-                      "examples": ["a3bb189e-8bf9-3888-9912-ace4e6543002"],
+                      "examples": [
+                        "a3bb189e-8bf9-3888-9912-ace4e6543002"
+                      ],
                       "description": "ID of the user who owns the task"
                     }
                   },

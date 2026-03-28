@@ -20,7 +20,7 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import useRegistry from '@/hooks/useRegistry';
+import { useRegistry } from '@/hooks/useRegistry';
 import { cn } from '@/lib/utils';
 import {
   Select,

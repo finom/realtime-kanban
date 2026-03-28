@@ -15,7 +15,7 @@ import { TaskStatus } from '@prisma/client';
 import type { TaskType } from '@schemas/models/Task.schema';
 import { useQuery } from '@tanstack/react-query';
 import { AnimatePresence, motion } from 'framer-motion';
-import { isEmpty, pick } from 'lodash';
+import { pick } from 'lodash';
 import { Pencil, Plus, Trash2 } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useId, useMemo, useState } from 'react';
@@ -24,7 +24,7 @@ import { useShallow } from 'zustand/shallow';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import useRegistry, { getEntitiesFromData } from '@/hooks/useRegistry';
+import { useRegistry } from '@/hooks/useRegistry';
 import TaskDialog from './TaskDialog';
 
 // Utils function
@@ -264,24 +264,8 @@ export const KanbanProvider = ({
   );
 };
 
-interface Props {
-  initialData: TaskType[];
-}
-
-const UserKanban = ({ initialData }: Props) => {
-  // Note: Renders 3 times
-  // 1. Initial render (no data in registry)
-  // 2. After HydrateRegistry (see page.tsx) parses initial data
-  // 3. After useQuery fetches fresh data
-  const tasks = useRegistry(
-    useShallow((state) =>
-      Object.values(
-        isEmpty(state.task)
-          ? (getEntitiesFromData(initialData).task ?? {})
-          : state.task,
-      ),
-    ),
-  );
+const UserKanban = () => {
+  const tasks = useRegistry(useShallow((state) => Object.values(state.task)));
 
   useQuery({
     queryKey: TaskRPC.getTasks.queryKey(),

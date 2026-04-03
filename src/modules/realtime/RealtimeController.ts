@@ -13,7 +13,7 @@ export default class RealtimeController {
     body: z.object({ sdp: z.string() }),
     output: z.object({ sdp: z.string() }),
   }).handle(async ({ vovk }) => {
-    const voice = vovk.query().voice;
+    const { voice } = vovk.query();
     const { sdp: sdpOffer } = await vovk.body();
     const sessionConfig = JSON.stringify({
       type: 'realtime',

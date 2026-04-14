@@ -19,38 +19,13 @@ export const parseScope = (key: string) => {
 };
 
 /**
- * Collect all descendant IDs of a given chunk (not including the chunk itself)
- * by walking its children array recursively.
- */
-function collectDescendantIds(
-  id: string,
-  map: Record<string, ChunkComponent>,
-): Set<string> {
-  const result = new Set<string>();
-  const stack = [id];
-  while (stack.length > 0) {
-    const current = stack.pop()!;
-    const chunk = map[current];
-    if (chunk?.children) {
-      for (const childId of chunk.children) {
-        if (!result.has(childId)) {
-          result.add(childId);
-          stack.push(childId);
-        }
-      }
-    }
-  }
-  return result;
-}
-
-/**
  * Build an elements-by-id map from the NDJSON lines array.
  *
- * When a chunk with a duplicate id is encountered (i.e. the LLM re-emits a
- * chunk to correct a mistake), all old descendants of that chunk are removed
- * from the map before inserting the replacement. This lets the LLM fix a
- * subtree by re-emitting just the broken chunk and its new children, without
- * regenerating the entire tree.
+ * When a chunk with a duplicate id is encountered (i.e. the LLM re-emits
+ * a chunk to add children), new children are **appended** to the existing
+ * element's children list while all other properties use last-write-wins.
+ * This preserves previously streamed subtrees when the LLM re-emits a
+ * parent to attach additional children.
  */
 export function buildElementsById(
   lines: ChunkComponent[],
@@ -58,14 +33,19 @@ export function buildElementsById(
   const map: Record<string, ChunkComponent> = {};
 
   for (const line of lines) {
-    if (map[line.id]) {
-      // Chunk already exists — remove all its old descendants before replacing
-      const oldDescendants = collectDescendantIds(line.id, map);
-      for (const descId of oldDescendants) {
-        delete map[descId];
+    const existing = map[line.id];
+    if (existing?.children && line.children) {
+      const seen = new Set(existing.children);
+      const merged = [...existing.children];
+      for (const child of line.children) {
+        if (!seen.has(child)) {
+          merged.push(child);
+        }
       }
+      map[line.id] = { ...line, children: merged };
+    } else {
+      map[line.id] = line;
     }
-    map[line.id] = line;
   }
 
   return map;

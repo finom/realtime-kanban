@@ -19,8 +19,7 @@ export default class TaskController {
   @sessionGuard()
   static getTasks = procedure({
     output: TaskSchema.array(),
-    handle: TaskService.getTasks,
-  });
+  }).handle(TaskService.getTasks);
 
   @operation({
     summary: "Find tasks by ID, title or description",
@@ -38,8 +37,7 @@ export default class TaskController {
       }),
     }),
     output: TaskSchema.array(),
-    handle: async ({ vovk }) => TaskService.findTasks(vovk.query().search),
-  });
+  }).handle(async ({ vovk }) => TaskService.findTasks(vovk.query().search));
 
   @operation({
     summary: "Get tasks assigned to a specific user",
@@ -51,9 +49,9 @@ export default class TaskController {
   static getTasksByUserId = procedure({
     params: z.object({ userId: UserSchema.shape.id }),
     output: TaskSchema.array(),
-    handle: async ({ vovk }) =>
-      TaskService.getTasksByUserId(vovk.params().userId),
-  });
+  }).handle(async ({ vovk }) =>
+    TaskService.getTasksByUserId(vovk.params().userId),
+  );
 
   @operation({
     summary: "Create a new task",
@@ -67,8 +65,7 @@ export default class TaskController {
   static createTask = procedure({
     body: TaskSchema.omit(BASE_FIELDS),
     output: TaskSchema,
-    handle: async ({ vovk }) => TaskService.createTask(await vovk.body()),
-  });
+  }).handle(async ({ vovk }) => TaskService.createTask(await vovk.body()));
 
   @operation({
     summary: "Update task",
@@ -83,9 +80,9 @@ export default class TaskController {
     body: TaskSchema.omit(BASE_FIELDS).partial(),
     params: TaskSchema.pick({ id: true }),
     output: TaskSchema,
-    handle: async ({ vovk }) =>
-      TaskService.updateTask(vovk.params().id, await vovk.body()),
-  });
+  }).handle(async ({ vovk }) =>
+    TaskService.updateTask(vovk.params().id, await vovk.body()),
+  );
 
   @operation({
     summary: "Delete task",
@@ -100,6 +97,5 @@ export default class TaskController {
     output: TaskSchema.partial().extend({
       __isDeleted: z.literal(true),
     }),
-    handle: async ({ vovk }) => TaskService.deleteTask(vovk.params().id),
-  });
+  }).handle(async ({ vovk }) => TaskService.deleteTask(vovk.params().id));
 }

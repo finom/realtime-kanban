@@ -12,36 +12,35 @@ export default class RealtimeController {
     }),
     body: z.object({ sdp: z.string() }),
     output: z.object({ sdp: z.string() }),
-    async handle({ vovk }) {
-      const voice = vovk.query().voice;
-      const { sdp: sdpOffer } = await vovk.body();
-      const sessionConfig = JSON.stringify({
-        type: "realtime",
-        model: "gpt-realtime",
-        audio: { output: { voice } },
+  }).handle(async ({ vovk }) => {
+    const voice = vovk.query().voice;
+    const { sdp: sdpOffer } = await vovk.body();
+    const sessionConfig = JSON.stringify({
+      type: "realtime",
+      model: "gpt-realtime",
+      audio: { output: { voice } },
+    });
+
+    const fd = new FormData();
+    fd.set("sdp", sdpOffer);
+    fd.set("session", sessionConfig);
+
+    try {
+      const r = await fetch("https://api.openai.com/v1/realtime/calls", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+        },
+        body: fd,
       });
-
-      const fd = new FormData();
-      fd.set("sdp", sdpOffer);
-      fd.set("session", sessionConfig);
-
-      try {
-        const r = await fetch("https://api.openai.com/v1/realtime/calls", {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-          },
-          body: fd,
-        });
-        // Send back the SDP we received from the OpenAI REST API
-        const sdp = await r.text();
-        return { sdp };
-      } catch (error) {
-        throw new HttpException(
-          HttpStatus.INTERNAL_SERVER_ERROR,
-          "Failed to generate token. " + String(error),
-        );
-      }
-    },
+      // Send back the SDP we received from the OpenAI REST API
+      const sdp = await r.text();
+      return { sdp };
+    } catch (error) {
+      throw new HttpException(
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        "Failed to generate token. " + String(error),
+      );
+    }
   });
 }

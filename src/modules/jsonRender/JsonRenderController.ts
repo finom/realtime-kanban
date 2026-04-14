@@ -23,22 +23,21 @@ export default class JsonRenderController {
       prompt: z.string(),
     }),
     output: z.object({ text: z.string() }),
-    handle: async (req) => {
-      const { prompt, existingLines, previousPrompt } = await req.json();
+  }).handle(async ({ vovk }) => {
+    const { prompt, existingLines, previousPrompt } = await vovk.body();
 
-      const system = getClarifyPrompt({
-        existingLines: existingLines as ChunkComponent[] | undefined,
-        previousPrompt,
-      });
+    const system = getClarifyPrompt({
+      existingLines: existingLines as ChunkComponent[] | undefined,
+      previousPrompt,
+    });
 
-      const result = await generateText({
-        model: "anthropic/claude-sonnet-4-20250514",
-        system,
-        prompt,
-      });
+    const result = await generateText({
+      model: "anthropic/claude-sonnet-4-20250514",
+      system,
+      prompt,
+    });
 
-      return { text: result.text };
-    },
+    return { text: result.text };
   });
 
   /**
@@ -54,38 +53,37 @@ export default class JsonRenderController {
       previousPrompt: z.string().optional(),
       prompt: z.string(),
     }),
-    handle: async (req) => {
-      const { prompt, editElementId, existingLines, previousPrompt } =
-        await req.json();
+  }).handle(async ({ vovk }) => {
+    const { prompt, editElementId, existingLines, previousPrompt } =
+      await vovk.body();
 
-      let system: string;
+    let system: string;
 
-      if (editElementId && existingLines) {
-        // Edit mode: targeted element replacement
-        system = getEditPrompt({
-          editElementId,
-          existingLines: existingLines as ChunkComponent[],
-          prompt,
-        });
-      } else {
-        // Full generation (optionally with existing context)
-        system = getPrompt({
-          existingLines: existingLines as ChunkComponent[] | undefined,
-          previousPrompt,
-        });
-      }
-
-      const result = streamText({
-        model: "anthropic/claude-opus-4.6",
-        system,
+    if (editElementId && existingLines) {
+      // Edit mode: targeted element replacement
+      system = getEditPrompt({
+        editElementId,
+        existingLines: existingLines as ChunkComponent[],
         prompt,
       });
+    } else {
+      // Full generation (optionally with existing context)
+      system = getPrompt({
+        existingLines: existingLines as ChunkComponent[] | undefined,
+        previousPrompt,
+      });
+    }
 
-      return new Response(result.textStream, {
-        headers: { "Content-Type": "text/plain; charset=utf-8" },
-      }) as unknown as JSONLinesResponder<
-        ChunkComponentElement | ChunkComponentList
-      >;
-    },
+    const result = streamText({
+      model: "anthropic/claude-opus-4.6",
+      system,
+      prompt,
+    });
+
+    return new Response(result.textStream, {
+      headers: { "Content-Type": "text/plain; charset=utf-8" },
+    }) as unknown as JSONLinesResponder<
+      ChunkComponentElement | ChunkComponentList
+    >;
   });
 }

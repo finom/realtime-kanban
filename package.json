@@ -10,7 +10,8 @@
     "start": "next start",
     "lint": "biome check",
     "generate": "npx prisma generate && npx vovk generate",
-    "postinstall": "patch-package && npm run generate"
+    "postinstall": "patch-package && npm run generate",
+    "prepare": "husky"
   },
   "dependencies": {
     "@ai-sdk/openai": "^3.0.50",
@@ -79,6 +80,7 @@
     "@types/node": "^25",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "husky": "^9.1.7",
     "patch-package": "^8.0.1",
     "prisma": "7.6.0",
     "prisma-zod-generator": "2.1.3",

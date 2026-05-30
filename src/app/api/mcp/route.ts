@@ -1,6 +1,6 @@
 import { createMcpHandler } from 'mcp-handler';
 import { deriveTools, ToModelOutput } from 'vovk';
-import type z from 'zod';
+import z from 'zod';
 import TaskController from '@/modules/task/TaskController';
 import UserController from '@/modules/user/UserController';
 
@@ -16,15 +16,21 @@ const { tools } = deriveTools({
 
 const handler = createMcpHandler(
   (server) => {
-    tools.forEach(({ title, name, execute, description, inputSchemas }) => {
+    tools.forEach(({ title, name, execute, description, inputSchema }) => {
       server.registerTool(
         name,
         {
           title,
           description,
-          inputSchema: inputSchemas as Partial<
-            Record<'body' | 'query' | 'params', z.ZodTypeAny>
-          >,
+          inputSchema: inputSchema
+            ? (
+                z.fromJSONSchema(
+                  inputSchema['~standard'].jsonSchema.input({
+                    target: 'draft-2020-12',
+                  }),
+                ) as z.ZodObject
+              ).shape
+            : undefined,
         },
         execute,
       );

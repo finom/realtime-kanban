@@ -1,6 +1,6 @@
 import { createMcpHandler } from 'mcp-handler';
 import { deriveTools, ToModelOutput } from 'vovk';
-import z from 'zod';
+import type z from 'zod';
 import TaskController from '@/modules/task/TaskController';
 import UserController from '@/modules/user/UserController';
 
@@ -17,21 +17,13 @@ const { tools } = deriveTools({
 const handler = createMcpHandler(
   (server) => {
     tools.forEach(({ title, name, execute, description, inputSchema }) => {
+      // Vovk's merged `inputSchema` also carries the original per-slot Zod schemas
+      // (`body`/`query`/`params`); registerTool accepts a Zod raw shape, so drop the
+      // `~standard` marker and hand it those slots directly.
+      const { '~standard': _std, ...shape } = (inputSchema ?? {}) as unknown as Record<string, z.ZodTypeAny>;
       server.registerTool(
         name,
-        {
-          title,
-          description,
-          inputSchema: inputSchema
-            ? (
-                z.fromJSONSchema(
-                  inputSchema['~standard'].jsonSchema.input({
-                    target: 'draft-2020-12',
-                  }),
-                ) as z.ZodObject
-              ).shape
-            : undefined,
-        },
+        { title, description, inputSchema: inputSchema ? shape : undefined },
         execute,
       );
     });

@@ -22,7 +22,7 @@
 
 ## realtime-kanban
 
-A proof of concept app, demonstrating **Realtime UI**.
+A proof-of-concept app showing how to build a live-updating UI with Vovk.ts and a grab-bag of AI features — an MCP server, OpenAI function calling, a voice interface, and a Telegram bot.
 
 The project and its idea explained in the series of articles at [Vovk.ts documentation](https://vovk.dev/realtime-ui):
 

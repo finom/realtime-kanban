@@ -1,13 +1,13 @@
 import type { TaskType } from '@schemas/models/Task.schema';
 import type { UserType } from '@schemas/models/User.schema';
-import AppHeader from '@/components/AppHeader';
-import { ExpandableChatDemo } from '@/components/ExpandableChatDemo';
-import UserKanban from '@/components/UserKanban';
-import UserList from '@/components/UserList';
-import { RegistryProvider } from '@/hooks/useRegistry';
+import AppHeader from '@/components/app-header';
+import { ExpandableChatDemo } from '@/components/expandable-chat-demo';
+import UserKanban from '@/components/user-kanban';
+import UserList from '@/components/user-list';
+import { RegistryProvider } from '@/hooks/use-registry';
 import { verifySession } from '@/lib/dal';
-import TaskController from '@/modules/task/TaskController';
-import UserController from '@/modules/user/UserController';
+import TaskController from '@/modules/task/task-controller';
+import UserController from '@/modules/user/user-controller';
 
 export const runtime = 'nodejs';
 

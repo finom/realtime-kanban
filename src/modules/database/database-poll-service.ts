@@ -1,8 +1,8 @@
 import { forEach, groupBy } from 'lodash';
 import type { JSONLinesResponder, VovkIteration } from 'vovk';
-import DatabaseEventsService, { type DBChange } from './DatabaseEventsService';
-import type DatabasePollController from './DatabasePollController';
-import DatabaseService from './DatabaseService';
+import DatabaseEventsService, { type DBChange } from './database-events-service';
+import type DatabasePollController from './database-poll-controller';
+import DatabaseService from './database-service';
 
 export default class PollService {
   static poll(

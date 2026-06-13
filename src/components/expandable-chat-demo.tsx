@@ -37,7 +37,7 @@ import {
   ExpandableChatFooter,
   ExpandableChatHeader,
 } from '@/components/ui/expandable-chat';
-import useParseSDKToolCallOutputs from '@/hooks/useParseSDKToolCallOutputs';
+import useParseSDKToolCallOutputs from '@/hooks/use-parse-sdk-tool-call-outputs';
 
 export function ExpandableChatDemo() {
   const [input, setInput] = useState('');

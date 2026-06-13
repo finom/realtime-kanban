@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, post, prefix, procedure } from 'vovk';
 import { z } from 'zod';
-import { sessionGuard } from '@/decorators/sessionGuard';
+import { sessionGuard } from '@/decorators/session-guard';
 
 @prefix('realtime')
 export default class RealtimeController {

@@ -24,8 +24,8 @@ import { useShallow } from 'zustand/shallow';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { useRegistry } from '@/hooks/useRegistry';
-import TaskDialog from './TaskDialog';
+import { useRegistry } from '@/hooks/use-registry';
+import TaskDialog from './task-dialog';
 
 // Utils function
 function cn(...classes: (string | undefined | null | boolean)[]): string {

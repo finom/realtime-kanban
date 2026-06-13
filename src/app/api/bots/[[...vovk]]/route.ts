@@ -1,5 +1,5 @@
 import { initSegment } from 'vovk';
-import TelegramController from '../../../../modules/telegram/TelegramController';
+import TelegramController from '../../../../modules/telegram/telegram-controller';
 
 const controllers = {
   TelegramBot: TelegramController,

@@ -2,8 +2,8 @@ import { TaskSchema, UserSchema } from '@schemas/index';
 import { del, get, operation, post, prefix, procedure, put } from 'vovk';
 import { z } from 'zod';
 import { BASE_FIELDS } from '@/constants';
-import { sessionGuard } from '@/decorators/sessionGuard';
-import UserService from './UserService';
+import { sessionGuard } from '@/decorators/session-guard';
+import UserService from './user-service';
 
 @prefix('users')
 export default class UserController {

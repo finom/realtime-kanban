@@ -1,8 +1,8 @@
 import { createMcpHandler } from 'mcp-handler';
 import { deriveTools, ToModelOutput } from 'vovk';
 import type z from 'zod';
-import TaskController from '@/modules/task/TaskController';
-import UserController from '@/modules/user/UserController';
+import TaskController from '@/modules/task/task-controller';
+import UserController from '@/modules/user/user-controller';
 
 const { tools } = deriveTools({
   modules: {

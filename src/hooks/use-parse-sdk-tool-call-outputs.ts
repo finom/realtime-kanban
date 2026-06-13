@@ -1,6 +1,6 @@
 import type { ToolUIPart, UIMessage } from 'ai';
 import { useEffect, useRef } from 'react';
-import { useRegistryStore } from '@/hooks/useRegistry';
+import { useRegistryStore } from '@/hooks/use-registry';
 
 export default function useParseSDKToolCallOutputs(messages: UIMessage[]) {
   const store = useRegistryStore();

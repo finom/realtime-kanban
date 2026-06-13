@@ -3,12 +3,12 @@ import { useRouter } from 'next/navigation';
 import { createTool, deriveTools } from 'vovk';
 import { TaskRPC, UserRPC } from 'vovk-client';
 import z from 'zod';
-import useWebRTCAudioSession from '@/hooks/useWebRTCAudioSession';
-import { getCurrentTime } from '@/lib/tools/getCurrentTime';
-import { getVisiblePageSection } from '@/lib/tools/getVisiblePageSection';
-import { partyMode } from '@/lib/tools/partyMode';
+import useWebRTCAudioSession from '@/hooks/use-web-rtc-audio-session';
+import { getCurrentTime } from '@/lib/tools/get-current-time';
+import { getVisiblePageSection } from '@/lib/tools/get-visible-page-section';
+import { partyMode } from '@/lib/tools/party-mode';
 import { scroll } from '@/lib/tools/scroll';
-import Floaty from './Floaty';
+import Floaty from './floaty';
 import { useMemo } from 'react';
 
 const RealTimeDemo = () => {

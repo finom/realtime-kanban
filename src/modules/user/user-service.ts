@@ -2,10 +2,10 @@ import { EntityType } from '@prisma/client';
 import type { TaskType } from '@schemas/models/Task.schema';
 import type { UserType } from '@schemas/models/User.schema';
 import type { VovkBody, VovkOutput, VovkParams } from 'vovk';
-import DatabaseService from '../database/DatabaseService';
-import EmbeddingService from '../embedding/EmbeddingService';
-import TaskService from '../task/TaskService';
-import type UserController from './UserController';
+import DatabaseService from '../database/database-service';
+import EmbeddingService from '../embedding/embedding-service';
+import TaskService from '../task/task-service';
+import type UserController from './user-controller';
 
 export default class UserService {
   static getUsers = () =>

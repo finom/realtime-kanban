@@ -8,9 +8,9 @@ import {
   type UIMessage,
 } from 'ai';
 import { deriveTools, operation, post, prefix, type VovkRequest } from 'vovk';
-import { sessionGuard } from '@/decorators/sessionGuard';
-import TaskController from '../task/TaskController';
-import UserController from '../user/UserController';
+import { sessionGuard } from '@/decorators/session-guard';
+import TaskController from '../task/task-controller';
+import UserController from '../user/user-controller';
 
 @prefix('ai-sdk')
 export default class AiSdkController {

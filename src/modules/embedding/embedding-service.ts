@@ -6,7 +6,7 @@ import type { UserType } from '@schemas/models/User.schema';
 import { embed } from 'ai';
 import { capitalize, omit } from 'lodash';
 import { BASE_KEYS } from '@/constants';
-import DatabaseService from '../database/DatabaseService';
+import DatabaseService from '../database/database-service';
 
 export default class EmbeddingService {
   static async generateEmbedding(value: string): Promise<number[]> {

@@ -8,8 +8,8 @@ import {
   type VovkIteration,
 } from 'vovk';
 import { z } from 'zod';
-import { sessionGuard } from '@/decorators/sessionGuard';
-import DatabasePollService from './DatabasePollService';
+import { sessionGuard } from '@/decorators/session-guard';
+import DatabasePollService from './database-poll-service';
 
 @prefix('poll')
 export default class DatabasePollController {

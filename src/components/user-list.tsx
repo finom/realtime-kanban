@@ -4,8 +4,8 @@ import { Pencil, Plus } from 'lucide-react';
 import { UserRPC } from 'vovk-client';
 import { useShallow } from 'zustand/shallow';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { useRegistry } from '@/hooks/useRegistry';
-import UserDialog from './UserDialog';
+import { useRegistry } from '@/hooks/use-registry';
+import UserDialog from './user-dialog';
 import { Button } from './ui/button';
 
 const UserList = () => {

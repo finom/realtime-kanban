@@ -14,8 +14,8 @@ import { createClient } from 'redis';
 import { deriveTools } from 'vovk';
 import { TelegramAPI as TelegramRawAPI } from 'vovk-client';
 import { z } from 'zod';
-import TaskController from '../task/TaskController';
-import UserController from '../user/UserController';
+import TaskController from '../task/task-controller';
+import UserController from '../user/user-controller';
 
 const TelegramAPI = TelegramRawAPI.withDefaults({
   apiRoot: `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}`,

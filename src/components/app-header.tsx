@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import useDatabasePolling from '@/hooks/useDatabasePolling';
+import useDatabasePolling from '@/hooks/use-database-polling';
 import { Label } from './ui/label';
 import { Switch } from './ui/switch';
 

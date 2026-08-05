@@ -4,7 +4,7 @@ import { pick } from 'lodash';
 import { Loader2, Trash2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { UserRPC } from 'vovk-client';
+import { UserRPC } from '@/client';
 import { useShallow } from 'zustand/shallow';
 import { Button } from '@/components/ui/button';
 import {

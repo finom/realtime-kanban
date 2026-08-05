@@ -4,7 +4,7 @@ import type z from 'zod';
 import TaskController from '@/modules/task/task-controller';
 import UserController from '@/modules/user/user-controller';
 
-const { tools } = deriveTools({
+const tools = deriveTools({
   modules: {
     UserController,
     TaskController,

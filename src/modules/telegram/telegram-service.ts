@@ -12,7 +12,7 @@ import type { NextRequest } from 'next/server';
 import OpenAI from 'openai';
 import { createClient } from 'redis';
 import { deriveTools } from 'vovk';
-import { TelegramAPI as TelegramRawAPI } from 'vovk-client';
+import { TelegramAPI as TelegramRawAPI } from '@/client';
 import { z } from 'zod';
 import TaskController from '../task/task-controller';
 import UserController from '../user/user-controller';
@@ -251,7 +251,7 @@ export default class TelegramService {
       ...TelegramService.formatHistoryForVercelAI(history),
       { role: 'user', content: userMessage } as const,
     ];
-    const { tools } = deriveTools({
+    const tools = deriveTools({
       modules: {
         UserController,
         TaskController,
@@ -269,12 +269,14 @@ export default class TelegramService {
       stopWhen: stepCountIs(16),
       tools: {
         ...Object.fromEntries(
-          tools.map(({ name, execute, description, parameters }) => [
+          tools.map(({ name, execute, description, inputSchema }) => [
             name,
             tool({
               execute,
               description,
-              inputSchema: jsonSchema(parameters as JSONSchema7),
+              inputSchema: jsonSchema(
+                inputSchema?.['~standard'].jsonSchema.input({ target: 'draft-2020-12' }) as JSONSchema7,
+              ),
             }),
           ]),
         ),

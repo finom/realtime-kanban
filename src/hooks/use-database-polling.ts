@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { DatabasePollRPC } from 'vovk-client';
+import { DatabasePollRPC } from '@/client';
 
 /**
  * Hook to manage database polling state.

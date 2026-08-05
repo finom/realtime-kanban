@@ -1,6 +1,7 @@
 import { openai } from '@ai-sdk/openai';
 import {
   convertToModelMessages,
+  type JSONSchema7,
   jsonSchema,
   stepCountIs,
   streamText,
@@ -23,7 +24,7 @@ export default class AiSdkController {
   @sessionGuard()
   static async functionCalling(req: VovkRequest<{ messages: UIMessage[] }>) {
     const { messages } = await req.json();
-    const { tools } = deriveTools({
+    const tools = deriveTools({
       modules: {
         UserController,
         TaskController,
@@ -35,12 +36,14 @@ export default class AiSdkController {
       system: 'You execute functions sequentially, one by one.',
       messages: await convertToModelMessages(messages),
       tools: Object.fromEntries(
-        tools.map(({ name, execute, description, parameters }) => [
+        tools.map(({ name, execute, description, inputSchema }) => [
           name,
           tool({
             execute,
             description,
-            inputSchema: jsonSchema(parameters),
+            inputSchema: jsonSchema(
+              inputSchema?.['~standard'].jsonSchema.input({ target: 'draft-2020-12' }) as JSONSchema7,
+            ),
           }),
         ]),
       ),

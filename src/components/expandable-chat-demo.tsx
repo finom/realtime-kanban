@@ -8,7 +8,7 @@ import {
   MoveDownRight,
 } from 'lucide-react';
 import { useState } from 'react';
-import { AiSdkRPC } from 'vovk-client';
+import { AiSdkRPC } from '@/client';
 import { CodeBlock } from '@/components/ai-elements/code-block';
 import {
   Conversation,

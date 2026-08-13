@@ -1,8 +1,6 @@
 import { openai } from '@ai-sdk/openai';
 import {
   convertToModelMessages,
-  type JSONSchema7,
-  jsonSchema,
   stepCountIs,
   streamText,
   tool,
@@ -41,9 +39,8 @@ export default class AiSdkController {
           tool({
             execute,
             description,
-            inputSchema: jsonSchema(
-              inputSchema?.['~standard'].jsonSchema.input({ target: 'draft-2020-12' }) as JSONSchema7,
-            ),
+            // the SDK takes Standard Schema as is, no JSON Schema conversion needed
+            inputSchema,
           }),
         ]),
       ),

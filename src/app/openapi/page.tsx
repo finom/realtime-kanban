@@ -1,6 +1,6 @@
 import { ApiReferenceReact } from '@scalar/api-reference-react';
 import '@scalar/api-reference-react/style.css';
-import { OpenApiRPC } from 'vovk-client';
+import { OpenApiRPC } from '@/client';
 
 async function App() {
   return (

@@ -1,7 +1,8 @@
 'use client';
 import { useRouter } from 'next/navigation';
-import { createTool, deriveTools } from 'vovk';
-import { TaskRPC, UserRPC } from 'vovk-client';
+import { standardTool } from 'standard-tool';
+import { deriveTools } from 'vovk';
+import { TaskRPC, UserRPC } from '@/client';
 import z from 'zod';
 import useWebRTCAudioSession from '@/hooks/use-web-rtc-audio-session';
 import { getCurrentTime } from '@/lib/tools/get-current-time';
@@ -18,8 +19,8 @@ const RealTimeDemo = () => {
     () => [
       ...deriveTools({
         modules: { TaskRPC, UserRPC },
-      }).tools,
-      createTool({
+      }),
+      standardTool({
         name: 'getCurrentTime',
         description: "Gets the current time in the user's timezone",
         outputSchema: z
@@ -31,12 +32,12 @@ const RealTimeDemo = () => {
           .meta({ description: 'Current time info.' }),
         execute: getCurrentTime,
       }),
-      createTool({
+      standardTool({
         name: 'partyMode',
         description: 'Triggers a confetti animation on the page',
         execute: partyMode,
       }),
-      createTool({
+      standardTool({
         name: 'navigateTo',
         description:
           'Navigates the user to a specified URL within the application.',
@@ -53,7 +54,7 @@ const RealTimeDemo = () => {
           return `Navigating to ${url}`;
         },
       }),
-      createTool({
+      standardTool({
         name: 'scroll',
         description: 'Scrolls the page up or down.',
         inputSchema: z.object({
@@ -75,7 +76,7 @@ const RealTimeDemo = () => {
         }),
         execute: scroll,
       }),
-      createTool({
+      standardTool({
         name: 'getVisiblePageSection',
         description: 'Gets the currently visible section of the page',
         outputSchema: z

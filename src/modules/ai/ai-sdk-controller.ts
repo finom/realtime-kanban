@@ -1,9 +1,11 @@
 import { openai } from '@ai-sdk/openai';
 import {
   convertToModelMessages,
+  createUIMessageStreamResponse,
   stepCountIs,
   streamText,
   tool,
+  toUIMessageStream,
   type UIMessage,
 } from 'ai';
 import { deriveTools, operation, post, prefix, type VovkRequest } from 'vovk';
@@ -29,21 +31,23 @@ export default class AiSdkController {
       },
     });
 
-    return streamText({
+    const toolSet = Object.fromEntries(
+      tools.map(({ name, execute, description, inputSchema }) => [
+        name,
+        tool({
+          execute,
+          description,
+          // the SDK takes Standard Schema as is, no JSON Schema conversion needed
+          inputSchema,
+        }),
+      ]),
+    );
+
+    const result = streamText({
       model: openai('gpt-5'),
       system: 'You execute functions sequentially, one by one.',
       messages: await convertToModelMessages(messages),
-      tools: Object.fromEntries(
-        tools.map(({ name, execute, description, inputSchema }) => [
-          name,
-          tool({
-            execute,
-            description,
-            // the SDK takes Standard Schema as is, no JSON Schema conversion needed
-            inputSchema,
-          }),
-        ]),
-      ),
+      tools: toolSet,
       stopWhen: stepCountIs(16),
       onError: (e) => console.error('streamText error', e),
       onFinish: ({ finishReason, toolCalls }) => {
@@ -51,6 +55,11 @@ export default class AiSdkController {
           console.log('Tool calls finished', toolCalls);
         }
       },
-    }).toUIMessageStreamResponse();
+    });
+
+    // pass toolSet so tool parts keep the dynamic flag the old method set for us
+    return createUIMessageStreamResponse({
+      stream: toUIMessageStream({ stream: result.stream, tools: toolSet }),
+    });
   }
 }

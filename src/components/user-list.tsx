@@ -1,7 +1,7 @@
 'use client';
 import { useQuery } from '@tanstack/react-query';
 import { Pencil, Plus } from 'lucide-react';
-import { UserRPC } from 'vovk-client';
+import { UserRPC } from '@/client';
 import { useShallow } from 'zustand/shallow';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useRegistry } from '@/hooks/use-registry';

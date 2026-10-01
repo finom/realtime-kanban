@@ -1,7 +1,7 @@
 'use client';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import type { VovkTool } from 'vovk';
-import { RealtimeRPC } from 'vovk-client';
+import type { StandardToolV0 } from 'vovk/internal';
+import { RealtimeRPC } from '@/client';
 
 /**
  * Hook to manage a real-time session with OpenAI's Realtime endpoints.
@@ -9,7 +9,7 @@ import { RealtimeRPC } from 'vovk-client';
  */
 export default function useWebRTCAudioSession(
   voice: 'ash' | 'ballad' | 'coral' | 'sage' | 'verse',
-  tools: VovkTool[],
+  tools: StandardToolV0[],
 ) {
   const audioElement = useRef<HTMLAudioElement | null>(null);
   const [isActive, setIsActive] = useState(false);
@@ -89,12 +89,17 @@ export default function useWebRTCAudioSession(
         type: 'session.update',
         session: {
           type: 'realtime',
-          tools: tools.map(({ name, description, parameters, type }) => ({
-            name,
-            description,
-            parameters,
-            type,
-          })),
+          tools: tools.map(({ name, description, inputSchema }) => {
+            // OpenAI wants bare JSON schema, drop the $schema marker zod adds
+            const { $schema, ...parameters } =
+              inputSchema?.['~standard'].jsonSchema.input({ target: 'draft-2020-12' }) ?? {};
+            return {
+              name,
+              description,
+              parameters: inputSchema ? parameters : undefined,
+              type: 'function',
+            };
+          }),
         },
       };
       dc.send(JSON.stringify(sessionUpdate));

@@ -19,7 +19,7 @@ import { pick } from 'lodash';
 import { Pencil, Plus, Trash2 } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useId, useMemo, useState } from 'react';
-import { TaskRPC } from 'vovk-client';
+import { TaskRPC } from '@/client';
 import { useShallow } from 'zustand/shallow';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';

@@ -5,7 +5,7 @@ import { pick } from 'lodash';
 import { Loader2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { TaskRPC } from 'vovk-client';
+import { TaskRPC } from '@/client';
 import { useShallow } from 'zustand/shallow';
 import { Button } from '@/components/ui/button';
 import {

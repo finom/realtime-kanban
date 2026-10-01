@@ -1,3 +1,11 @@
+# realtime-kanban has moved
+
+This repository is archived. The code now lives in the Vovk.ts repository:
+
+**https://github.com/finom/vovk/tree/main/examples/realtime-kanban**
+
+---
+
 <p align="center">
   <a href="https://vovk.dev">
     <picture>
